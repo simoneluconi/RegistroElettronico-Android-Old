@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cv"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="10dp"
+    card_view:cardBackgroundColor="#fff">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/Materia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginBottom="5dp"
+                android:text="Matematica"
+                android:textColor="@color/material_blue_grey"
+                android:textSize="18sp" />
+
+
+            <TextView
+                android:id="@+id/des"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/Materia"
+                android:layout_marginBottom="3dp"
+                android:autoLink="web|email"
+                android:text="Devi prendere almeno 5"
+                android:textColor="@color/textcolorgrey"
+                android:textColorLink="#0099ff"
+                android:textSize="13sp"
+                android:visibility="visible" />
+
+
+            <LinearLayout
+                android:id="@+id/layoutData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/des"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical|center|center_horizontal"
+                android:orientation="horizontal">
+
+                <com.sharpdroid.registroelettronico.SharpLibrary.ClockView xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/ClockView"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:clockColor="@color/bluematerial"
+                    app:h="13"
+                    app:m="15" />
+
+                <TextView
+                    android:id="@+id/dataTx"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/Materia"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="3dp"
+                    android:text="12-11-2015 12:25:54"
+                    android:textColor="@color/textcolorgrey"
+                    android:textColorLink="#0099ff"
+                    android:textSize="13sp"
+                    android:visibility="visible" />
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_weight="1"
+            android:gravity="end">
+
+
+            <com.github.rahatarmanahmed.cpv.CircularProgressView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/progressvoti"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="18dp"
+                app:cpv_animAutostart="true"
+                app:cpv_indeterminate="false"
+                app:cpv_progress="80" />
+
+            <TextView
+                android:id="@+id/media"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="20dp"
+                android:text="8.22"
+                android:textColor="@color/textcolorgrey"
+                android:textSize="15sp" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</android.support.v7.widget.CardView>
