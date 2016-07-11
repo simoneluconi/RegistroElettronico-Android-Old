@@ -2152,7 +2152,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-
         public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
             List<CVData> CVDataList;
 
