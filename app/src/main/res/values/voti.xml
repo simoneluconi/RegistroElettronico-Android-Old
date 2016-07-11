@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="votis">
+        <item>1</item>
+        <item>1.25</item>
+        <item>1.50</item>
+        <item>1.75</item>
+        <item>2</item>
+        <item>2.25</item>
+        <item>2.50</item>
+        <item>2.75</item>
+        <item>3</item>
+        <item>3.25</item>
+        <item>3.50</item>
+        <item>3.75</item>
+        <item>4</item>
+        <item>4.25</item>
+        <item>4.50</item>
+        <item>4.75</item>
+        <item>5</item>
+        <item>5.25</item>
+        <item>5.50</item>
+        <item>5.75</item>
+        <item>6</item>
+        <item>6.25</item>
+        <item>6.50</item>
+        <item>6.75</item>
+        <item>7</item>
+        <item>7.25</item>
+        <item>7.50</item>
+        <item>7.75</item>
+        <item>8</item>
+        <item>8.25</item>
+        <item>8.50</item>
+        <item>8.75</item>
+        <item>9</item>
+        <item>9.25</item>
+        <item>9.50</item>
+        <item>9.75</item>
+        <item>10</item>
+    </string-array>
+
+
+    <string-array name="votispinner">
+        <item>1</item>
+        <item>1+</item>
+        <item>1½</item>
+        <item>2-</item>
+        <item>2</item>
+        <item>2+</item>
+        <item>2½</item>
+        <item>3-</item>
+        <item>3</item>
+        <item>3+</item>
+        <item>3½</item>
+        <item>4-</item>
+        <item>4</item>
+        <item>4+</item>
+        <item>4½</item>
+        <item>5-</item>
+        <item>5</item>
+        <item>5+</item>
+        <item>5½</item>
+        <item>6-</item>
+        <item>6</item>
+        <item>6+</item>
+        <item>6½</item>
+        <item>7-</item>
+        <item>7</item>
+        <item>7+</item>
+        <item>7½</item>
+        <item>8-</item>
+        <item>8</item>
+        <item>8+</item>
+        <item>8½</item>
+        <item>9-</item>
+        <item>9</item>
+        <item>9+</item>
+        <item>9½</item>
+        <item>10-</item>
+        <item>10</item>
+    </string-array>
+</resources>

@@ -1,0 +1,28 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorHint">#FF80AB</item>
+    </style>
+
+    <style name="ToolbarColor" parent="AppTheme">
+        <item name="android:textColorSecondary">#FFFFFF</item>
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="actionModeStyle">@style/ContxActionMode</item>
+    </style>
+
+    <style name="ContxActionMode" parent="@style/Widget.AppCompat.ActionMode">
+        <item name="background">@color/material_blue_500</item>
+    </style>
+
+    <style name="PopupMenu" parent="Theme.AppCompat.Light">
+        <item name="android:background">@color/colorPrimaryDark</item>
+        <item name="android:textColorPrimary">#FFFFFF</item>
+    </style>
+
+
+</resources>

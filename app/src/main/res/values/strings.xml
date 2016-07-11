@@ -1,0 +1,81 @@
+<resources>
+    <string name="app_name">Registro Elettronico</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Username o email</string>
+    <string name="login">Login</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Accedi</string>
+    <string name="action_sign_in_short">Accedi</string>
+    <string name="error_invalid_email">Username o email non validi!</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">Password non corretta!</string>
+    <string name="error_field_required">Questo campo è richiesto!</string>
+    <string name="comelogin">Se avete più account associati alla vostra mail accedete con l\'username che trovate alla voce \'Identità utente\' che trovate nella sezione account. Se avete altri problemi di accesso contattaci via mail (sharpdroidmail@gmail.com), una recensione negativa non risolverà il problema. \nQuest\'app funziona solamente con il registro elettronico spaggiari.</string>
+    <string name="aggiorna">Aggiorna</string>
+    <string name="impostap1">Imposta P1</string>
+    <string name="mediaorale">Media orale</string>
+    <string name="mediascritto">Media scritto</string>
+    <string name="mediapratico">Media pratico</string>
+    <string name="dettagliovoti">Dettaglio voti %1$s</string>
+    <string name="compitidi">Compiti di %1$s</string>
+    <string name="nuovivoti">Ci sono nuovi voti</string>
+    <string name="nuovenote">Ci sono nuove note</string>
+    <string name="nuovicompiti">Ci sono nuovi compiti</string>
+    <string name="segnalaproblema">Segnala un problema</string>
+    <string name="ordinavotidata">Ordina voti per data</string>
+    <string name="nointernet">Non sei connesso ad internet!</string>
+    <string name="notifichevoti">Notifiche voti</string>
+    <string name="notificheagenda">Notifiche agenda</string>
+    <string name="notifichescrutini">Notifiche scrutini</string>
+    <string name="aggcal">Aggiungi al calendario</string>
+    <string name="aprireg">Registro Web</string>
+    <string name="sharpfb">Seguici su facebook</string>
+    <string name="help">Help</string>
+    <string name="benvenuto">Benvenuto!</string>
+    <string name="aprilinkt">Scegli un link:</string>
+    <string name="votochepensi">Seleziona il voto che pensi di aver preso:</string>
+    <string name="mediaipotetica">Media ipotetica %1$s</string>
+    <string name="media">Media: %1$s</string>
+    <string name="scaricati">Scaricati %1$s</string>
+    <string name="eventoperil">Evento per il %1$s</string>
+    <string name="salva">Salva</string>
+    <string name="modifica">Modifica</string>
+    <string name="elimina">Elimina</string>
+    <string name="eventodel">Evento del %1$s-%2$s-%3$s</string>
+    <string name="datains"> %1$s (%2$d giorn%3$s prima)</string>
+    <string name="datainsogg"> %1$s (Il giorno stesso)</string>
+    <string name="impostaobb">Imposta obiettivo</string>
+    <string name="ultimaversione">Non hai l\'ultima versione dell\'app. Aggiornala dal play store!</string>
+    <string name="impostaobbdes">Seleziona il voto a cui vuoi arrivare o che vuoi mantenere</string>
+    <string name="toast_crash">E\' stato rilevato un problema, verrà segnalato allo sviluppatore. Se puoi contattaci via mail: sharpdroidmail@gmail.com, risolveremo il problema più velocemente.</string>
+    <string name="nocampivuoti">Non lasciare campi vuoti!</string>
+    <string name="tutorialdes">E\' la prima volta che apri l\'app. Se desideri avere informazioni sul suo funzionamento clicca sul pulsante OK. Inoltre troverai un link per scaricare la versione per Windows di questa app. Potrai sempre ritrovare questa opzione nel menu.</string>
+    <string name="modificaevento">Cosa vuoi fare?</string>
+    <string name="permission_rationale">Il permesso per leggere i contatti è richiesto per l\'autocompletamento della mail.</string>
+    <string name="disclamer">Sharpdroid non è in alcun modo legata al gruppo Spaggiari. Vi informiamo inoltre che la connessione non è criptata quindi se c\'è qualche big hacker che vi controlla potrà intercettare la vostra username e password e avvertire immediatamente i tuoi genitori quando fai sega e dirgli il voto che hai preso su quella verifica per la quale non avevi studiato. Non siamo quindi in alcun modo responsabili in caso di sequestro di beni personali da parte dei vostri genitori nel tentativo (fallimentare) di migliorare il vostro rendimento scolastico, litigi, debiti da pagare ad avvocati, debiti da pagare ai vostri prof, misteriose sparizioni, stalking, telefonate anonime, invasioni aliene ed esplosioni nucleari. Tanto posso scrivere quello che voglio, lo so che nessuno è arrivato a leggere fino a qui. Inoltre vi informiamo che questo progetto è portato avanti da due studenti, non siamo specializzati in ambito web quindi la parte web di quest\'app potrebbe non essere al top. Grazie per la comprensione.    </string>
+    <string name="title_activity_prova">Sign in</string>
+    <string name="paginafacebook">Pagina Facebook</string>
+    <string name="aggacc">Aggiungi Account</string>
+    <string name="eliminaacc">Elimina Account</string>
+    <string name="eliminaaccdes">Voi davvero eliminare l\'account %1$s?</string>
+    <string name="forzacontrollo">Forza ricontrollo (Notifiche)</string>
+    <string name="nonriesciaccedere">Non riesci ad accedere?</string>
+    <string name="home">Home</string>
+    <string name="fileoff">File Offline</string>
+    <string name="oggiscuola">Oggi a scuola</string>
+    <string name="circolari">Circolari</string>
+    <string name="scrutini">Scrutini [BETA]</string>
+    <string name="nessundato">Nessun dato, riprova tra qualche istante.</string>
+    <string name="gruppotelegram">Gruppo Telegram</string>
+    <string name="title_activity_intro">Intro</string>
+    <string-array name="tab_title">
+        <item>Medie</item>
+        <item>P1</item>
+        <item>P2</item>
+        <item>Voti</item>
+        <item>Agenda</item>
+        <item>Note</item>
+        <item>Didattica</item>
+    </string-array>
+</resources>
