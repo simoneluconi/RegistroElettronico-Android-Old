@@ -15,7 +15,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -78,7 +77,6 @@ import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.holder.BadgeStyle;
-import com.mikepenz.materialdrawer.holder.ImageHolder;
 import com.mikepenz.materialdrawer.holder.StringHolder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
@@ -94,7 +92,6 @@ import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -176,7 +173,6 @@ import com.sharpdroid.registroelettronico.SharpLibrary.VotiDettAdp;
 import com.sharpdroid.registroelettronico.Tabs.SlidingTabLayout;
 import com.sharpdroid.registroelettronico.Tabs.SwipeViewPager;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -2159,7 +2155,6 @@ public class MainActivity extends AppCompatActivity {
 
         public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
             List<CVData> CVDataList;
-            private final int ALTRO = 0, TUTTI_VOTI = 1;
 
             public class ViewHolder extends RecyclerView.ViewHolder {
                 CardView cv;
