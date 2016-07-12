@@ -322,14 +322,7 @@ public class Metodi {
         return spazi;
     }
 
-    public static String MediaIpotetica(double voto, double somma, int dim) {
-        double newSomma = somma + voto;
-        double newDim = dim + 1;
-        double media = newSomma / newDim;
-        return String.format(Locale.ENGLISH, "%.2f", media);
-    }
-
-    public static float MediaIpoteticaFl(double voto, double somma, int dim) {
+    public static float MediaIpotetica(double voto, double somma, int dim) {
         double newSomma = somma + voto;
         double newDim = dim + 1;
         double newMedia = newSomma / newDim;
@@ -347,6 +340,7 @@ public class Metodi {
         db.execSQL("DELETE FROM " + MyDB.VotoEntry.TABLE_NAME);
         db.execSQL("DELETE FROM " + MyDB.CompitoEntry.TABLE_NAME);
         db.execSQL("DELETE FROM " + MyDB.NotaEntry.TABLE_NAME);
+        db.close();
     }
 
     public static void AvviaNotifiche(Context context) {
