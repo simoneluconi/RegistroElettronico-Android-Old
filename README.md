@@ -12,7 +12,3 @@ App per Android sviluppata per accedere al Registro Elettronico Spaggiari. Un'al
 
 * Simone Luconi
 * Nicola Mancini
-
-### Collaboratori ###
-* Luca Stefani
-* Ognuno di voi
