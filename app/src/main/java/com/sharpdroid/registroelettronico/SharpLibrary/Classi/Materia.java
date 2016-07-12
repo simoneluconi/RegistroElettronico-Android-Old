@@ -39,6 +39,11 @@ public class Materia {
         m = m / (double) voti.size();
         return m;
     }
+
+    @Override
+    public String toString() {
+        return  String.format("Materia = { %1$s | Voti: %2$s }", materia, voti.toString());
+    }
 }
 
 

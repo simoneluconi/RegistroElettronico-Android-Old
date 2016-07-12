@@ -142,7 +142,7 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.ConvertiDim
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.ImmagineAccout;
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.InizialeMaiuscola;
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.MateriaDecente;
-import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.MediaIpoteticaFl;
+import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.MediaIpotetica;
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.MessaggioVoto;
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.ProfDecente;
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.ReadAccounts;
@@ -2453,7 +2453,7 @@ public class MainActivity extends AppCompatActivity {
                                             final float[] MediaBack = {Float.parseFloat(mediaIpTx.getText().toString()) * 10f};
                                             String[] votil = getResources().getStringArray(R.array.votis);
                                             double votosel = Double.parseDouble(votil[position]);
-                                            final float mediaFl = MediaIpoteticaFl(votosel, medie.getSommaGenerale(), medie.getnVotiGenerale()) * 10f;
+                                            final float mediaFl = MediaIpotetica(votosel, medie.getSommaGenerale(), medie.getnVotiGenerale()) * 10f;
                                             circularProgressView.setProgress(mediaFl);
                                             circularProgressView.setColor(ContextCompat.getColor(getContext(), ColorByMedia(mediaFl)));
                                             //circularProgressView.startAnimation();
@@ -2673,7 +2673,7 @@ public class MainActivity extends AppCompatActivity {
     private static void CaricaVotiOffline() {
         MyDB DBVoti = new MyDB(context);
         SQLiteDatabase db = DBVoti.getReadableDatabase();
-
+        votis.clear();
         LinkedHashMap<String, List<Voto>> hashMap = new LinkedHashMap<>();
 
         Cursor c = db.rawQuery("select * from " + MyDB.VotoEntry.TABLE_NAME, null);
