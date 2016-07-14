@@ -1507,7 +1507,6 @@ public class MainActivity extends AppCompatActivity {
 
                                                 String materia = m.getMateria();
 
-                                                DateFormat f = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALIAN);
                                                 Medie medie = new Medie();
                                                 for (Voto v : m.getVoti())
                                                     if (!v.isVotoblu() && v.getPeriodo().equals(Voto.P2))
@@ -1582,20 +1581,11 @@ public class MainActivity extends AppCompatActivity {
                                                 });
 
                                                 StringBuilder sb = new StringBuilder();
-                                                String tmp2;
-                                                if (Calendar.getInstance().get(Calendar.MONTH) >= 1 && Calendar.getInstance().get(Calendar.MONTH) <= 8)
-                                                    tmp2 = sharedPref.getString("Fineq", "19/12/" + String.valueOf(Calendar.getInstance().get(Calendar.YEAR) - 1));
-                                                else
-                                                    tmp2 = sharedPref.getString("Fineq", "19/12/" + String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
                                                 boolean separato = false;
                                                 for (Voto v : voti) {
-                                                    try {
-                                                        if (format.parse(v.getData()).compareTo(format.parse(tmp2)) >= 0 && !separato) {
-                                                            sb.append("\n");
-                                                            separato = true;
-                                                        }
-                                                    } catch (Exception e) {
-                                                        e.printStackTrace();
+                                                    if (v.getPeriodo().equals(Voto.P2) && !separato) {
+                                                        sb.append("\n");
+                                                        separato = true;
                                                     }
 
                                                     String spazi = SpaziVoti(v.getVoto());
