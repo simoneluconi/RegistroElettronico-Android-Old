@@ -62,7 +62,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
@@ -874,6 +873,8 @@ public class MainActivity extends AppCompatActivity {
                                                 String tmp[] = elT.get(0).text().trim().split("-");
                                                 boolean VotoBlu = metaElems.get(i).select("div").attr("class").contains("f_reg_voto_dettaglio");
 
+                                                String[] periodotmp = metaElems.get(i).select("td").get(1).className().split("\\s+");
+                                                String periodo = periodotmp[periodotmp.length - 1];
                                                 String data = tmp[1].trim();
                                                 String voto = elV.get(1).text().trim();
                                                 String tipo = tmp[0].trim();
@@ -885,6 +886,7 @@ public class MainActivity extends AppCompatActivity {
                                                 votos.setData(data);
                                                 votos.setTipo(tipo);
                                                 votos.setVotoblu(VotoBlu);
+                                                votos.setPeriodo(periodo);
                                                 materias.addVoto(votos);
 
                                                 ContentValues dati = new ContentValues();
@@ -894,6 +896,7 @@ public class MainActivity extends AppCompatActivity {
                                                 dati.put(MyDB.VotoEntry.COLUMN_NAME_VOTOBLU, VotoBlu);
                                                 dati.put(MyDB.VotoEntry.COLUMN_NAME_VOTO, voto);
                                                 dati.put(MyDB.VotoEntry.COLUMN_NAME_COMMENTO, commento);
+                                                dati.put(MyDB.VotoEntry.COLUMN_NAME_PERIODO, periodo);
                                                 db.insert(MyDB.VotoEntry.TABLE_NAME, MyDB.VotoEntry.COLUMN_NAME_NULLABLE, dati);
 
                                                 if (i + 1 != metaElems.size())
@@ -1436,28 +1439,13 @@ public class MainActivity extends AppCompatActivity {
                                             double media = 0;
                                             int nMaterie = 0;
 
-                                            DateFormat f = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALIAN);
                                             for (Materia m : votis) {
 
                                                 String materia = m.getMateria();
                                                 Medie medie = new Medie();
                                                 for (Voto v : m.getVoti())
-                                                    if (!v.isVotoblu()) {
-
-                                                        String tmp2;
-                                                        if (Calendar.getInstance().get(Calendar.MONTH) >= 1 && Calendar.getInstance().get(Calendar.MONTH) <= 8)
-                                                            tmp2 = sharedPref.getString("Fineq", "19/12/" + String.valueOf(Calendar.getInstance().get(Calendar.YEAR) - 1));
-                                                        else
-                                                            tmp2 = sharedPref.getString("Fineq", "19/12/" + String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
-                                                        try {
-                                                            if (f.parse(v.getData()).compareTo(f.parse(tmp2)) < 0) {
-                                                                medie.addVoto(v);
-                                                            }
-                                                        } catch (java.text.ParseException e) {
-                                                            e.printStackTrace();
-                                                            ACRA.getErrorReporter().handleException(e, false);
-                                                        }
-                                                    }
+                                                    if (!v.isVotoblu() && v.getPeriodo().equals(Voto.P1))
+                                                        medie.addVoto(v);
 
                                                 if (medie.getMediaGenerale() > 0) {
                                                     medie.setMateria(materia);
@@ -1522,24 +1510,8 @@ public class MainActivity extends AppCompatActivity {
                                                 DateFormat f = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALIAN);
                                                 Medie medie = new Medie();
                                                 for (Voto v : m.getVoti())
-                                                    if (!v.isVotoblu()) {
-
-                                                        String tmp2;
-                                                        if (Calendar.getInstance().get(Calendar.MONTH) >= 1 && Calendar.getInstance().get(Calendar.MONTH) <= 8)
-                                                            tmp2 = sharedPref.getString("Fineq", "19/12/" + String.valueOf(Calendar.getInstance().get(Calendar.YEAR) - 1));
-                                                        else
-                                                            tmp2 = sharedPref.getString("Fineq", "19/12/" + String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
-                                                        try {
-                                                            if (f.parse(v.getData()).compareTo(f.parse(tmp2)) >= 0) {
-                                                                medie.addVoto(v);
-                                                            }
-                                                        } catch (java.text.ParseException e) {
-                                                            e.printStackTrace();
-                                                            ACRA.getErrorReporter().handleException(e, false);
-                                                        }
-
-
-                                                    }
+                                                    if (!v.isVotoblu() && v.getPeriodo().equals(Voto.P2))
+                                                        medie.addVoto(v);
 
                                                 if (medie.getMediaGenerale() > 0) {
                                                     medie.setMateria(materia);
@@ -2687,6 +2659,7 @@ public class MainActivity extends AppCompatActivity {
                 voto.setVotoblu(VotoBlu);
                 voto.setData(c.getString(c.getColumnIndex(MyDB.VotoEntry.COLUMN_NAME_DATA)));
                 voto.setTipo(c.getString(c.getColumnIndex(MyDB.VotoEntry.COLUMN_NAME_TIPO)));
+                voto.setPeriodo(c.getString(c.getColumnIndex(MyDB.VotoEntry.COLUMN_NAME_PERIODO)));
                 voto.setCommento(c.getString(c.getColumnIndex(MyDB.VotoEntry.COLUMN_NAME_COMMENTO)));
 
                 if (!hashMap.containsKey(materia)) {
@@ -2759,9 +2732,9 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
-        menu.getItem(2).setChecked(sharedPref.getBoolean("notifichevoti", true));
-        menu.getItem(3).setChecked(sharedPref.getBoolean("notificheagenda", true));
-        menu.getItem(4).setChecked(sharedPref.getBoolean("notifichescrutini", true));
+        menu.getItem(1).setChecked(sharedPref.getBoolean("notifichevoti", true));
+        menu.getItem(2).setChecked(sharedPref.getBoolean("notificheagenda", true));
+        menu.getItem(3).setChecked(sharedPref.getBoolean("notifichescrutini", true));
 
         return true;
     }
@@ -2770,63 +2743,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-
-            case R.id.calbtn: {
-                SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
-                String tmp;
-                if (Calendar.getInstance().get(Calendar.MONTH) >= 1 && Calendar.getInstance().get(Calendar.MONTH) <= 8)
-                    tmp = sharedPref.getString("Fineq", "19/12/" + String.valueOf(Calendar.getInstance().get(Calendar.YEAR) - 1));
-                else
-                    tmp = sharedPref.getString("Fineq", "19/12/" + String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
-
-                Log.v("Fineq", tmp);
-                Calendar fineP1 = Calendar.getInstance();
-                String[] fineq = tmp.split("/");
-                fineP1.set(Integer.parseInt(fineq[2]), Integer.parseInt(fineq[1]), Integer.parseInt(fineq[0]));
-                fineP1.add(Calendar.MONTH, -1);
-
-
-                CalendarDatePickerDialogFragment cdp = new CalendarDatePickerDialogFragment()
-                        .setOnDateSetListener(new CalendarDatePickerDialogFragment.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear, int dayOfMonth) {
-                                Calendar newDate = Calendar.getInstance();
-                                newDate.set(year, monthOfYear, dayOfMonth);
-                                SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALIAN);
-                                String data = dateFormatter.format(newDate.getTime());
-                                Log.v("Data", data);
-                                SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPref.edit();
-                                editor.putString("Fineq", data);
-                                editor.apply();
-                            }
-                        }).setOnDismissListener(new CalendarDatePickerDialogFragment.OnDialogDismissListener() {
-                            @Override
-                            public void onDialogDismiss(DialogInterface dialoginterface) {
-                                if (m_handlerQ1 != null) {
-                                    updateQ1 = true;
-                                    m_handlerQ1.run();
-                                }
-
-                                if (m_handlerQ2 != null) {
-                                    updateQ2 = true;
-                                    m_handlerQ2.run();
-                                }
-
-                                if (m_handlerTuttiVoti != null) {
-                                    updateTuttiVoti = true;
-                                    m_handlerTuttiVoti.run();
-                                }
-                            }
-                        })
-                        .setFirstDayOfWeek(Calendar.MONDAY)
-                        .setPreselectedDate(fineP1.get(Calendar.YEAR), fineP1.get(Calendar.MONTH), fineP1.get(Calendar.DAY_OF_MONTH))
-                        .setDoneText(getString(android.R.string.ok))
-                        .setCancelText(getString(android.R.string.cancel));
-                cdp.show(getSupportFragmentManager(), "DATE_PICKER_TAG");
-            }
-            break;
-
 
             case R.id.obbiettivobtn: {
                 final SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);

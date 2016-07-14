@@ -7,9 +7,12 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.ConvertiInV
 public class Voto {
     String tipo;
     String data;
+    String periodo;
     String voto;
     Double votod;
     String commento;
+    public static final String P1 = "q1";
+    public static final String P2 = "q3";
     boolean votoblu = false;
 
     public Voto() {
@@ -38,6 +41,14 @@ public class Voto {
             data = data + "/" + String.valueOf(Calendar.getInstance().get(Calendar.YEAR) - 1);
         }
         this.data = data;
+    }
+
+    public void setPeriodo(String periodo) {
+        this.periodo = periodo;
+    }
+
+    public String getPeriodo() {
+        return periodo;
     }
 
     public boolean isVotoblu() {
@@ -74,7 +85,7 @@ public class Voto {
 
     @Override
     public String toString() {
-        return String.format("Voto = { Voto: %1$s | Tipo: %2$s | Data: %3$s | Blu?: %4$s }", voto, tipo, data, votoblu);
+        return String.format("Voto = { Voto: %1$s | Tipo: %2$s | Data: %3$s | Periodo: %4$s |Blu?: %5$s }", voto, tipo, data, periodo, votoblu);
     }
 
 }

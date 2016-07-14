@@ -2,12 +2,6 @@
 <menu xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/calbtn"
-        android:title="@string/impostap1"
-        android:showAsAction="ifRoom"
-        android:icon="@drawable/calendartoday"
-        tools:ignore="AppCompatResource" />
-
     <item android:id="@+id/obbiettivobtn"
         android:title="@string/impostaobb"
         android:showAsAction="never"
