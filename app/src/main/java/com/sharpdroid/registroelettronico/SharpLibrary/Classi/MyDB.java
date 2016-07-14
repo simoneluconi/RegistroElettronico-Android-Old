@@ -34,6 +34,7 @@ public class MyDB extends SQLiteOpenHelper {
                     VotoEntry.COLUMN_NAME_VOTO + TEXT_TYPE + COMMA_SEP +
                     VotoEntry.COLUMN_NAME_VOTOBLU + " INTEGER" + COMMA_SEP +
                     VotoEntry.COLUMN_NAME_DATA + TEXT_TYPE + COMMA_SEP +
+                    VotoEntry.COLUMN_NAME_PERIODO + TEXT_TYPE + COMMA_SEP +
                     VotoEntry.COLUMN_NAME_TIPO + TEXT_TYPE + COMMA_SEP +
                     VotoEntry.COLUMN_NAME_COMMENTO + TEXT_TYPE + " )";
 
@@ -58,7 +59,7 @@ public class MyDB extends SQLiteOpenHelper {
     private static final String SQL_DELETE_NOTE =
             "DROP TABLE IF EXISTS " + NotaEntry.TABLE_NAME;
 
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "MyData.db";
 
     public MyDB(Context context) {
@@ -121,6 +122,7 @@ public class MyDB extends SQLiteOpenHelper {
         public static final String COLUMN_NAME_VOTO = "VOTO";
         public static final String COLUMN_NAME_VOTOBLU = "VOTOBLU";
         public static final String COLUMN_NAME_DATA = "DATA";
+        public static final String COLUMN_NAME_PERIODO = "PERIODO";
         public static final String COLUMN_NAME_TIPO = "TIPO";
         public static final String COLUMN_NAME_COMMENTO = "COMMENTO";
         public static final String COLUMN_NAME_NULLABLE = "Empty";

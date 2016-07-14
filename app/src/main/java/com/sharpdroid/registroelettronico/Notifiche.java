@@ -270,17 +270,20 @@ public class Notifiche extends BroadcastReceiver {
                                     String tmp[] = elT.get(0).text().trim().split("-");
                                     boolean VotoBlu = metaElems.get(i).select("div").attr("class").contains("f_reg_voto_dettaglio");
 
+                                    String[] periodotmp = metaElems.get(i).select("td").get(1).className().split("\\s+");
+                                    String periodo = periodotmp[periodotmp.length - 1];
                                     String data = tmp[1].trim();
                                     String voto = elV.get(1).text().trim();
                                     String tipo = tmp[0].trim();
                                     String commento = elT.get(1).text();
 
                                     String fakebool = VotoBlu ? "1" : "0";
-                                    String[] datas = new String[]{materia, voto, fakebool, data, tipo};
+                                    String[] datas = new String[]{materia, voto, fakebool, data, periodo, tipo};
                                     String command = MyDB.VotoEntry.COLUMN_NAME_MATERIA + "= ? AND "
                                             + MyDB.VotoEntry.COLUMN_NAME_VOTO + "= ? AND "
                                             + MyDB.VotoEntry.COLUMN_NAME_VOTOBLU + "= ? AND "
                                             + MyDB.VotoEntry.COLUMN_NAME_DATA + "= ? AND "
+                                            + MyDB.VotoEntry.COLUMN_NAME_PERIODO + "= ? AND "
                                             + MyDB.VotoEntry.COLUMN_NAME_TIPO + "= ?";
 
                                     c = db.rawQuery("select * from " + MyDB.VotoEntry.TABLE_NAME + " where " + command, datas);
@@ -292,6 +295,7 @@ public class Notifiche extends BroadcastReceiver {
                                         dati.put(MyDB.VotoEntry.COLUMN_NAME_TIPO, tipo);
                                         dati.put(MyDB.VotoEntry.COLUMN_NAME_VOTOBLU, VotoBlu);
                                         dati.put(MyDB.VotoEntry.COLUMN_NAME_VOTO, voto);
+                                        dati.put(MyDB.VotoEntry.COLUMN_NAME_PERIODO, periodo);
                                         dati.put(MyDB.VotoEntry.COLUMN_NAME_COMMENTO, commento);
                                         db.insert(MyDB.VotoEntry.TABLE_NAME, MyDB.VotoEntry.COLUMN_NAME_NULLABLE, dati);
 

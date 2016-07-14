@@ -8,8 +8,8 @@ android {
         applicationId "com.sharpdroid.registroelettronico"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 232
-        versionName "232"
+        versionCode 233
+        versionName "233"
     }
     buildTypes {
         release {
@@ -29,7 +29,7 @@ dependencies {
     compile 'com.android.support:design:24.0.0'
     compile 'com.android.support:cardview-v7:24.0.0'
     compile 'com.android.support:recyclerview-v7:24.0.0'
-    compile 'com.google.android.gms:play-services-analytics:9.2.0'
+    compile 'com.google.android.gms:play-services-analytics:9.2.1'
     compile 'com.github.ksoichiro:android-observablescrollview:1.6.0'
     compile 'org.jsoup:jsoup:1.9.2'
     compile 'com.github.ganfra:material-spinner:1.1.1'
@@ -40,7 +40,6 @@ dependencies {
     compile 'ch.acra:acra:4.9.0'
     compile 'joda-time:joda-time:2.9.3'
     compile 'com.afollestad.material-dialogs:core:0.8.5.9'
-    compile 'com.code-troopers.betterpickers:library:2.5.5'
     compile 'com.github.paolorotolo:appintro:4.0.0'
     compile 'com.google.code.gson:gson:2.6.2'
     compile 'com.squareup.picasso:picasso:2.5.2'
