@@ -46,6 +46,7 @@ import android.widget.Toast;
 import com.sharpdroid.registroelettronico.ChromeTabs.CustomTabActivityHelper;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -415,7 +416,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
             final String COOKIES_HEADER = "Set-Cookie";
-
             URL url;
             String response = "";
             CookieManager msCookieManager = new CookieManager();
@@ -496,22 +496,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     }
 
 
-                    url = new URL("https://web.spaggiari.eu/cvv/app/default/genitori_voti.php");
+                    url = new URL("https://web.spaggiari.eu/sso/app/default/me.php");
                     conn = (HttpURLConnection) url.openConnection();
                     BufferedReader in = new BufferedReader(new InputStreamReader(
                             conn.getInputStream()));
                     String inputLine;
                     sb = new StringBuilder();
                     while ((inputLine = in.readLine()) != null) {
-                        Log.v("Scaricato:", inputLine);
                         sb.append(inputLine);
                     }
 
                     in.close();
                     response = sb.toString();
 
-                    element = Jsoup.parse(sb.toString()).select(".name");
+                    Document data = Jsoup.parse(sb.toString());
+                    element = data.select("p.consulta.double._bluetext");
                     Nome = ProfDecente(element.text());
+                    String CodiceScuola = data.select("span.redtext").get(0).text().split("\\.")[0];
+                    url = new URL("http://sharpdroid.altervista.org/registroelettronico/scuole/AggiungiScuola.php?codice=" + CodiceScuola);
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.getInputStream();
                     CancellaPagineLocali(LoginActivity.this);
                     List<HttpCookie> cookies = msCookieManager.getCookieStore().getCookies();
                     editor = sharedPref.edit();
@@ -525,11 +529,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         editor.apply();
 
                     }
-
-
                     return true;
-
-
                 } else {
                     response = "";
                     return false;
@@ -585,5 +585,48 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
+    /*
+    public class GetStringFromUrl extends AsyncTask<String, Integer, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            Log.v("Scarico", params[0]);
+            URL url;
+            try {
+                url = new URL(params[0]);
+
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(15000);
+                conn.setConnectTimeout(15000);
+                conn.setRequestMethod("GET");
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                url = new URL(params[0]);
+                conn = (HttpURLConnection) url.openConnection();
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(
+                        conn.getInputStream()));
+                String inputLine;
+                StringBuilder sb = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    sb.append(inputLine);
+                    sb.append("\n");
+                }
+
+                in.close();
+                return sb.toString();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final String result) {
+            super.onPostExecute(result);
+        }
+    }*/
 }
 

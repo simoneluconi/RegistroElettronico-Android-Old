@@ -12,5 +12,6 @@ public class Azione {
     public static final String CIRCOLARI = "AzioneCircolari";
     public static final String SCRUTINI = "AzioneScrutini";
     public static final String SCRUTINIFILEWEB = "AzioneScrutiniFileWeb";
+    public static final String AGGIUNGI_SCUOLA = "AzioneAggiungiScuola";
     public static final String ACC_IMAGE = "AzioneImmagineAccount";
 }
