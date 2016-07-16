@@ -6,7 +6,6 @@ public class ScrutiniFile {
     String azione;
     String ImgLink;
 
-
     public ScrutiniFile() {
     }
 
@@ -25,7 +24,6 @@ public class ScrutiniFile {
     public void setImgLink(String ImgLink) {
         this.ImgLink = ImgLink;
     }
-
 
     public String getNome() {
         return this.nome;

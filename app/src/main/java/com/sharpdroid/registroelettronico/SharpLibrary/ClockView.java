@@ -43,6 +43,7 @@ public class ClockView extends View {
         c = arr.getColor(R.styleable.ClockView_clockColor, Color.parseColor("#F44336"));
         h = arr.getInteger(R.styleable.ClockView_h, 17);
         m = arr.getInteger(R.styleable.ClockView_m, 0);
+        arr.recycle();
     }
 
     @Override

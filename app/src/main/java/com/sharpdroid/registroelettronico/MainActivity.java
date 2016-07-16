@@ -746,7 +746,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
-
                     if (responseCode == HttpsURLConnection.HTTP_OK) {
                         //Non ho bisogno dei dati della pagina di login
                         return null;
@@ -1566,7 +1565,6 @@ public class MainActivity extends AppCompatActivity {
                                                 Collections.sort(voti, new Comparator<Voto>() {
                                                     @Override
                                                     public int compare(Voto o1, Voto o2) {
-
                                                         Date date1;
                                                         Date date2;
                                                         try {
