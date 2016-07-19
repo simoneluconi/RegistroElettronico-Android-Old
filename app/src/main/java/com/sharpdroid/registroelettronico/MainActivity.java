@@ -314,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
         if (!sharedPref.getBoolean("Acceduto", false)) {
             Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
             MainActivity.this.startActivity(myIntent);
+            finish();
         } else {
 
             final List<String> Accounts = ReadAccounts(MainActivity.this);

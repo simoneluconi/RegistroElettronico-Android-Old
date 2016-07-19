@@ -16,7 +16,7 @@ public class Link extends Activity {
         String path = data.getPath();
         Log.v("Link", data + path);
 
-        Intent start;
+        Intent start = new Intent(this, MainActivity.class);
         if (path.contains("genitori_voti.php")) {
             start = new Intent(this, MainActivity.class);
             start.putExtra("com.sharpdroid.registroelettronico.notifiche.TAB", 3);
@@ -33,10 +33,26 @@ public class Link extends Activity {
             start = new Intent(this, OggiAScuola.class);
         else if (path.contains("bacheca_utente.php"))
             start = new Intent(this, Circolari.class);
-        else start = new Intent(this, MainActivity.class);
+        else if (data.toString().contains("login")) {
+            String custcode = "custcode=";
+            String url = data.toString();
+            if (url.contains(custcode)) {
+                String codicescuola = null;
+                try {
+                    codicescuola = url.substring(url.indexOf(custcode) + custcode.length());
+                    if (codicescuola.contains("&"))
+                        codicescuola = codicescuola.substring(0,codicescuola.indexOf("&"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                Intent login = new Intent(this, LoginActivity.class);
+                login.putExtra("com.sharpdroid.registroelettronico.codicescuola", codicescuola);
+                start = login;
+
+            }
+        } else start = new Intent(this, MainActivity.class);
 
         this.startActivity(start);
-
         finish();
     }
 }
