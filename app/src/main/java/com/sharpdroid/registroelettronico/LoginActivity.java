@@ -5,15 +5,12 @@ import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
-import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -43,11 +40,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sharpdroid.registroelettronico.ChromeTabs.CustomTabActivityHelper;
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
@@ -58,14 +56,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,7 +70,6 @@ import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
 
 import static android.Manifest.permission.GET_ACCOUNTS;
-import static android.Manifest.permission.READ_CONTACTS;
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.CancellaPagineLocali;
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.ProfDecente;
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.getPostDataString;
@@ -121,6 +116,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                String codicescuola = extras.getString("com.sharpdroid.registroelettronico.codicescuola", null);
+                if (codicescuola != null)
+                    mCodiceScuola.setText(codicescuola);
+            }
+        }
+
         mEmailView.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -162,15 +166,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         AccFail.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder().setToolbarColor(Color.parseColor("#62affe")).setShowTitle(true).build();
-                CustomTabActivityHelper.openCustomTab(LoginActivity.this, customTabsIntent, Uri.parse("http://sharpdroid.altervista.org/registro-elettronico/#faq"),
-                        new CustomTabActivityHelper.CustomTabFallback() {
+
+                new MaterialDialog.Builder(LoginActivity.this)
+                        .title(R.string.nonriesciaccedere)
+                        .content(getString(R.string.trovacodicescuola))
+                        .theme(Theme.LIGHT)
+                        .positiveText(android.R.string.ok)
+                        .neutralText("Cerca Scuola")
+                        .onNeutral(new MaterialDialog.SingleButtonCallback() {
                             @Override
-                            public void openUri(Activity activity, Uri uri) {
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                Uri uri = Uri.parse("http://sharpdroid.altervista.org/registroelettronico/scuole/");
                                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                                 startActivity(intent);
+
                             }
-                        });
+                        })
+
+                        .show();
             }
         });
 
@@ -295,12 +308,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.length() > 1;
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 1;
     }
 
@@ -383,7 +394,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
-
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
@@ -412,14 +422,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
 
             final String COOKIES_HEADER = "Set-Cookie";
             URL url;
             String response = "";
             CookieManager msCookieManager = new CookieManager();
-            HashMap<String, String> postDataParams = new HashMap<String, String>();
+            HashMap<String, String> postDataParams = new HashMap<>();
             SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
 
@@ -540,9 +548,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
 
             Log.v("Scaricato:", response);
-
-            // TODO: register the new account here.
-
             return false;
 
         }
@@ -584,49 +589,5 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
         }
     }
-
-    /*
-    public class GetStringFromUrl extends AsyncTask<String, Integer, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-            Log.v("Scarico", params[0]);
-            URL url;
-            try {
-                url = new URL(params[0]);
-
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(15000);
-                conn.setConnectTimeout(15000);
-                conn.setRequestMethod("GET");
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-
-                url = new URL(params[0]);
-                conn = (HttpURLConnection) url.openConnection();
-
-                BufferedReader in = new BufferedReader(new InputStreamReader(
-                        conn.getInputStream()));
-                String inputLine;
-                StringBuilder sb = new StringBuilder();
-                while ((inputLine = in.readLine()) != null) {
-                    sb.append(inputLine);
-                    sb.append("\n");
-                }
-
-                in.close();
-                return sb.toString();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(final String result) {
-            super.onPostExecute(result);
-        }
-    }*/
 }
 
