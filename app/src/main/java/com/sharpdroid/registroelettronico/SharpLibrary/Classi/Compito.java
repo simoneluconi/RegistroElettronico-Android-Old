@@ -12,6 +12,7 @@ public class Compito {
     DateTime DataInserimento;
     boolean TuttoIlGiorno = true;
     DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    DateTimeFormatter dtfInserimento = DateTimeFormat.forPattern("dd-MM-yyyy HH:mm:ss");
 
     public Compito() {
         this.DataInizio = new DateTime();
@@ -41,7 +42,7 @@ public class Compito {
     }
 
     public String getDataInserimentoString() {
-        return dtf.print(DataInserimento);
+        return dtfInserimento.print(DataInserimento);
     }
 
     public DateTime getDataInizio() {
@@ -65,7 +66,7 @@ public class Compito {
     }
 
     public void setDataInserimento(String dataInserimento) {
-        DataInserimento = dtf.parseDateTime(dataInserimento);
+        DataInserimento = dtfInserimento.parseDateTime(dataInserimento);
     }
 
     public void setDataFine(String dataFine) {

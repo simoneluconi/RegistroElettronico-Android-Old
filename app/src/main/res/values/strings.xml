@@ -61,7 +61,7 @@
     <string name="eliminaaccdes">Voi davvero eliminare l\'account %1$s?</string>
     <string name="forzacontrollo">Forza ricontrollo (Notifiche)</string>
     <string name="nonriesciaccedere">Non conosco il codice scuola</string>
-    <string name="trovacodicescuola">Per trovare il codice scuola naviga dal tuo browser nel sito del registro elettronico fornito dalla tua scuola, quando richiesto seleziona quest\'app per aprire il link, se disponibile il campo codice scuola verrà riempito automaticamente. Alternativamente cerca la tua scuola nel nostro database, quando una volta trovata clicca sul codice scuola e seleziona quest\'app per aprire il link. Se non hai risolto il tuo problema contattaci!</string>
+    <string name="trovacodicescuola">Il metodo più semplice se non ricordi il tuo codice scuola è quello di lasciare il campo vuoto, il login potrebbe funzionare ugualmente, alternativamnte naviga dal tuo browser nel sito del registro elettronico fornito dalla tua scuola, quando richiesto seleziona quest\'app per aprire il link, se disponibile il campo codice scuola verrà riempito automaticamente. Alternativamente cerca la tua scuola nel nostro database, quando una volta trovata clicca sul codice scuola e seleziona quest\'app per aprire il link. Se non hai risolto il tuo problema contattaci!</string>
     <string name="home">Home</string>
     <string name="fileoff">File Offline</string>
     <string name="oggiscuola">Oggi a scuola</string>

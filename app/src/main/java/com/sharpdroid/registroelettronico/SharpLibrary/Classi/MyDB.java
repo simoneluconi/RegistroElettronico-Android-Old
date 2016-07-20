@@ -59,7 +59,7 @@ public class MyDB extends SQLiteOpenHelper {
     private static final String SQL_DELETE_NOTE =
             "DROP TABLE IF EXISTS " + NotaEntry.TABLE_NAME;
 
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
     public static final String DATABASE_NAME = "MyData.db";
 
     public MyDB(Context context) {

@@ -30,6 +30,7 @@ import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Nota;
 import org.acra.ACRA;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONObject;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -249,31 +250,26 @@ public class Metodi {
         return compitos;
     }
 
-    public static Compito ConvertiCompito(Elements AgendaDati) {
+    public static Compito ConvertiCompito(JSONObject compitoDati) {
 
         Compito compito = new Compito();
-        String prof = AgendaDati.get(7).text().trim();
-        if (prof.length() > 0) {
-            compito.setAutore(ProfDecente(prof));
-            compito.setTuttoIlGiorno(AgendaDati.get(5).text().equals("SI"));
-            compito.setContenuto(AgendaDati.get(10).text().trim());
-            compito.setDataInserimento(AgendaDati.get(6).text());
 
-            String datainizio = AgendaDati.get(1).text().trim();
-            String datafine = AgendaDati.get(2).text();
-            String orainizio = AgendaDati.get(3).text();
-            String orafine = AgendaDati.get(4).text();
+        try {
+            String prof = compitoDati.getString("autore_desc").trim();
+            if (prof.length() > 0) {
+                compito.setAutore(ProfDecente(prof));
+                compito.setTuttoIlGiorno(compitoDati.getBoolean("allDay"));
+                compito.setContenuto(compitoDati.getString("title").trim());
+                compito.setDataInserimento(compitoDati.getString("data_inserimento"));
 
-            if (compito.isTuttoIlGiorno()) {
-                compito.setDataInizio(datainizio + " 00:00:00");
-                compito.setDataFine(datafine + " 00:00:00");
-            } else {
-                compito.setDataInizio(datainizio + " " + orainizio);
-                compito.setDataFine(datafine + " " + orafine);
-            }
+                compito.setDataInizio(compitoDati.getString("start").trim());
+                compito.setDataFine(compitoDati.getString("end").trim());
 
-            return compito;
-        } else return null;
+                return compito;
+            } else return null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public static void SaveMyCompito(Context context, ContentValues values) {

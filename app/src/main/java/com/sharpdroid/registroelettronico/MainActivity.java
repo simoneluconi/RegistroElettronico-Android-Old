@@ -220,8 +220,8 @@ public class MainActivity extends AppCompatActivity {
 
     static int currPage = 0;
     static int currProf;
-    static String primadata = "";
-    static String secondadata = "";
+    static DateTime primadata;
+    static DateTime secondadata;
     static Context context;
     public static final int CONTROLLO_VOTI_ID = 111101;
     static CoordinatorLayout coordinatorLayout;
@@ -303,12 +303,13 @@ public class MainActivity extends AppCompatActivity {
 
         //Scarico tutti i compiti dell'anno
         int mm = Calendar.getInstance().get(Calendar.MONTH) + 1;
+        DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-MM-dd");
         if (mm >= 9 && mm <= 12) {
-            primadata = String.valueOf(Calendar.getInstance().get(Calendar.YEAR)) + "-09-01";
-            secondadata = String.valueOf(Calendar.getInstance().get(Calendar.YEAR) + 1) + "-09-01";
+            primadata = dtf.parseDateTime(Calendar.getInstance().get(Calendar.YEAR) + "-09-01");
+            secondadata = dtf.parseDateTime((Calendar.getInstance().get(Calendar.YEAR) + 1) + "-09-01");
         } else {
-            primadata = String.valueOf(Calendar.getInstance().get(Calendar.YEAR) - 1) + "-09-01";
-            secondadata = String.valueOf(Calendar.getInstance().get(Calendar.YEAR)) + "-09-01";
+            primadata = dtf.parseDateTime((Calendar.getInstance().get(Calendar.YEAR) - 1) + "-09-01");
+            secondadata = dtf.parseDateTime(Calendar.getInstance().get(Calendar.YEAR) + "-09-01");
         }
 
         if (!sharedPref.getBoolean("Acceduto", false)) {
@@ -764,7 +765,7 @@ public class MainActivity extends AppCompatActivity {
                     azione = Azione.VOTI;
                 } else if (params[0].equals("https://web.spaggiari.eu/cvv/app/default/gioprof_note_studente.php")) {
                     azione = Azione.NOTE;
-                } else if (params[0].contains("xml_export.php")) {
+                } else if (params[0].contains("https://web.spaggiari.eu/cvv/app/default/agenda_studenti.php")) {
                     azione = Azione.AGENDA;
                 } else if (params[0].equals("https://web.spaggiari.eu/cvv/app/default/didattica_genitori.php")) {
                     azione = Azione.DIDATTICA;
@@ -920,11 +921,11 @@ public class MainActivity extends AppCompatActivity {
                                     compitiDatas.clear();
                                     SQLiteDatabase db = new MyDB(context).getWritableDatabase();
                                     db.execSQL("DELETE FROM " + MyDB.CompitoEntry.TABLE_NAME);
-                                    Elements Compiti = Jsoup.parse(sb.toString()).select("Row");
-                                    Compiti.remove(0);
+                                    JSONArray jsonCompiti = new JSONArray(sb.toString());
                                     db.beginTransaction();
-                                    for (Element element : Compiti) {
-                                        Compito compito = ConvertiCompito(element.select("Data"));
+
+                                    for (int i = 0; i < jsonCompiti.length(); i++) {
+                                        Compito compito = ConvertiCompito(jsonCompiti.getJSONObject(i));
                                         if (compito != null) {
                                             compitiDatas.add(compito);
                                             ContentValues dati = new ContentValues();
@@ -2678,7 +2679,8 @@ public class MainActivity extends AppCompatActivity {
         new GetStringFromUrl().execute("https://web.spaggiari.eu/home/app/default/login.php");
         new GetStringFromUrl().execute("https://web.spaggiari.eu/cvv/app/default/genitori_note.php");
         new GetStringFromUrl().execute("https://web.spaggiari.eu/cvv/app/default/gioprof_note_studente.php");
-        new GetStringFromUrl().execute("https://web.spaggiari.eu/cvv/app/default/xml_export.php?stampa=%3Astampa%3A&tipo=agenda&tipo_export=EVENTI_AGENDA_STUDENTI&ope=RPT&dal=" + primadata + "&al=" + secondadata + "&formato=html");
+
+        new GetStringFromUrl().execute("https://web.spaggiari.eu/cvv/app/default/agenda_studenti.php?ope=get_events&start=" + primadata.getMillis() / 1000 + "&end=" + secondadata.getMillis() / 1000);
         new GetStringFromUrl().execute("https://web.spaggiari.eu/cvv/app/default/didattica_genitori.php");
         new GetStringFromUrl().execute("https://web.spaggiari.eu/sif/app/default/bacheca_utente.php");
         new GetStringFromUrl().execute("https://web.spaggiari.eu/sol/app/default/documenti_sol.php");
