@@ -353,83 +353,84 @@ public class Notifiche extends BroadcastReceiver {
 
                     case Azione.AGENDA: {
 
-                        doc = Jsoup.parse(result);
-                        metaElems = doc.select("Row");
+                        try {
+                            JSONArray jsonCompiti = new JSONArray(result);
+                            db = new MyDB(ct).getWritableDatabase();
 
-                        db = new MyDB(ct).getWritableDatabase();
+                            notifica = true;
+                            c = db.rawQuery("SELECT count(*) FROM " + MyDB.CompitoEntry.TABLE_NAME, null);
+                            c.moveToFirst();
+                            icount = c.getInt(0);
+                            if (icount <= 0)
+                                notifica = false;
+                            c.close();
 
-                        notifica = true;
-                        c = db.rawQuery("SELECT count(*) FROM " + MyDB.CompitoEntry.TABLE_NAME, null);
-                        c.moveToFirst();
-                        icount = c.getInt(0);
-                        if (icount <= 0)
-                            notifica = false;
-                        c.close();
+                            db.beginTransaction();
+                            for (int i = 0; i < jsonCompiti.length(); i++) {
+                                Compito compito = ConvertiCompito(jsonCompiti.getJSONObject(i));
 
-                        db.beginTransaction();
-                        for (int i = 1; i < metaElems.size(); i++) {
-                            Elements AgendaDati = metaElems.get(i).select("Data");
+                                if (compito != null) {
+                                    String fakstring = compito.isTuttoIlGiorno() ? "1" : "0";
+                                    String[] datas = new String[]{compito.getAutore(), compito.getContenuto(), compito.getDataInizioString(), compito.getDataFineString(), fakstring, compito.getDataInserimentoString()};
+                                    String command = MyDB.CompitoEntry.COLUMN_NAME_AUTORE + "= ? AND "
+                                            + MyDB.CompitoEntry.COLUMN_NAME_CONTENUTO + "= ? AND "
+                                            + MyDB.CompitoEntry.COLUMN_NAME_DATAINIZIO + "= ? AND "
+                                            + MyDB.CompitoEntry.COLUMN_NAME_DATAFINE + "= ? AND "
+                                            + MyDB.CompitoEntry.COLUMN_NAME_TUTTOILGIORNO + "= ? AND "
+                                            + MyDB.CompitoEntry.COLUMN_NAME_DATAINSERIMENTO + "= ?";
 
-                            Compito compito = ConvertiCompito(AgendaDati);
+                                    c = db.rawQuery("select * from " + MyDB.CompitoEntry.TABLE_NAME + " where " + command, datas);
 
-                            if (compito != null) {
-                                String fakstring = compito.isTuttoIlGiorno() ? "1" : "0";
-                                String[] datas = new String[]{compito.getAutore(), compito.getContenuto(), compito.getDataInizioString(), compito.getDataFineString(), fakstring, compito.getDataInserimentoString()};
-                                String command = MyDB.CompitoEntry.COLUMN_NAME_AUTORE + "= ? AND "
-                                        + MyDB.CompitoEntry.COLUMN_NAME_CONTENUTO + "= ? AND "
-                                        + MyDB.CompitoEntry.COLUMN_NAME_DATAINIZIO + "= ? AND "
-                                        + MyDB.CompitoEntry.COLUMN_NAME_DATAFINE + "= ? AND "
-                                        + MyDB.CompitoEntry.COLUMN_NAME_TUTTOILGIORNO + "= ? AND "
-                                        + MyDB.CompitoEntry.COLUMN_NAME_DATAINSERIMENTO + "= ?";
+                                    if (c.getCount() <= 0) {
+                                        ContentValues dati = new ContentValues();
+                                        dati.put(MyDB.CompitoEntry.COLUMN_NAME_AUTORE, compito.getAutore());
+                                        dati.put(MyDB.CompitoEntry.COLUMN_NAME_DATAINIZIO, compito.getDataInizioString());
+                                        dati.put(MyDB.CompitoEntry.COLUMN_NAME_DATAFINE, compito.getDataFineString());
+                                        dati.put(MyDB.CompitoEntry.COLUMN_NAME_DATAINSERIMENTO, compito.getDataInserimentoString());
+                                        dati.put(MyDB.CompitoEntry.COLUMN_NAME_CONTENUTO, compito.getContenuto());
+                                        dati.put(MyDB.CompitoEntry.COLUMN_NAME_TUTTOILGIORNO, fakstring);
+                                        db.insert(MyDB.CompitoEntry.TABLE_NAME, MyDB.CompitoEntry.COLUMN_NAME_NULLABLE, dati);
 
-                                c = db.rawQuery("select * from " + MyDB.CompitoEntry.TABLE_NAME + " where " + command, datas);
-
-                                if (c.getCount() <= 0) {
-                                    ContentValues dati = new ContentValues();
-                                    dati.put(MyDB.CompitoEntry.COLUMN_NAME_AUTORE, compito.getAutore());
-                                    dati.put(MyDB.CompitoEntry.COLUMN_NAME_DATAINIZIO, compito.getDataInizioString());
-                                    dati.put(MyDB.CompitoEntry.COLUMN_NAME_DATAFINE, compito.getDataFineString());
-                                    dati.put(MyDB.CompitoEntry.COLUMN_NAME_DATAINSERIMENTO, compito.getDataInserimentoString());
-                                    dati.put(MyDB.CompitoEntry.COLUMN_NAME_CONTENUTO, compito.getContenuto());
-                                    dati.put(MyDB.CompitoEntry.COLUMN_NAME_TUTTOILGIORNO, fakstring);
-                                    db.insert(MyDB.CompitoEntry.TABLE_NAME, MyDB.CompitoEntry.COLUMN_NAME_NULLABLE, dati);
-
-                                    if (notifica) {
-                                        String[] dataDecente = compito.getDataInserimentoString().split("-");
-                                        String dataSeria = dataDecente[2] + "/" + dataDecente[1] + "/" + dataDecente[0];
-                                        Intent intent = new Intent(ct, MainActivity.class);
-                                        intent.putExtra("com.sharpdroid.registroelettronico.notifiche.TAB", 4);
-                                        intent.putExtra("com.sharpdroid.registroelettronico.notifiche.DATACAL", compito.getDataInserimentoString().split("\\s+")[0]);
-                                        PendingIntent pIntent = PendingIntent.getActivity(ct, 0, intent, 0);
-                                        Log.v("NuovoCompito", "Nuovo compito trovato");
-                                        mBuilder = new NotificationCompat.Builder(ct)
-                                                .setSmallIcon(R.drawable.notification)
-                                                .setContentTitle("Nuovo compito di " + compito.getAutore())
-                                                .setContentText("Per il " + dataSeria)
-                                                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                                                .setLights(Color.BLUE, 3000, 3000)
-                                                .setVibrate(new long[]{250, 250, 250, 250, 250, 250})
-                                                .setContentIntent(pIntent)
-                                                .setStyle(new NotificationCompat.BigTextStyle()
-                                                        .bigText(compito.getContenuto() + " (" + dataSeria + ")"))
-                                                .setAutoCancel(true);
+                                        if (notifica) {
+                                            String[] dataDecente = compito.getDataInserimentoString().split("-");
+                                            String dataSeria = dataDecente[2] + "/" + dataDecente[1] + "/" + dataDecente[0];
+                                            Intent intent = new Intent(ct, MainActivity.class);
+                                            intent.putExtra("com.sharpdroid.registroelettronico.notifiche.TAB", 4);
+                                            intent.putExtra("com.sharpdroid.registroelettronico.notifiche.DATACAL", compito.getDataInserimentoString().split("\\s+")[0]);
+                                            PendingIntent pIntent = PendingIntent.getActivity(ct, 0, intent, 0);
+                                            Log.v("NuovoCompito", "Nuovo compito trovato");
+                                            mBuilder = new NotificationCompat.Builder(ct)
+                                                    .setSmallIcon(R.drawable.notification)
+                                                    .setContentTitle("Nuovo compito di " + compito.getAutore())
+                                                    .setContentText("Per il " + dataSeria)
+                                                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                                                    .setLights(Color.BLUE, 3000, 3000)
+                                                    .setVibrate(new long[]{250, 250, 250, 250, 250, 250})
+                                                    .setContentIntent(pIntent)
+                                                    .setStyle(new NotificationCompat.BigTextStyle()
+                                                            .bigText(compito.getContenuto() + " (" + dataSeria + ")"))
+                                                    .setAutoCancel(true);
 
 
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                            mBuilder.setColor(ContextCompat.getColor(ct, R.color.bluematerial));
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                                mBuilder.setColor(ContextCompat.getColor(ct, R.color.bluematerial));
+                                            }
+
+                                            notificationManager = NotificationManagerCompat.from(ct);
+                                            notificationManager.notify(nNotif, mBuilder.build());
+                                            nNotif++;
                                         }
-
-                                        notificationManager = NotificationManagerCompat.from(ct);
-                                        notificationManager.notify(nNotif, mBuilder.build());
-                                        nNotif++;
                                     }
                                 }
+                                c.close();
                             }
-                            c.close();
+
+                            db.setTransactionSuccessful();
+                            db.endTransaction();
+                            db.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                        db.setTransactionSuccessful();
-                        db.endTransaction();
-                        db.close();
                     }
                     break;
 

@@ -288,10 +288,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
-        } else if (!mEmailView.getText().toString().contains("@") && TextUtils.isEmpty(codicescuola)) {
-            mCodiceScuola.setError(getString(R.string.error_field_required));
-            focusView = mCodiceScuola;
-            cancel = true;
         }
 
         if (cancel) {
