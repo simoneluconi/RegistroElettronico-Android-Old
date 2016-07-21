@@ -85,7 +85,7 @@ public class Voto {
 
     @Override
     public String toString() {
-        return String.format("Voto = { Voto: %1$s | Tipo: %2$s | Data: %3$s | Periodo: %4$s |Blu?: %5$s }", voto, tipo, data, periodo, votoblu);
+        return String.format("Voto: %1$s | Tipo: %2$s | Data: %3$s | Periodo: %4$s |Blu?: %5$s", voto, tipo, data, periodo, votoblu);
     }
 
 }

@@ -17,8 +17,6 @@ public class Medie {
 
     }
 
-    //Da finire
-
     public void setMateria(String Materia) {
         this.Materia = MateriaDecente(Materia);
     }

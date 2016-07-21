@@ -7,7 +7,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -114,7 +113,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.FileChannel;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -468,7 +466,7 @@ public class MainActivity extends AppCompatActivity {
                             new PrimaryDrawerItem().withName(R.string.aprireg).withIcon(ContextCompat.getDrawable(this, R.drawable.web)),
                             new PrimaryDrawerItem().withName(R.string.forzacontrollo).withIcon(ContextCompat.getDrawable(this, R.drawable.refresh)),
                             new DividerDrawerItem(),
-                            new SecondaryDrawerItem().withName(R.string.help).withIcon(ContextCompat.getDrawable(this, R.drawable.help)),
+                            new SecondaryDrawerItem().withName(R.string.sitoweb).withIcon(ContextCompat.getDrawable(this, R.drawable.web)),
                             new SecondaryDrawerItem().withName(R.string.paginafacebook).withIcon(ContextCompat.getDrawable(this, R.drawable.facebook)),
                             new SecondaryDrawerItem().withName(R.string.segnalaproblema).withIcon(ContextCompat.getDrawable(this, R.drawable.email))
                     ).build();
@@ -675,7 +673,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
         }
 
         @Override
@@ -808,7 +805,6 @@ public class MainActivity extends AppCompatActivity {
                         String inputLine;
                         StringBuilder sb = new StringBuilder();
                         while ((inputLine = in.readLine()) != null) {
-                            //Log.v("Voti:", inputLine);
                             sb.append(inputLine);
                             sb.append("\n");
                         }
@@ -971,7 +967,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
 
-
                         InputStream inputStream = conn.getInputStream();
                         fileName = fileName.replaceAll("/", "-");
                         String saveFilePath = saveDir + File.separator + fileName;
@@ -995,6 +990,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    if (azione.equals(Azione.DOWNLOAD)) {
+                        ACRA.getErrorReporter().putCustomData("url", params[0]);
+                        ACRA.getErrorReporter().handleException(e, false);
+                    }
                     return null;
                 }
 
@@ -1111,8 +1110,9 @@ public class MainActivity extends AppCompatActivity {
 
                         datiOffline = false;
 
-                        if (swipeRefreshLayout != null)
+                        if (swipeRefreshLayout != null) {
                             swipeRefreshLayout.setRefreshing(false);
+                        }
 
                         if (m_handlerDidattica != null) {
                             updateDidattica = true;
@@ -2679,7 +2679,6 @@ public class MainActivity extends AppCompatActivity {
         new GetStringFromUrl().execute("https://web.spaggiari.eu/home/app/default/login.php");
         new GetStringFromUrl().execute("https://web.spaggiari.eu/cvv/app/default/genitori_note.php");
         new GetStringFromUrl().execute("https://web.spaggiari.eu/cvv/app/default/gioprof_note_studente.php");
-
         new GetStringFromUrl().execute("https://web.spaggiari.eu/cvv/app/default/agenda_studenti.php?ope=get_events&start=" + primadata.getMillis() / 1000 + "&end=" + secondadata.getMillis() / 1000);
         new GetStringFromUrl().execute("https://web.spaggiari.eu/cvv/app/default/didattica_genitori.php");
         new GetStringFromUrl().execute("https://web.spaggiari.eu/sif/app/default/bacheca_utente.php");

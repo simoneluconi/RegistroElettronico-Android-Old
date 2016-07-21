@@ -43,6 +43,6 @@ public class Nota {
 
     @Override
     public String toString() {
-        return String.format("Nota = { %1$s: (%2$s) - %3$s > %4$s }", prof, data, tipo, contenuto);
+        return String.format("%1$s: (%2$s) - %3$s > %4$s", prof, data, tipo, contenuto);
     }
 }
