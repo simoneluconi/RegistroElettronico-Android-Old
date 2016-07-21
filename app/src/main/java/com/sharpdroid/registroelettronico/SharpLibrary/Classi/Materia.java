@@ -42,7 +42,7 @@ public class Materia {
 
     @Override
     public String toString() {
-        return  String.format("Materia = { %1$s | Voti: %2$s }", materia, voti.toString());
+        return  String.format("%1$s | Voti: %2$s", materia, voti.toString());
     }
 }
 

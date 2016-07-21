@@ -87,6 +87,6 @@ public class FileDid {
 
     @Override
     public String toString() {
-        return String.format("File = {id: %1$s | cksum: %2$s | type: %3$s}", id, cksum, type);
+        return String.format("id: %1$s | cksum: %2$s | type: %3$s", id, cksum, type);
     }
 }

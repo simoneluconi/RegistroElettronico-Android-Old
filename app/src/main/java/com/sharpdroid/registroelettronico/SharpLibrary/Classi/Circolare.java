@@ -52,6 +52,6 @@ public class Circolare {
 
     @Override
     public String toString() {
-        return String.format("Circolare : { Titolo: %1$s | Tipo: %2$s | Data %3$s | N. %4$s}", Titolo, Tipo, Data, NCircolare);
+        return String.format("Titolo: %1$s | Tipo: %2$s | Data %3$s | N. %4$s", Titolo, Tipo, Data, NCircolare);
     }
 }

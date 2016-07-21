@@ -53,6 +53,6 @@ public class Firma {
 
     @Override
     public String toString() {
-        return String.format("Firma = {%1$s. %2$s - %3$s: %4$s > %5$s }", ora, prof, materia, attivita, descrizione);
+        return String.format("%1$s. %2$s - %3$s: %4$s > %5$s ", ora, prof, materia, attivita, descrizione);
     }
 }

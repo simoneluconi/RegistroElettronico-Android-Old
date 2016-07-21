@@ -101,7 +101,7 @@ public class Compito {
 
     @Override
     public String toString() {
-        return String.format("Compito = { [%1$s] %2$s: %3$s}", DataInizio.toString(), autore, contenuto);
+        return String.format("[%1$s] %2$s: %3$s", DataInizio.toString(), autore, contenuto);
     }
 
     @Override
