@@ -990,10 +990,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    if (azione.equals(Azione.DOWNLOAD)) {
-                        ACRA.getErrorReporter().putCustomData("url", params[0]);
-                        ACRA.getErrorReporter().handleException(e, false);
-                    }
                     return null;
                 }
 
