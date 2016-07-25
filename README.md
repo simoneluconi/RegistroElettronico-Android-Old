@@ -1,7 +1,7 @@
 # Registro Elettronico #
 
 
-![Banner.jpg](https://git.daniele.ml/SimoneLuconi/RegistroElettronico-Android/blob/master/PSD/Banner.jpg)
+![Banner.jpg](https://git.daniele.ml/SimoneLuconi/RegistroElettronico-Android/raw/master/PSD/Banner.jpg)
 
 App per Android sviluppata per accedere al Registro Elettronico Spaggiari. Un'alternativa non ufficiale a quella sviluppata dall'azienda (in 30 minuti).
 
