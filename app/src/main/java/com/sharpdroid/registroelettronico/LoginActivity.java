@@ -181,9 +181,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 startActivity(intent);
 
                             }
-                        })
-
-                        .show();
+                        }).show();
             }
         });
 
@@ -245,7 +243,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -268,20 +265,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
         } else if (TextUtils.isEmpty(password)) {
@@ -303,13 +289,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    private boolean isEmailValid(String email) {
+    /*private boolean isEmailValid(String email) {
         return email.length() > 1;
     }
 
     private boolean isPasswordValid(String password) {
         return password.length() > 1;
-    }
+    }*/
 
     /**
      * Shows the progress UI and hides the login form.
