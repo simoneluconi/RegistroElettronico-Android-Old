@@ -534,7 +534,7 @@ public class MainActivity extends AppCompatActivity {
 
                         case 9:
                             uri = Uri.parse("http://sharpdroid.altervista.org/registroelettronico/");
-                            customTabsIntent = new CustomTabsIntent.Builder().setToolbarColor(Color.parseColor("#62affe")).setShowTitle(true).build();
+                            customTabsIntent = new CustomTabsIntent.Builder().setToolbarColor(Color.parseColor("#29b6f6")).setShowTitle(true).build();
                             CustomTabActivityHelper.openCustomTab(MainActivity.this, customTabsIntent, uri,
                                     new CustomTabActivityHelper.CustomTabFallback() {
                                         @Override
@@ -995,12 +995,11 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-
             return null;
         }
 
         @Override
-        protected void onPostExecute(final String result) {
+        protected void onPostExecute(String result) {
             super.onPostExecute(result);
             FileOutputStream fos = null;
 
@@ -1665,7 +1664,6 @@ public class MainActivity extends AppCompatActivity {
                                 CalMostra = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(DataCal);
 
                             compactCalendarView.setCurrentDate(CalMostra.toDate());
-
                             String mese = new SimpleDateFormat("MMMM yyyy", Locale.ITALIAN).format(CalMostra.toDate());
                             mese = InizialeMaiuscola(mese);
                             txMese.setText(mese);
