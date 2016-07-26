@@ -44,8 +44,10 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 
+import org.acra.ACRA;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
@@ -500,8 +502,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     response = sb.toString();
 
                     Document data = Jsoup.parse(sb.toString());
-                    element = data.select("p.consulta.double._bluetext");
-                    Nome = ProfDecente(element.text());
+                    element = data.select("p.double").select("span");
+                    for (Element el : element)
+                        if (el.text().contains("Studente")) {
+                            String tmp = el.text().replace("Studente", "").trim();
+                            Nome = ProfDecente(tmp);
+                            break;
+                        }
                     String CodiceScuola = data.select("span.redtext").get(0).text().split("\\.")[0];
                     url = new URL("http://sharpdroid.altervista.org/registroelettronico/scuole/AggiungiScuola.php?codice=" + CodiceScuola);
                     conn = (HttpURLConnection) url.openConnection();
@@ -527,6 +534,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                ACRA.getErrorReporter().handleException(e, false);
+                ErrMsg = e.getLocalizedMessage();
             }
 
             Log.v("Scaricato:", response);
