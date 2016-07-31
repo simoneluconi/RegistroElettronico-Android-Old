@@ -460,6 +460,7 @@ public class MainActivity extends AppCompatActivity {
                     .addDrawerItems(
                             new PrimaryDrawerItem().withName(R.string.home).withIcon(ContextCompat.getDrawable(this, R.drawable.home)),
                             new PrimaryDrawerItem().withName(R.string.oggiscuola).withIcon(ContextCompat.getDrawable(this, R.drawable.calendartoday)),
+                            new PrimaryDrawerItem().withName(R.string.lezioni).withIcon(ContextCompat.getDrawable(this, R.drawable.school)),
                             new PrimaryDrawerItem().withName(R.string.circolari).withIcon(ContextCompat.getDrawable(this, R.drawable.document)).withIdentifier(3).withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.redmaterial)),
                             new PrimaryDrawerItem().withName(R.string.scrutini).withIcon(ContextCompat.getDrawable(this, R.drawable.book)).withIdentifier(4).withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.redmaterial)),
                             new PrimaryDrawerItem().withName(R.string.fileoff).withIcon(ContextCompat.getDrawable(this, R.drawable.download)).withIdentifier(5).withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.bluematerial)),
@@ -478,7 +479,6 @@ public class MainActivity extends AppCompatActivity {
 
                     Drawerresult.setSelection(0);
 
-
                     switch (position) {
                         case 1:
                             mPager.setCurrentItem(0);
@@ -490,21 +490,26 @@ public class MainActivity extends AppCompatActivity {
                             break;
 
                         case 3:
-                            myIntent = new Intent(MainActivity.this, Circolari.class);
+                            myIntent = new Intent(MainActivity.this, Lezioni.class);
                             MainActivity.this.startActivity(myIntent);
                             break;
 
                         case 4:
-                            myIntent = new Intent(MainActivity.this, Scrutini.class);
+                            myIntent = new Intent(MainActivity.this, Circolari.class);
                             MainActivity.this.startActivity(myIntent);
                             break;
 
                         case 5:
-                            myIntent = new Intent(MainActivity.this, FileOffline.class);
+                            myIntent = new Intent(MainActivity.this, Scrutini.class);
                             MainActivity.this.startActivity(myIntent);
                             break;
 
                         case 6:
+                            myIntent = new Intent(MainActivity.this, FileOffline.class);
+                            MainActivity.this.startActivity(myIntent);
+                            break;
+
+                        case 7:
                             String username = sharedPref.getString("Username", "");
                             String password = sharedPref.getString("Password", "");
                             String url_car;
@@ -528,11 +533,11 @@ public class MainActivity extends AppCompatActivity {
                             break;
 
 
-                        case 7:
+                        case 8:
                             AvviaNotifiche(MainActivity.this);
                             break;
 
-                        case 9:
+                        case 10:
                             uri = Uri.parse("http://sharpdroid.altervista.org/registroelettronico/");
                             customTabsIntent = new CustomTabsIntent.Builder().setToolbarColor(Color.parseColor("#29b6f6")).setShowTitle(true).build();
                             CustomTabActivityHelper.openCustomTab(MainActivity.this, customTabsIntent, uri,
@@ -545,7 +550,7 @@ public class MainActivity extends AppCompatActivity {
                                     });
                             break;
 
-                        case 10:
+                        case 11:
                             uri = Uri.parse("https://www.facebook.com/sharpdr0id/");
                             try {
                                 ApplicationInfo applicationInfo = getPackageManager().getApplicationInfo("com.facebook.katana", 0);
@@ -560,7 +565,7 @@ public class MainActivity extends AppCompatActivity {
                             break;
 
 
-                        case 11:
+                        case 12:
                             File backupDB = new File(getExternalCacheDir(), "MyData.db");
                             try {
                                 PackageManager m = getPackageManager();
@@ -619,6 +624,7 @@ public class MainActivity extends AppCompatActivity {
                     Off_Didattica = ReadDidattica(MainActivity.this);
                 }
             }.run();
+
 
             NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             manager.cancelAll(); //Cancello tutte le notifiche dell'app se ci sono
@@ -720,8 +726,8 @@ public class MainActivity extends AppCompatActivity {
 
                     CookieHandler.setDefault(msCookieManager);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setReadTimeout(15000);
-                    conn.setConnectTimeout(15000);
+                    conn.setReadTimeout(5000);
+                    conn.setConnectTimeout(5000);
                     conn.setRequestMethod("POST");
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
@@ -781,8 +787,8 @@ public class MainActivity extends AppCompatActivity {
                     url = new URL(params[0]);
 
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setReadTimeout(15000);
-                    conn.setConnectTimeout(15000);
+                    conn.setReadTimeout(5000);
+                    conn.setConnectTimeout(5000);
                     conn.setRequestMethod("GET");
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
@@ -1325,7 +1331,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-
             if (bundle != null) {
 
                 final int position = bundle.getInt("position");
@@ -1774,7 +1779,7 @@ public class MainActivity extends AppCompatActivity {
                                                                    .title(getResources().getString(R.string.aggcal))
                                                                    .theme(Theme.LIGHT)
                                                                    .iconRes(R.drawable.calendartoday)
-                                                                   .customView(R.layout.cust_comp, true)
+                                                                   .customView(R.layout.adapter_cust_comp, true)
                                                                    .positiveText("Aggiungi")
                                                                    .negativeText(android.R.string.cancel)
                                                                    .onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -2148,7 +2153,7 @@ public class MainActivity extends AppCompatActivity {
                                         .title(getResources().getString(R.string.dettagliovoti, medie.getMateria()))
                                         .theme(Theme.LIGHT)
                                         .iconRes(R.drawable.chartline)
-                                        .customView(R.layout.dettaglio_materia, true)
+                                        .customView(R.layout.fragment_dettaglio_materia, true)
                                         .build();
 
                                 TextView txOrale = (TextView) dialog.findViewById(R.id.mediaOrale);
@@ -2249,7 +2254,7 @@ public class MainActivity extends AppCompatActivity {
                                             .title(getResources().getString(R.string.aggcal))
                                             .theme(Theme.LIGHT)
                                             .iconRes(R.drawable.calendartoday)
-                                            .customView(R.layout.cust_comp, true)
+                                            .customView(R.layout.adapter_cust_comp, true)
                                             .positiveText(R.string.salva)
                                             .negativeText(android.R.string.cancel)
                                             .onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -2388,7 +2393,7 @@ public class MainActivity extends AppCompatActivity {
                                 MaterialDialog dialog = new MaterialDialog.Builder(getContext())
                                         .title(getResources().getString(R.string.mediaipotetica, CVDataList.get(getAdapterPosition()).title))
                                         .theme(Theme.LIGHT)
-                                        .customView(R.layout.media_ipotetica, true)
+                                        .customView(R.layout.fragment_media_ipotetica, true)
                                         .positiveText(android.R.string.ok)
                                         .build();
 
@@ -2490,7 +2495,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_layout, parent, false);
+                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_card, parent, false);
                 return new ViewHolder(v);
             }
 
@@ -2734,7 +2739,7 @@ public class MainActivity extends AppCompatActivity {
                 MaterialDialog dialog = new MaterialDialog.Builder(MainActivity.this)
                         .title(R.string.impostaobb)
                         .theme(Theme.LIGHT)
-                        .customView(R.layout.imposta_obb, true)
+                        .customView(R.layout.fragment_imposta_obb, true)
                         .positiveText(android.R.string.ok)
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override

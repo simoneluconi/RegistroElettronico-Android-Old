@@ -65,6 +65,7 @@
     <string name="oggiscuola">Oggi a scuola</string>
     <string name="circolari">Circolari</string>
     <string name="scrutini">Scrutini [BETA]</string>
+    <string name="lezioni">Lezioni</string>
     <string name="nessundato">Nessun dato, riprova tra qualche istante.</string>
     <string name="gruppotelegram">Gruppo Telegram</string>
     <string name="title_activity_intro">Intro</string>
@@ -76,5 +77,19 @@
         <item>Agenda</item>
         <item>Note</item>
         <item>Didattica</item>
+    </string-array>
+    <string-array name="tab_subject">
+        <item>DIRITTO ED ECONOMIA</item>
+        <item>GESTIONE PROGETTO, ORGANIZZAZIONE D\'IMPRESA</item>
+        <item>INFORMATICA</item>
+        <item>LINGUA E LETTERATURA ITALIANA</item>
+        <item>LINGUA INGLESE</item>
+        <item>MATEMATICA E COMPLEMENTI DI MATEMATICA</item>
+        <item>RELIGIONE CATTOLICA O ATTIVITA\' ALTERNATIVA</item>
+        <item>SCIENZE MOTORIE E SPORTIVE</item>
+        <item>SISTEMI E RETI</item>
+        <item>STORIA</item>
+        <item>TECNOLOGIE E PROGETTAZIONE DI SISTEMI INFORMATICI E DI TELECOMUNICAZIONI</item>
+        <item>TELECOMUNICAZIONI</item>
     </string-array>
 </resources>

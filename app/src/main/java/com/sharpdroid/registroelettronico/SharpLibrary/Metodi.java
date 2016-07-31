@@ -16,7 +16,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.SystemClock;
 import android.text.SpannableString;
-import android.text.method.NumberKeyListener;
 import android.text.style.StyleSpan;
 import android.util.Log;
 
@@ -31,9 +30,6 @@ import org.acra.ACRA;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONObject;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -93,6 +89,8 @@ public class Metodi {
     }
 
     public static String MateriaDecente(String materia) {
+
+        materia = materia.toLowerCase();
 
         if (materia.contains("matematica"))
             materia = "Matematica";
