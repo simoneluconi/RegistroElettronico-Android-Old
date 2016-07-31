@@ -45,7 +45,6 @@ import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.HttpCookie;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -149,7 +148,7 @@ public class Circolari extends AppCompatActivity {
 
         @Override
         public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.oggiscuola_card, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_oggiascuola, parent, false);
             return new PersonViewHolder(v);
         }
 
@@ -239,10 +238,10 @@ public class Circolari extends AppCompatActivity {
                 try {
                     url = new URL(url_car);
 
-                    CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
+                    CookieHandler.setDefault(msCookieManager);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setReadTimeout(15000);
-                    conn.setConnectTimeout(15000);
+                    conn.setReadTimeout(5000);
+                    conn.setConnectTimeout(5000);
                     conn.setRequestMethod("POST");
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
@@ -293,8 +292,8 @@ public class Circolari extends AppCompatActivity {
                     url = new URL(params[0]);
 
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setReadTimeout(15000);
-                    conn.setConnectTimeout(15000);
+                    conn.setReadTimeout(5000);
+                    conn.setConnectTimeout(5000);
                     conn.setRequestMethod("GET");
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
@@ -451,7 +450,6 @@ public class Circolari extends AppCompatActivity {
             }
 
         }
-
 
     }
 }

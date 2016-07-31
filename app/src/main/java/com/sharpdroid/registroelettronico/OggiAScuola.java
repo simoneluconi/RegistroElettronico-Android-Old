@@ -163,7 +163,7 @@ public class OggiAScuola extends AppCompatActivity {
 
         @Override
         public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.oggiscuola_card, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_oggiascuola, parent, false);
             return new PersonViewHolder(v);
         }
 

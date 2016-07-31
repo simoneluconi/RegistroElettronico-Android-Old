@@ -19,7 +19,6 @@ import android.widget.TextView;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 
 import java.io.File;
-import java.io.InputStream;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -105,7 +104,7 @@ public class FileOffline extends AppCompatActivity {
 
         @Override
         public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.fileofflineadp, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_file_offline, parent, false);
             return new PersonViewHolder(v);
         }
 

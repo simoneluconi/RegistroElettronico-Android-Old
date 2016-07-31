@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,7 +21,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +36,6 @@ import org.acra.ACRA;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
@@ -61,7 +58,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -156,7 +152,7 @@ public class Scrutini extends AppCompatActivity {
 
         @Override
         public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.scrutiniadp, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_scrutini, parent, false);
             return new PersonViewHolder(v);
         }
 
@@ -247,10 +243,10 @@ public class Scrutini extends AppCompatActivity {
                 try {
                     url = new URL(url_car);
 
-                    CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
+                    CookieHandler.setDefault(msCookieManager);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setReadTimeout(15000);
-                    conn.setConnectTimeout(15000);
+                    conn.setReadTimeout(5000);
+                    conn.setConnectTimeout(5000);
                     conn.setRequestMethod("POST");
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
@@ -304,8 +300,8 @@ public class Scrutini extends AppCompatActivity {
                     url = new URL(params[0]);
 
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setReadTimeout(15000);
-                    conn.setConnectTimeout(15000);
+                    conn.setReadTimeout(5000);
+                    conn.setConnectTimeout(5000);
                     conn.setRequestMethod("GET");
                     conn.setDoInput(true);
                     conn.setDoOutput(true);

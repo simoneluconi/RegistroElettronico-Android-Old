@@ -19,7 +19,6 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.sharpdroid.fileprovider"
@@ -27,8 +26,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_path"/>
-
+                android:resource="@xml/file_path" />
         </provider>
 
         <activity
@@ -72,7 +70,8 @@
             android:label="@string/title_activity_intro"
             android:theme="@style/AppTheme" />
         <activity android:name=".FileOffline" />
-        <activity android:name=".Scrutini"/>
+        <activity android:name=".Scrutini" />
+        <activity android:name=".Lezioni"></activity>
     </application>
 
 </manifest>

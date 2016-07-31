@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.ConvertiInVoto;
-import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.VotoValido;
 
 public class VotiDettAdp extends BaseAdapter implements View.OnClickListener {
 
@@ -51,7 +50,7 @@ public class VotiDettAdp extends BaseAdapter implements View.OnClickListener {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null)
-            convertView = View.inflate(mContext, R.layout.voti_dett, null);
+            convertView = View.inflate(mContext, R.layout.adapter_voti_dett, null);
 
         TextView txVoto = (TextView) convertView.findViewById(R.id.textVoto);
         Voto votot = votiDetts.get(position);
