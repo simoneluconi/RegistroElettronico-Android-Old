@@ -17,10 +17,6 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         tools:context="com.sharpdroid.registroelettronico.Lezioni">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swiperefreshLezioni"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
             android:id="@+id/cardListLezioni"
@@ -29,8 +25,6 @@
             android:scrollbars="vertical">
 
         </com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView>
-
-    </android.support.v4.widget.SwipeRefreshLayout>
 
     </RelativeLayout>
 
