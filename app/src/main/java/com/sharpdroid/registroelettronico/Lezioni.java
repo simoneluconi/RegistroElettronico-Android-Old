@@ -60,7 +60,6 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.getPostData
 
 public class Lezioni extends AppCompatActivity {
 
-
     static RVAdapter adapter;
     static SwipeViewPager mPager;
     static CoordinatorLayout coordinatorLayout;
