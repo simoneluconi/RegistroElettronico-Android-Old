@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -50,7 +49,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -68,7 +66,6 @@ public class Lezioni extends AppCompatActivity {
     static CoordinatorLayout coordinatorLayout;
     SlidingTabLayout mTabs;
     static Context context;
-    static SwipeRefreshLayout swipeRefreshLayout;
     static CookieManager msCookieManager = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
 
     static List<LezioneM> lezioniMateries = new ArrayList<>();
@@ -141,15 +138,6 @@ public class Lezioni extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
             final View layout = inflater.inflate(R.layout.fragment_lezioni, container, false);
             bundle = getArguments();
-            swipeRefreshLayout = null;
-            swipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swiperefreshLezioni);
-            coordinatorLayout = (CoordinatorLayout) layout.findViewById(R.id.coordinatorLayoutLezioni);
-            swipeRefreshLayout.setColorSchemeResources(
-                    R.color.bluematerial,
-                    R.color.redmaterial,
-                    R.color.greenmaterial,
-                    R.color.orangematerial);
-            swipeRefreshLayout.setEnabled(true);
             rv = (ObservableRecyclerView) layout.findViewById(R.id.cardListLezioni);
             rv.setScrollViewCallbacks(this);
             rv.setHasFixedSize(true);
@@ -161,9 +149,11 @@ public class Lezioni extends AppCompatActivity {
                 adapter = new RVAdapter(lezioni);
                 rv.setAdapter(adapter);
 
-                for (Lezione l : lezioniMateries.get(position).getLezioni()) {
-                    if (l.getDescrizione().length() > 0)
-                        lezioni.add(l);
+                List<Lezione> lez = lezioniMateries.get(position).getLezioni();
+
+                for (int i = lez.size() - 1; i > -1; i--) {
+                    if (lez.get(i).getDescrizione().length() > 0)
+                        lezioni.add(lez.get(i));
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -252,7 +242,7 @@ public class Lezioni extends AppCompatActivity {
             Log.v("Scarico", params[0]);
 
             URL url;
-            HashMap<String, String> postDataParams = new HashMap<String, String>();
+            HashMap<String, String> postDataParams = new HashMap<>();
             SharedPreferences sharedPref = Lezioni.this.getSharedPreferences("Dati", Context.MODE_PRIVATE);
 
             String username = sharedPref.getString("Username", "");
