@@ -61,7 +61,6 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAv
 
 public class Circolari extends AppCompatActivity {
 
-    static CookieManager msCookieManager = new CookieManager();
     static List<Circolare> Circolaris = new ArrayList<>();
     public static RVAdapter adapter;
     static SwipeRefreshLayout swipeRefreshLayout;
@@ -103,7 +102,8 @@ public class Circolari extends AppCompatActivity {
         });
 
         if (isNetworkAvailable(Circolari.this)) {
-            new GetStringFromUrl().execute("https://web.spaggiari.eu/home/app/default/login.php");
+            if (MainActivity.msCookieManager.getCookieStore().getCookies().isEmpty())
+                new GetStringFromUrl().execute("https://web.spaggiari.eu/home/app/default/login.php");
             new GetStringFromUrl().execute("https://web.spaggiari.eu/sif/app/default/bacheca_utente.php");
         } else
             Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
@@ -238,14 +238,13 @@ public class Circolari extends AppCompatActivity {
                 try {
                     url = new URL(url_car);
 
-                    CookieHandler.setDefault(msCookieManager);
+                    CookieHandler.setDefault(MainActivity.msCookieManager);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setReadTimeout(5000);
                     conn.setConnectTimeout(5000);
                     conn.setRequestMethod("POST");
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
-
 
                     OutputStream os = conn.getOutputStream();
                     BufferedWriter writer = new BufferedWriter(
@@ -260,9 +259,10 @@ public class Circolari extends AppCompatActivity {
                     Map<String, List<String>> headerFields = conn.getHeaderFields();
                     List<String> cookiesHeader = headerFields.get(COOKIES_HEADER);
 
+
                     if (cookiesHeader != null) {
                         for (String cookie : cookiesHeader) {
-                            msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
+                            MainActivity.msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
                         }
                     }
 
@@ -299,9 +299,9 @@ public class Circolari extends AppCompatActivity {
                     conn.setDoOutput(true);
 
 
-                    if (msCookieManager.getCookieStore().getCookies().size() > 0) {
+                    if (MainActivity.msCookieManager.getCookieStore().getCookies().size() > 0) {
                         //Riutilizzo gli stessi cookie della sessione precedente
-                        conn.setRequestProperty("Cookie", TextUtils.join(";", msCookieManager.getCookieStore().getCookies()));
+                        conn.setRequestProperty("Cookie", TextUtils.join(";", MainActivity.msCookieManager.getCookieStore().getCookies()));
                     }
 
                     url = new URL(params[0]);
