@@ -60,7 +60,6 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAv
 
 public class OggiAScuola extends AppCompatActivity {
 
-    CookieManager msCookieManager = new CookieManager();
     List<Firma> oggiScuola = new ArrayList<>();
     public static RVAdapter adapter;
     SwipeRefreshLayout swipeRefreshLayout;
@@ -111,9 +110,7 @@ public class OggiAScuola extends AppCompatActivity {
             }
         });
         if (isNetworkAvailable(OggiAScuola.this)) {
-            msCookieManager = MainActivity.msCookieManager;
-
-            if (msCookieManager == null)
+            if (MainActivity.msCookieManager.getCookieStore().getCookies().isEmpty())
                 new GetStringFromUrl().execute("https://web.spaggiari.eu/home/app/default/login.php");
             new GetStringFromUrl().execute("https://web.spaggiari.eu/cvv/app/default/regclasse.php");
         } else
@@ -248,7 +245,7 @@ public class OggiAScuola extends AppCompatActivity {
                 try {
                     url = new URL(url_car);
 
-                    CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
+                    CookieHandler.setDefault(MainActivity.msCookieManager);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setReadTimeout(15000);
                     conn.setConnectTimeout(15000);
@@ -272,7 +269,7 @@ public class OggiAScuola extends AppCompatActivity {
 
                     if (cookiesHeader != null) {
                         for (String cookie : cookiesHeader) {
-                            msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
+                            MainActivity.msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
                         }
                     }
 
@@ -307,9 +304,9 @@ public class OggiAScuola extends AppCompatActivity {
                     conn.setDoOutput(true);
 
 
-                    if (msCookieManager.getCookieStore().getCookies().size() > 0) {
+                    if (MainActivity.msCookieManager.getCookieStore().getCookies().size() > 0) {
                         //Riutilizzo gli stessi cookie della sessione precedente
-                        conn.setRequestProperty("Cookie", TextUtils.join(";", msCookieManager.getCookieStore().getCookies()));
+                        conn.setRequestProperty("Cookie", TextUtils.join(";", MainActivity.msCookieManager.getCookieStore().getCookies()));
                     }
 
                     url = new URL(params[0]);

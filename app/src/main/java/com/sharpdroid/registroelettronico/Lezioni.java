@@ -57,6 +57,7 @@ import javax.net.ssl.HttpsURLConnection;
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.MateriaDecente;
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.ProfDecente;
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.getPostDataString;
+import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAvailable;
 
 public class Lezioni extends AppCompatActivity {
 
@@ -65,8 +66,6 @@ public class Lezioni extends AppCompatActivity {
     static CoordinatorLayout coordinatorLayout;
     SlidingTabLayout mTabs;
     static Context context;
-    static CookieManager msCookieManager = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
-
     static List<LezioneM> lezioniMateries = new ArrayList<>();
     static List<Lezione> lezioni = new ArrayList<>();
 
@@ -90,8 +89,11 @@ public class Lezioni extends AppCompatActivity {
 
         // mTabs.setViewPager(mPager);
         context = Lezioni.this;
-
-        new GetStringFromUrl().execute("https://web.spaggiari.eu/cvv/app/default/regclasse_lezioni_xstudenti.php");
+        if (isNetworkAvailable(context)) {
+            if (MainActivity.msCookieManager.getCookieStore().getCookies().isEmpty())
+                new GetStringFromUrl().execute("https://web.spaggiari.eu/home/app/default/login.php");
+            new GetStringFromUrl().execute("https://web.spaggiari.eu/cvv/app/default/regclasse_lezioni_xstudenti.php");
+        }
     }
 
     class PagerAdapter extends FragmentPagerAdapter {
@@ -264,7 +266,7 @@ public class Lezioni extends AppCompatActivity {
                     url = new URL(url_car);
                     this.url = url_car;
 
-                    CookieHandler.setDefault(msCookieManager);
+                    CookieHandler.setDefault(MainActivity.msCookieManager);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setReadTimeout(5000);
                     conn.setConnectTimeout(5000);
@@ -287,7 +289,7 @@ public class Lezioni extends AppCompatActivity {
 
                     if (cookiesHeader != null) {
                         for (String cookie : cookiesHeader) {
-                            msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
+                            MainActivity.msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
                         }
                     }
 
@@ -321,9 +323,9 @@ public class Lezioni extends AppCompatActivity {
                     conn.setDoOutput(true);
 
 
-                    if (msCookieManager.getCookieStore().getCookies().size() > 0) {
+                    if (MainActivity.msCookieManager.getCookieStore().getCookies().size() > 0) {
                         //Riutilizzo gli stessi cookie della sessione precedente
-                        conn.setRequestProperty("Cookie", TextUtils.join(";", msCookieManager.getCookieStore().getCookies()));
+                        conn.setRequestProperty("Cookie", TextUtils.join(";", MainActivity.msCookieManager.getCookieStore().getCookies()));
                     }
 
                     url = new URL(params[0]);
