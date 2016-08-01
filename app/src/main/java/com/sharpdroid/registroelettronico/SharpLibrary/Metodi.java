@@ -180,8 +180,8 @@ public class Metodi {
     public static List<Compito> ReadAgenda(Context context) {
 
         MyDB DBAgenda = new MyDB(context);
-        SQLiteDatabase db = DBAgenda.getReadableDatabase();
 
+        SQLiteDatabase db = DBAgenda.getReadableDatabase();
         List<Compito> compitos = new ArrayList<>();
 
         Cursor c = db.rawQuery("select * from " + MyDB.CompitoEntry.TABLE_NAME, null);
@@ -207,7 +207,6 @@ public class Metodi {
 
     public static List<MyAccount> ReadAccounts(Context context) {
         List<MyAccount> Accounts = new ArrayList<>();
-
         MyUsers DBUser = new MyUsers(context);
         SQLiteDatabase db = DBUser.getReadableDatabase();
 
