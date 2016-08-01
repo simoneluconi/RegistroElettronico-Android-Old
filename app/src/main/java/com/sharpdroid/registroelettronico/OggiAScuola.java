@@ -2,6 +2,8 @@ package com.sharpdroid.registroelettronico;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -29,6 +31,7 @@ import android.widget.Toast;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Azione;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Firma;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
 import com.sharpdroid.registroelettronico.SharpLibrary.Ranger;
 
 import org.jsoup.Jsoup;
@@ -65,6 +68,7 @@ public class OggiAScuola extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshLayout;
     static int SelectedDay;
     static CoordinatorLayout coordinatorLayout;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +77,7 @@ public class OggiAScuola extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.setTitle(getString(R.string.oggiscuola));
         setSupportActionBar(toolbar);
+        context = this;
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayoutOggiScuola);
         adapter = new RVAdapter(oggiScuola);
         ObservableRecyclerView rv = (ObservableRecyclerView) findViewById(R.id.OggiScuolCardList);
@@ -97,7 +102,7 @@ public class OggiAScuola extends AppCompatActivity {
                 Calendar cl = Calendar.getInstance();
                 String data = cl.get(Calendar.YEAR) + "-" + (cl.get(Calendar.MONTH) + 1) + "-" + day;
                 if (isNetworkAvailable(OggiAScuola.this)) {
-                    new GetStringFromUrl().execute("https://web.spaggiari.eu/cvv/app/default/regclasse.php?cerca=:cerca:&data_start=" + data);
+                    new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/regclasse.php?cerca=:cerca:&data_start=" + data);
                 } else
                     Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
 
@@ -111,8 +116,8 @@ public class OggiAScuola extends AppCompatActivity {
         });
         if (isNetworkAvailable(OggiAScuola.this)) {
             if (MainActivity.msCookieManager.getCookieStore().getCookies().isEmpty())
-                new GetStringFromUrl().execute("https://web.spaggiari.eu/home/app/default/login.php");
-            new GetStringFromUrl().execute("https://web.spaggiari.eu/cvv/app/default/regclasse.php");
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/home/app/default/login.php");
+            new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/regclasse.php");
         } else
             Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
 
@@ -123,7 +128,7 @@ public class OggiAScuola extends AppCompatActivity {
                 if (isNetworkAvailable(OggiAScuola.this)) {
                     Calendar cl = Calendar.getInstance();
                     String data = cl.get(Calendar.YEAR) + "-" + (cl.get(Calendar.MONTH) + 1) + "-" + SelectedDay;
-                    new GetStringFromUrl().execute("https://web.spaggiari.eu/cvv/app/default/regclasse.php?cerca=:cerca:&data_start=" + data);
+                    new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/regclasse.php?cerca=:cerca:&data_start=" + data);
                 } else {
                     swipeRefreshLayout.setRefreshing(false);
                     Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
@@ -223,22 +228,31 @@ public class OggiAScuola extends AppCompatActivity {
             Log.v("Scarico", params[0]);
 
             URL url;
-            HashMap<String, String> postDataParams = new HashMap<String, String>();
+            HashMap<String, String> postDataParams = new HashMap<>();
             SharedPreferences sharedPref = OggiAScuola.this.getSharedPreferences("Dati", Context.MODE_PRIVATE);
 
-            String username = sharedPref.getString("Username", "");
+            int ActiveUsers = sharedPref.getInt("CurrentProfile", 0);
+            SQLiteDatabase db = new MyUsers(context).getWritableDatabase();
+            Cursor c = db.rawQuery("SELECT * FROM " + MyUsers.UserEntry.TABLE_NAME, null);
+            c.move(ActiveUsers);
+            String username = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_USERNAME));
+            String password = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_PASSWORD));
+            String codicescuola = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_CODICESCUOLA));
+            c.close();
+            db.close();
+
             String url_car;
             if (username.contains("@")) {
                 postDataParams.put("mode", "email");
                 postDataParams.put("login", username);
-                url_car = "https://web.spaggiari.eu/home/app/default/login_email.php";
+                url_car = MainActivity.BASE_URL + "/home/app/default/login_email.php";
 
             } else {
-                postDataParams.put("custcode", sharedPref.getString("Custcode", ""));
-                postDataParams.put("login", sharedPref.getString("Username", username));
-                url_car = "https://web.spaggiari.eu/home/app/default/login.php";
+                postDataParams.put("custcode", codicescuola);
+                postDataParams.put("login", username);
+                url_car = MainActivity.BASE_URL + "/home/app/default/login.php";
             }
-            postDataParams.put("password", sharedPref.getString("Password", ""));
+            postDataParams.put("password", password);
 
             if (params[0].contains("login")) {
                 azione = Azione.LOGIN;

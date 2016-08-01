@@ -3,6 +3,8 @@ package com.sharpdroid.registroelettronico;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -29,6 +31,7 @@ import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Azione;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Lezione;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.LezioneM;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
 import com.sharpdroid.registroelettronico.Tabs.SlidingTabLayout;
 import com.sharpdroid.registroelettronico.Tabs.SwipeViewPager;
 
@@ -91,8 +94,8 @@ public class Lezioni extends AppCompatActivity {
         context = Lezioni.this;
         if (isNetworkAvailable(context)) {
             if (MainActivity.msCookieManager.getCookieStore().getCookies().isEmpty())
-                new GetStringFromUrl().execute("https://web.spaggiari.eu/home/app/default/login.php");
-            new GetStringFromUrl().execute("https://web.spaggiari.eu/cvv/app/default/regclasse_lezioni_xstudenti.php");
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/home/app/default/login.php");
+            new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/regclasse_lezioni_xstudenti.php");
         }
     }
 
@@ -246,19 +249,28 @@ public class Lezioni extends AppCompatActivity {
             HashMap<String, String> postDataParams = new HashMap<>();
             SharedPreferences sharedPref = Lezioni.this.getSharedPreferences("Dati", Context.MODE_PRIVATE);
 
-            String username = sharedPref.getString("Username", "");
+            int ActiveUsers = sharedPref.getInt("CurrentProfile", 0);
+            SQLiteDatabase db = new MyUsers(context).getWritableDatabase();
+            Cursor c = db.rawQuery("SELECT * FROM " + MyUsers.UserEntry.TABLE_NAME, null);
+            c.move(ActiveUsers);
+            String username = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_USERNAME));
+            String password = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_PASSWORD));
+            String codicescuola = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_CODICESCUOLA));
+            c.close();
+            db.close();
+
             String url_car;
             if (username.contains("@")) {
                 postDataParams.put("mode", "email");
                 postDataParams.put("login", username);
-                url_car = "https://web.spaggiari.eu/home/app/default/login_email.php";
+                url_car = MainActivity.BASE_URL + "/home/app/default/login_email.php";
 
             } else {
-                postDataParams.put("custcode", sharedPref.getString("Custcode", ""));
-                postDataParams.put("login", sharedPref.getString("Username", username));
-                url_car = "https://web.spaggiari.eu/home/app/default/login.php";
+                postDataParams.put("custcode", codicescuola);
+                postDataParams.put("login", username);
+                url_car = MainActivity.BASE_URL + "/home/app/default/login.php";
             }
-            postDataParams.put("password", sharedPref.getString("Password", ""));
+            postDataParams.put("password", password);
 
             if (params[0].contains("login")) {
                 azione = Azione.LOGIN;
@@ -374,7 +386,7 @@ public class Lezioni extends AppCompatActivity {
                         mTabs.setViewPager(mPager);
 
                         for (LezioneM l : lezioniMateries)
-                            new GetStringFromUrl().execute("https://web.spaggiari.eu/cvv/app/default/regclasse_lezioni_xstudenti.php?materia=" + l.getId());
+                            new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/regclasse_lezioni_xstudenti.php?materia=" + l.getId());
 
                     } else {
                         String materia = url.substring(url.lastIndexOf("=") + 1);

@@ -23,13 +23,16 @@ import com.sharpdroid.registroelettronico.MainActivity;
 import com.sharpdroid.registroelettronico.Notifiche;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Compito;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyAccount;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyDB;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Nota;
 
 import org.acra.ACRA;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -202,22 +205,27 @@ public class Metodi {
         return compitos;
     }
 
-    public static List<String> ReadAccounts(Context context) {
-        List<String> Accounts = new ArrayList<>();
-        try {
-            File myFile = new File(context.getFilesDir() + "/Accounts");
-            BufferedReader br = new BufferedReader(new FileReader(myFile));
-            String line;
-            while ((line = br.readLine()) != null) {
-                Accounts.add(line);
-            }
-            br.close();
-            return Accounts;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static List<MyAccount> ReadAccounts(Context context) {
+        List<MyAccount> Accounts = new ArrayList<>();
 
-        return null;
+        MyUsers DBUser = new MyUsers(context);
+        SQLiteDatabase db = DBUser.getReadableDatabase();
+
+        Cursor c = db.rawQuery("select * from " + MyUsers.UserEntry.TABLE_NAME, null);
+        if (c.moveToFirst()) {
+            while (!c.isAfterLast()) {
+                MyAccount account = new MyAccount();
+                account.setName(c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_NAME)));
+                account.setCodicescuola(c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_CODICESCUOLA)));
+                account.setUsername(c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_USERNAME)));
+                Accounts.add(account);
+                c.moveToNext();
+            }
+
+        }
+        db.close();
+        c.close();
+        return Accounts;
     }
 
     public static List<Compito> ReadMyAgenda(Context context) {

@@ -3,6 +3,8 @@ package com.sharpdroid.registroelettronico;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -29,6 +31,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Azione;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.ScrutiniFile;
 import com.squareup.picasso.Picasso;
 
@@ -102,7 +105,7 @@ public class Scrutini extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 if (isNetworkAvailable(Scrutini.this)) {
-                    new GetStringFromUrl().execute("https://web.spaggiari.eu/sol/app/default/documenti_sol.php");
+                    new GetStringFromUrl().execute(MainActivity.BASE_URL + "/sol/app/default/documenti_sol.php");
                 } else
                     Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
             }
@@ -110,8 +113,8 @@ public class Scrutini extends AppCompatActivity {
 
         if (isNetworkAvailable(Scrutini.this)) {
             if (MainActivity.msCookieManager.getCookieStore().getCookies().isEmpty())
-                new GetStringFromUrl().execute("https://web.spaggiari.eu/home/app/default/login.php");
-            new GetStringFromUrl().execute("https://web.spaggiari.eu/sol/app/default/documenti_sol.php");
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/home/app/default/login.php");
+            new GetStringFromUrl().execute(MainActivity.BASE_URL + "/sol/app/default/documenti_sol.php");
         } else
             Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
     }
@@ -224,19 +227,28 @@ public class Scrutini extends AppCompatActivity {
             HashMap<String, String> postDataParams = new HashMap<>();
             SharedPreferences sharedPref = Scrutini.this.getSharedPreferences("Dati", Context.MODE_PRIVATE);
 
-            String username = sharedPref.getString("Username", "");
+            int ActiveUsers = sharedPref.getInt("CurrentProfile", 0);
+            SQLiteDatabase db = new MyUsers(context).getWritableDatabase();
+            Cursor c = db.rawQuery("SELECT * FROM " + MyUsers.UserEntry.TABLE_NAME, null);
+            c.move(ActiveUsers);
+            String username = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_USERNAME));
+            String password = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_PASSWORD));
+            String codicescuola = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_CODICESCUOLA));
+            c.close();
+            db.close();
+
             String url_car;
             if (username.contains("@")) {
                 postDataParams.put("mode", "email");
                 postDataParams.put("login", username);
-                url_car = "https://web.spaggiari.eu/home/app/default/login_email.php";
+                url_car = MainActivity.BASE_URL + "/home/app/default/login_email.php";
 
             } else {
-                postDataParams.put("custcode", sharedPref.getString("Custcode", ""));
-                postDataParams.put("login", sharedPref.getString("Username", username));
-                url_car = "https://web.spaggiari.eu/home/app/default/login.php";
+                postDataParams.put("custcode", codicescuola);
+                postDataParams.put("login", username);
+                url_car = MainActivity.BASE_URL + "/home/app/default/login.php";
             }
-            postDataParams.put("password", sharedPref.getString("Password", ""));
+            postDataParams.put("password", password);
 
             if (params[0].contains("login")) {
                 azione = Azione.LOGIN;
@@ -290,7 +302,7 @@ public class Scrutini extends AppCompatActivity {
                 }
             } else {
 
-                if (params[0].equals("https://web.spaggiari.eu/sol/app/default/documenti_sol.php"))
+                if (params[0].equals(MainActivity.BASE_URL + "/sol/app/default/documenti_sol.php"))
                     azione = Azione.SCRUTINI;
                 else if (params[0].contains(Azione.SCRUTINIFILEWEB)) {
                     params[0] = params[0].replace(Azione.SCRUTINIFILEWEB, "");
@@ -394,9 +406,9 @@ public class Scrutini extends AppCompatActivity {
                                 Elements td = elements.get(i).select("td");
                                 file.setNome(td.get(2).text().trim());
                                 file.setAzione(elements.get(i).select("img").text().trim());
-                                file.setLink(Azione.SCRUTINIFILEWEB + "https://web.spaggiari.eu/sol/app/default/" + elements.get(i).select("span").attr("xhref").trim());
+                                file.setLink(Azione.SCRUTINIFILEWEB + MainActivity.BASE_URL + "/sol/app/default/" + elements.get(i).select("span").attr("xhref").trim());
                                 String imglink = elements.get(i).select("img").attr("src");
-                                imglink = imglink.replace("../../../", "https://web.spaggiari.eu/");
+                                imglink = imglink.replace("../../../", MainActivity.BASE_URL + "/");
                                 file.setImgLink(imglink);
                                 scrutiniFiles.add(file);
                             }
@@ -411,9 +423,9 @@ public class Scrutini extends AppCompatActivity {
                                     file.setNome(jsonobject.getString("desc"));
                                     String link = jsonobject.getString("link");
                                     link = link.substring(link.indexOf("/xdocument.php?"));
-                                    file.setLink("https://web.spaggiari.eu/tools/app/default/" + link);
+                                    file.setLink(MainActivity.BASE_URL + "/tools/app/default/" + link);
                                     file.setAzione(jsonobject.getString("scarica"));
-                                    file.setImgLink("https://web.spaggiari.eu/img/20/" + jsonobject.getString("immagine"));
+                                    file.setImgLink(MainActivity.BASE_URL + "/img/20/" + jsonobject.getString("immagine"));
                                     scrutiniFiles.add(file);
                                 }
                             } catch (Exception e) {

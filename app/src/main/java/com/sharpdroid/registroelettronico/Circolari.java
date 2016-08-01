@@ -3,6 +3,8 @@ package com.sharpdroid.registroelettronico;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -26,6 +28,7 @@ import android.widget.Toast;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Azione;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Circolare;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -95,7 +98,7 @@ public class Circolari extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 if (isNetworkAvailable(Circolari.this))
-                    new GetStringFromUrl().execute("https://web.spaggiari.eu/sif/app/default/bacheca_utente.php");
+                    new GetStringFromUrl().execute(MainActivity.BASE_URL + "/sif/app/default/bacheca_utente.php");
                 else
                     Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
             }
@@ -103,8 +106,8 @@ public class Circolari extends AppCompatActivity {
 
         if (isNetworkAvailable(Circolari.this)) {
             if (MainActivity.msCookieManager.getCookieStore().getCookies().isEmpty())
-                new GetStringFromUrl().execute("https://web.spaggiari.eu/home/app/default/login.php");
-            new GetStringFromUrl().execute("https://web.spaggiari.eu/sif/app/default/bacheca_utente.php");
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/home/app/default/login.php");
+            new GetStringFromUrl().execute(MainActivity.BASE_URL + "/sif/app/default/bacheca_utente.php");
         } else
             Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
     }
@@ -134,7 +137,7 @@ public class Circolari extends AppCompatActivity {
                     public void onClick(View v) {
                         String id = Circolaris.get(getAdapterPosition()).getId();
                         if (!id.equals(""))
-                            new GetStringFromUrl().execute("https://web.spaggiari.eu/sif/app/default/bacheca_utente.php?action=file_download&com_id=" + id);
+                            new GetStringFromUrl().execute(MainActivity.BASE_URL + "/sif/app/default/bacheca_utente.php?action=file_download&com_id=" + id);
                     }
                 });
             }
@@ -219,19 +222,28 @@ public class Circolari extends AppCompatActivity {
             HashMap<String, String> postDataParams = new HashMap<>();
             SharedPreferences sharedPref = Circolari.this.getSharedPreferences("Dati", Context.MODE_PRIVATE);
 
-            String username = sharedPref.getString("Username", "");
+            int ActiveUsers = sharedPref.getInt("CurrentProfile", 0);
+            SQLiteDatabase db = new MyUsers(context).getWritableDatabase();
+            Cursor c = db.rawQuery("SELECT * FROM " + MyUsers.UserEntry.TABLE_NAME, null);
+            c.move(ActiveUsers);
+            String username = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_USERNAME));
+            String password = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_PASSWORD));
+            String codicescuola = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_CODICESCUOLA));
+            c.close();
+            db.close();
+
             String url_car;
             if (username.contains("@")) {
                 postDataParams.put("mode", "email");
                 postDataParams.put("login", username);
-                url_car = "https://web.spaggiari.eu/home/app/default/login_email.php";
+                url_car = MainActivity.BASE_URL + "/home/app/default/login_email.php";
 
             } else {
-                postDataParams.put("custcode", sharedPref.getString("Custcode", ""));
-                postDataParams.put("login", sharedPref.getString("Username", username));
-                url_car = "https://web.spaggiari.eu/home/app/default/login.php";
+                postDataParams.put("custcode", codicescuola);
+                postDataParams.put("login", username);
+                url_car = MainActivity.BASE_URL + "/home/app/default/login.php";
             }
-            postDataParams.put("password", sharedPref.getString("Password", ""));
+            postDataParams.put("password", password);
 
             if (params[0].contains("login")) {
                 azione = Azione.LOGIN;
@@ -285,7 +297,7 @@ public class Circolari extends AppCompatActivity {
                 }
             } else {
 
-                if (params[0].equals("https://web.spaggiari.eu/sif/app/default/bacheca_utente.php"))
+                if (params[0].equals(MainActivity.BASE_URL + "/sif/app/default/bacheca_utente.php"))
                     azione = Azione.CIRCOLARI;
                 else azione = Azione.DOWNLOAD;
                 try {

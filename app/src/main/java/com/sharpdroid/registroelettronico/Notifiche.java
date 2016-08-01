@@ -21,6 +21,7 @@ import android.util.Log;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Azione;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Compito;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyDB;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
 
 import org.acra.ACRA;
 import org.json.JSONArray;
@@ -84,16 +85,16 @@ public class Notifiche extends BroadcastReceiver {
             secondadata = String.valueOf(Calendar.getInstance().get(Calendar.YEAR)) + "-09-01";
         }
         if (isNetworkAvailable(context) && sharePref.getBoolean("Acceduto", false)) {
-            new GetStringFromUrl().execute("https://web.spaggiari.eu/home/app/default/login.php");
+            new GetStringFromUrl().execute(MainActivity.BASE_URL + "/home/app/default/login.php");
 
             if (sharePref.getBoolean("notifichevoti", true))
-                new GetStringFromUrl().execute("https://web.spaggiari.eu/cvv/app/default/genitori_note.php");
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/genitori_note.php");
 
             if (sharePref.getBoolean("notificheagenda", true))
-                new GetStringFromUrl().execute("https://web.spaggiari.eu/cvv/app/default/xml_export.php?stampa=%3Astampa%3A&tipo=agenda&tipo_export=EVENTI_AGENDA_STUDENTI&ope=RPT&dal=" + primadata + "&al=" + secondadata + "&formato=html");
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/xml_export.php?stampa=%3Astampa%3A&tipo=agenda&tipo_export=EVENTI_AGENDA_STUDENTI&ope=RPT&dal=" + primadata + "&al=" + secondadata + "&formato=html");
 
             if (sharePref.getBoolean("notifichescrutini", true))
-                new GetStringFromUrl().execute("https://web.spaggiari.eu/sol/app/default/documenti_sol.php");
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/sol/app/default/documenti_sol.php");
         }
 
     }
@@ -119,19 +120,27 @@ public class Notifiche extends BroadcastReceiver {
             HashMap<String, String> postDataParams = new HashMap<>();
             SharedPreferences sharedPref = ct.getSharedPreferences("Dati", Context.MODE_PRIVATE);
 
-            String username = sharedPref.getString("Username", "");
+            int ActiveUsers = sharedPref.getInt("CurrentProfile", 0);
+            SQLiteDatabase db = new MyUsers(ct).getWritableDatabase();
+            Cursor c = db.rawQuery("SELECT * FROM " + MyUsers.UserEntry.TABLE_NAME, null);
+            c.move(ActiveUsers);
+            String username = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_USERNAME));
+            String password = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_PASSWORD));
+            String codicescuola = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_CODICESCUOLA));
+            c.close();
+            db.close();
             String url_car;
             if (username.contains("@")) {
                 postDataParams.put("mode", "email");
                 postDataParams.put("login", username);
-                url_car = "https://web.spaggiari.eu/home/app/default/login_email.php";
+                url_car = MainActivity.BASE_URL + "/home/app/default/login_email.php";
 
             } else {
-                postDataParams.put("custcode", sharedPref.getString("Custcode", ""));
-                postDataParams.put("login", sharedPref.getString("Username", username));
-                url_car = "https://web.spaggiari.eu/home/app/default/login.php";
+                postDataParams.put("custcode", codicescuola);
+                postDataParams.put("login", username);
+                url_car = MainActivity.BASE_URL + "/home/app/default/login.php";
             }
-            postDataParams.put("password", sharedPref.getString("Password", ""));
+            postDataParams.put("password", password);
 
             if (params[0].contains("login")) {
                 try {
@@ -185,11 +194,11 @@ public class Notifiche extends BroadcastReceiver {
             } else {
 
 
-                if (params[0].equals("https://web.spaggiari.eu/cvv/app/default/genitori_note.php"))
+                if (params[0].equals(MainActivity.BASE_URL + "/cvv/app/default/genitori_note.php"))
                     azione = Azione.VOTI;
                 else if (params[0].contains("xml_export.php"))
                     azione = Azione.AGENDA;
-                else if (params[0].equals("https://web.spaggiari.eu/sol/app/default/documenti_sol.php"))
+                else if (params[0].equals(MainActivity.BASE_URL + "/sol/app/default/documenti_sol.php"))
                     azione = Azione.SCRUTINI;
 
                 try {
