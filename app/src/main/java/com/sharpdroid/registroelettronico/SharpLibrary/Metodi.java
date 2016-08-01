@@ -198,7 +198,6 @@ public class Metodi {
                 compitos.add(compito);
                 c.moveToNext();
             }
-
         }
         db.close();
         c.close();
