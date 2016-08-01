@@ -5,10 +5,12 @@ import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -43,6 +45,8 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyDB;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
 
 import org.acra.ACRA;
 import org.jsoup.Jsoup;
@@ -52,9 +56,6 @@ import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -88,6 +89,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private UserLoginTask mAuthTask = null;
 
+    Context context;
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
@@ -104,6 +106,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
         // Set up the login form.
+        context = this;
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
         mCodiceScuola = (EditText) findViewById(R.id.codicescuola);
@@ -396,7 +399,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
-        private final String mCodiceScuola;
+        private String mCodiceScuola;
 
         UserLoginTask(String email, String password, String codicescuola) {
             mEmail = email;
@@ -412,29 +415,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             String response = "";
             CookieManager msCookieManager = new CookieManager();
             HashMap<String, String> postDataParams = new HashMap<>();
-            SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-
             String url_car;
             if (mEmail.contains("@")) {
                 postDataParams.put("mode", "email");
                 postDataParams.put("login", mEmail.trim());
-                editor.putString("Username", mEmail.trim());
-                editor.apply();
                 url_car = "https://web.spaggiari.eu/home/app/default/login_email.php";
 
             } else {
                 postDataParams.put("custcode", mCodiceScuola.toUpperCase().trim());
                 postDataParams.put("login", mEmail.trim());
-                editor.putString("Custcode", mCodiceScuola.toUpperCase().trim());
-                editor.putString("Username", mEmail.trim());
-                editor.apply();
                 url_car = "https://web.spaggiari.eu/home/app/default/login.php";
             }
             postDataParams.put("password", mPassword.trim());
-
-            editor.putString("Password", mPassword.trim());
-            editor.apply();
 
             try {
                 url = new URL(url_car);
@@ -509,23 +501,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             Nome = ProfDecente(tmp);
                             break;
                         }
-                    String CodiceScuola = data.select("span.redtext").get(0).text().split("\\.")[0];
-                    url = new URL("http://sharpdroid.altervista.org/registroelettronico/scuole/AggiungiScuola.php?codice=" + CodiceScuola);
+                    mCodiceScuola = data.select("span.redtext").get(0).text().split("\\.")[0];
+                    url = new URL("http://sharpdroid.altervista.org/registroelettronico/scuole/AggiungiScuola.php?codice=" + mCodiceScuola);
                     conn = (HttpURLConnection) url.openConnection();
                     conn.getInputStream();
                     CancellaPagineLocali(LoginActivity.this);
-                    List<HttpCookie> cookies = msCookieManager.getCookieStore().getCookies();
-                    editor = sharedPref.edit();
-                    editor.putBoolean("Acceduto", true);
-                    int nAccount = sharedPref.getInt("nAccount", -1) + 1;
-                    editor.putInt("nAccount", nAccount);
-                    editor.putInt("CurrentProfile", nAccount);
+                    SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    SQLiteDatabase db = new MyUsers(context).getWritableDatabase();
+                    Cursor c = db.rawQuery("SELECT * FROM " + MyUsers.UserEntry.TABLE_NAME, null);
+                    int count = c.getCount();
+                    c.close();
+                    db.close();
+                    editor.putInt("CurrentProfile", count + 1);
                     editor.apply();
-                    for (int i = 0; i < cookies.size(); i++) {
-                        editor.putString("Cookie", cookies.get(i).toString());
-                        editor.apply();
 
-                    }
                     return true;
                 } else {
                     response = "";
@@ -550,14 +540,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             if (success) {
 
-                File myfile = new File(getApplicationContext().getFilesDir() + "/Accounts");
-                try {
-                    BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(myfile, true));
-                    bufferedWriter.write(mEmail + "%s" + mPassword + "%s" + Nome + "%s" + mCodiceScuola + "\n");
-                    bufferedWriter.close();
-                } catch (IOException e) {
-                    Log.e("SaveFile", "File Write error: " + e.toString());
-                }
+                SQLiteDatabase db = new MyUsers(context).getWritableDatabase();
+                ContentValues dati = new ContentValues();
+                dati.put(MyUsers.UserEntry.COLUMN_NAME_NAME, Nome);
+                dati.put(MyUsers.UserEntry.COLUMN_NAME_CODICESCUOLA, mCodiceScuola);
+                dati.put(MyUsers.UserEntry.COLUMN_NAME_USERNAME, mEmail);
+                dati.put(MyUsers.UserEntry.COLUMN_NAME_PASSWORD, mPassword);
+                db.insert(MyUsers.UserEntry.TABLE_NAME, MyUsers.UserEntry.COLUMN_NAME_NULLABLE, dati);
+                db.close();
 
                 Intent i = getBaseContext().getPackageManager()
                         .getLaunchIntentForPackage(getBaseContext().getPackageName());
