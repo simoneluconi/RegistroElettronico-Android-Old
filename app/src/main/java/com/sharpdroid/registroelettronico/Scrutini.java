@@ -139,7 +139,6 @@ public class Scrutini extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         String link = scrutiniFiles.get(getAdapterPosition()).getLink();
-                        Log.v("LINK", link);
                         if (link != null)
                             new GetStringFromUrl().execute(link);
                     }

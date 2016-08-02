@@ -178,7 +178,7 @@ import com.squareup.picasso.Picasso;
 public class MainActivity extends AppCompatActivity {
 
     static final String FILE_PROVIDER_STRING = "com.sharpdroid.fileprovider";
-    public static final String BASE_URL = "https://web15.spaggiari.eu";
+    public static final String BASE_URL = "https://web.spaggiari.eu";
     static CookieManager msCookieManager = new CookieManager(null, CookiePolicy.ACCEPT_ALL); //Gestore Cookie
     static SwipeViewPager mPager;
     SlidingTabLayout mTabs;
