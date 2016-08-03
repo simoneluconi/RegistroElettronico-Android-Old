@@ -31,11 +31,6 @@ import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -45,7 +40,6 @@ import java.net.CookiePolicy;
 import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -84,7 +78,14 @@ public class Notifiche extends BroadcastReceiver {
             primadata = String.valueOf(Calendar.getInstance().get(Calendar.YEAR) - 1) + "-09-01";
             secondadata = String.valueOf(Calendar.getInstance().get(Calendar.YEAR)) + "-09-01";
         }
-        if (isNetworkAvailable(context) && sharePref.getBoolean("Acceduto", false)) {
+
+        SQLiteDatabase db = new MyUsers(context).getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM " + MyUsers.UserEntry.TABLE_NAME, null);
+        int count = c.getCount();
+        c.close();
+        db.close();
+
+        if (isNetworkAvailable(context) && count >= 0){
             new GetStringFromUrl().execute(MainActivity.BASE_URL + "/home/app/default/login.php");
 
             if (sharePref.getBoolean("notifichevoti", true))
@@ -165,15 +166,6 @@ public class Notifiche extends BroadcastReceiver {
                     os.close();
                     int responseCode = conn.getResponseCode();
 
-                    Map<String, List<String>> headerFields = conn.getHeaderFields();
-                    List<String> cookiesHeader = headerFields.get(COOKIES_HEADER);
-
-                    if (cookiesHeader != null) {
-                        for (String cookie : cookiesHeader) {
-                            msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
-                        }
-                    }
-
                     StringBuilder sb = new StringBuilder();
                     if (responseCode == HttpsURLConnection.HTTP_OK) {
                         String line;
@@ -210,12 +202,6 @@ public class Notifiche extends BroadcastReceiver {
                     conn.setRequestMethod("GET");
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
-
-
-                    if (msCookieManager.getCookieStore().getCookies().size() > 0) {
-                        //Riutilizzo gli stessi cookie della sessione precedente
-                        conn.setRequestProperty("Cookie", TextUtils.join(";", msCookieManager.getCookieStore().getCookies()));
-                    }
 
                     url = new URL(params[0]);
                     conn = (HttpURLConnection) url.openConnection();

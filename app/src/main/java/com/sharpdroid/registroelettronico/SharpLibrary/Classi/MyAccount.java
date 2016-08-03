@@ -1,15 +1,11 @@
 package com.sharpdroid.registroelettronico.SharpLibrary.Classi;
 
-/**
- * Created by PC-Simone on 01/08/2016.
- */
 public class MyAccount {
     String username;
     String name;
     String codicescuola;
 
-    public MyAccount()
-    {
+    public MyAccount() {
 
     }
 
