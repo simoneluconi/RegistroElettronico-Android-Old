@@ -214,8 +214,6 @@ public class Circolari extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
 
-
-            final String COOKIES_HEADER = "Set-Cookie";
             Log.v("Scarico", params[0]);
 
             URL url;
@@ -268,16 +266,6 @@ public class Circolari extends AppCompatActivity {
                     os.close();
                     int responseCode = conn.getResponseCode();
 
-                    Map<String, List<String>> headerFields = conn.getHeaderFields();
-                    List<String> cookiesHeader = headerFields.get(COOKIES_HEADER);
-
-
-                    if (cookiesHeader != null) {
-                        for (String cookie : cookiesHeader) {
-                            MainActivity.msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
-                        }
-                    }
-
                     StringBuilder sb = new StringBuilder();
                     if (responseCode == HttpsURLConnection.HTTP_OK) {
                         String line;
@@ -310,12 +298,6 @@ public class Circolari extends AppCompatActivity {
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
 
-
-                    if (MainActivity.msCookieManager.getCookieStore().getCookies().size() > 0) {
-                        //Riutilizzo gli stessi cookie della sessione precedente
-                        conn.setRequestProperty("Cookie", TextUtils.join(";", MainActivity.msCookieManager.getCookieStore().getCookies()));
-                    }
-
                     url = new URL(params[0]);
                     conn = (HttpURLConnection) url.openConnection();
 
@@ -346,7 +328,6 @@ public class Circolari extends AppCompatActivity {
                                         disposition.length());
                             }
                         }
-
 
                         InputStream inputStream = conn.getInputStream();
                         String saveFilePath = saveDir + File.separator + fileName;

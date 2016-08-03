@@ -1,6 +1,5 @@
 package com.sharpdroid.registroelettronico;
 
-import android.accounts.Account;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -20,6 +19,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
@@ -33,7 +33,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -84,6 +83,25 @@ import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
+import com.mikepenz.materialdrawer.util.DrawerImageLoader;
+import com.sharpdroid.registroelettronico.ChromeTabs.CustomTabActivityHelper;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Azione;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.CVData;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Compito;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.FileDid;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Materia;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Medie;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyAccount;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyDB;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Nota;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Voto;
+import com.sharpdroid.registroelettronico.SharpLibrary.ClockView;
+import com.sharpdroid.registroelettronico.SharpLibrary.VotiDettAdp;
+import com.sharpdroid.registroelettronico.Tabs.SlidingTabLayout;
+import com.sharpdroid.registroelettronico.Tabs.SwipeViewPager;
+import com.squareup.picasso.Picasso;
 
 import org.acra.ACRA;
 import org.joda.time.DateTime;
@@ -100,7 +118,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -127,7 +144,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.crypto.SecretKey;
 import javax.net.ssl.HttpsURLConnection;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
@@ -154,26 +170,6 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.SpaziVoti;
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.getEmojiByUnicode;
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.getPostDataString;
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAvailable;
-
-import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
-import com.mikepenz.materialdrawer.util.DrawerImageLoader;
-import com.sharpdroid.registroelettronico.ChromeTabs.CustomTabActivityHelper;
-import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Azione;
-import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Materia;
-import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Medie;
-import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyAccount;
-import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyDB;
-import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
-import com.sharpdroid.registroelettronico.SharpLibrary.ClockView;
-import com.sharpdroid.registroelettronico.SharpLibrary.Classi.CVData;
-import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Compito;
-import com.sharpdroid.registroelettronico.SharpLibrary.Classi.FileDid;
-import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Nota;
-import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Voto;
-import com.sharpdroid.registroelettronico.SharpLibrary.VotiDettAdp;
-import com.sharpdroid.registroelettronico.Tabs.SlidingTabLayout;
-import com.sharpdroid.registroelettronico.Tabs.SwipeViewPager;
-import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -334,7 +330,6 @@ public class MainActivity extends AppCompatActivity {
                     .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                         @Override
                         public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
-
                             CancellaPagineLocali(MainActivity.this);
 
                             if (profile.getIdentifier() == 100010) {
@@ -588,24 +583,25 @@ public class MainActivity extends AppCompatActivity {
             updateAgenda = true;
             updateDidattica = true;
 
-            CaricaVotiOffline();
-            compitiDatas = ReadAgenda(this);
-            notes = ReadNote(this);
+            if (count >= 0) {
+                CaricaVotiOffline();
+                compitiDatas = ReadAgenda(this);
+                notes = ReadNote(this);
 
-            if (isNetworkAvailable(MainActivity.this)) {
-                AvviaNotifiche(MainActivity.this);
-                new GetStringFromUrl().execute("https://play.google.com/store/apps/details?id=com.sharpdroid.registroelettronico");
-                AggiornaDati();
-            } else
-                Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
+                if (isNetworkAvailable(MainActivity.this)) {
+                    AvviaNotifiche(MainActivity.this);
+                    new GetStringFromUrl().execute("https://play.google.com/store/apps/details?id=com.sharpdroid.registroelettronico");
+                    AggiornaDati();
+                } else
+                    Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
 
-            new Thread() {
-                @Override
-                public void run() {
-                    Off_Didattica = ReadDidattica(MainActivity.this);
-                }
-            }.run();
-
+                new Thread() {
+                    @Override
+                    public void run() {
+                        Off_Didattica = ReadDidattica(MainActivity.this);
+                    }
+                }.run();
+            }
 
             NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             manager.cancelAll(); //Cancello tutte le notifiche dell'app se ci sono
@@ -680,7 +676,6 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
 
             url = params[0];
-            final String COOKIES_HEADER = "Set-Cookie";
             Log.v("Scarico", params[0]);
 
             URL url;
@@ -731,16 +726,6 @@ public class MainActivity extends AppCompatActivity {
                     writer.close();
                     os.close();
                     int responseCode = conn.getResponseCode();
-
-                    Map<String, List<String>> headerFields = conn.getHeaderFields();
-                    List<String> cookiesHeader = headerFields.get(COOKIES_HEADER);
-
-                    if (cookiesHeader != null) {
-                        for (String cookie : cookiesHeader) {
-                            msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
-                        }
-                    }
-
                     if (responseCode == HttpsURLConnection.HTTP_OK) {
                         //Non ho bisogno dei dati della pagina di login
                         return null;
@@ -752,7 +737,6 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             } else {
-
 
                 if (params[0].equals(BASE_URL + "/cvv/app/default/genitori_note.php")) {
                     azione = Azione.VOTI;
@@ -784,12 +768,8 @@ public class MainActivity extends AppCompatActivity {
                     conn.setDoOutput(true);
 
                     List<HttpCookie> cookies = msCookieManager.getCookieStore().getCookies();
-
-                    if (cookies.size() > 0) {
-                        //Riutilizzo gli stessi cookie della sessione precedente
-                        conn.setRequestProperty("Cookie", TextUtils.join(";", msCookieManager.getCookieStore().getCookies()));
+                    if (cookies.size() > 0)
                         Log.v("PHPSESSID", cookies.get(0).toString());
-                    }
 
                     url = new URL(params[0]);
                     conn = (HttpURLConnection) url.openConnection();
@@ -1384,10 +1364,7 @@ public class MainActivity extends AppCompatActivity {
 
                                         media = media / (double) nMaterie;
 
-                                        if (CVDataList.isEmpty())
-                                            CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
-                                        else
-                                            CVDataList.add(new CVData("Media Generale", "", String.format(Locale.ENGLISH, "%.2f", media), ((float) media * 10f)));
+                                        CVDataList.add(new CVData("Media Generale", "", String.format(Locale.ENGLISH, "%.2f", media), ((float) media * 10f)));
                                         adapter.notifyDataSetChanged();
 
                                         if (!datiOffline)
@@ -1395,7 +1372,7 @@ public class MainActivity extends AppCompatActivity {
 
                                     } else {
                                         CVDataList.clear();
-                                        CVDataList.add(new CVData("Aggiorno", "Aggiorno i dati...", "", null));
+                                        CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
                                         adapter.notifyDataSetChanged();
                                     }
                                 }
@@ -1447,12 +1424,7 @@ public class MainActivity extends AppCompatActivity {
                                         }
 
                                         media = media / (double) nMaterie;
-
-                                        if (CVDataList.isEmpty())
-                                            CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
-                                        else
-                                            CVDataList.add(new CVData("Media Generale", "", String.format(Locale.ENGLISH, "%.2f", media), ((float) media * 10f)));
-
+                                        CVDataList.add(new CVData("Media Generale", "", String.format(Locale.ENGLISH, "%.2f", media), ((float) media * 10f)));
                                         adapter.notifyDataSetChanged();
 
                                         if (!datiOffline)
@@ -1460,7 +1432,7 @@ public class MainActivity extends AppCompatActivity {
 
                                     } else {
                                         CVDataList.clear();
-                                        CVDataList.add(new CVData("Aggiorno", "Aggiorno i dati...", "", null));
+                                        CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
                                         adapter.notifyDataSetChanged();
                                     }
                                 }
@@ -1512,11 +1484,7 @@ public class MainActivity extends AppCompatActivity {
 
                                         media = media / (double) nMaterie;
 
-                                        if (CVDataList.isEmpty())
-                                            CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
-                                        else
-                                            CVDataList.add(new CVData("Media Generale", "", String.format(Locale.ENGLISH, "%.2f", media), ((float) media * 10f)));
-
+                                        CVDataList.add(new CVData("Media Generale", "", String.format(Locale.ENGLISH, "%.2f", media), ((float) media * 10f)));
                                         adapter.notifyDataSetChanged();
 
                                         if (!datiOffline)
@@ -1524,7 +1492,7 @@ public class MainActivity extends AppCompatActivity {
 
                                     } else {
                                         CVDataList.clear();
-                                        CVDataList.add(new CVData("Aggiorno", "Aggiorno i dati...", "", null));
+                                        CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
                                         adapter.notifyDataSetChanged();
                                     }
                                 }
@@ -1610,13 +1578,8 @@ public class MainActivity extends AppCompatActivity {
 
                                         }
 
-
-                                        if (CVDataList.isEmpty())
-                                            CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
-
                                         snackbarVotiT = Snackbar.make(coordinatorLayout, "Voti totali: " + String.valueOf(nVotiT[0]), Snackbar.LENGTH_SHORT);
                                         snackbarVotiT.show();
-
                                         adapter.notifyDataSetChanged();
 
                                         if (!datiOffline)
@@ -1624,7 +1587,7 @@ public class MainActivity extends AppCompatActivity {
 
                                     } else {
                                         CVDataList.clear();
-                                        CVDataList.add(new CVData("Aggiorno", "Aggiorno i dati...", "", null));
+                                        CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
                                         adapter.notifyDataSetChanged();
                                     }
                                 }
@@ -1852,18 +1815,14 @@ public class MainActivity extends AppCompatActivity {
                                         for (Nota nota : notas)
                                             CVDataList.add(new CVData(nota.getProf() + "(" + nota.getTipo() + ") - " + nota.getData(), nota.getContenuto(), "", 0f));
 
+                                        adapter.notifyDataSetChanged();
+
                                         if (!datiOffline) {
                                             updateNote = false;
                                         }
-
-                                        if (CVDataList.isEmpty())
-                                            CVDataList.add(new CVData("Nessuna nota", "Ancora nessuna nota presente.", "", 0f));
-
-                                        adapter.notifyDataSetChanged();
-
                                     } else {
                                         CVDataList.clear();
-                                        CVDataList.add(new CVData("Aggiorno", "Aggiorno i dati...", "", null));
+                                        CVDataList.add(new CVData("Nessuna nota", "Ancora nessuna nota presente.", "", 0f));
                                         adapter.notifyDataSetChanged();
                                     }
                                 }
@@ -2046,10 +2005,6 @@ public class MainActivity extends AppCompatActivity {
 
                                         }
 
-
-                                        if (CVDataList.isEmpty())
-                                            CVDataList.add(new CVData("Nessun Elemento", "Nessun elemento presente nella sezione didattica.", "", 0f));
-
                                         if (WP_Didattica != null) {
                                             updateDidattica = false;
                                         }
@@ -2057,7 +2012,7 @@ public class MainActivity extends AppCompatActivity {
 
                                     } else {
                                         CVDataList.clear();
-                                        CVDataList.add(new CVData("Aggiorno", "Aggiorno i dati...", "", null));
+                                        CVDataList.add(new CVData("Nessun Elemento", "Nessun elemento presente nella sezione didattica.", "", 0f));
                                         adapter.notifyDataSetChanged();
                                     }
                                 }
@@ -2539,53 +2494,44 @@ public class MainActivity extends AppCompatActivity {
                     ViewHolder.Des.setTextIsSelectable(false);
                 }
 
-                if (CVDataList.get(i).prog != null) {
-                    ViewHolder.pv_circular.setIndeterminate(false);
-                    if (CVDataList.get(i).prog < 55f && CVDataList.get(i).prog != 0) {
-                        ViewHolder.pv_circular.setColor(ContextCompat.getColor(context, R.color.redmaterial));
-                        ViewHolder.pv_circular.setVisibility(View.VISIBLE);
-                        ViewHolder.Media.setVisibility(View.VISIBLE);
-                        if (CVDataList.get(i).title.equals("Media Generale")) {
-                            int unicode = 0x1F628; //Faccia impaurita
-                            ViewHolder.Des.setText(getEmojiByUnicode(unicode));
-                        }
-                        ViewHolder.pv_circular.setProgress(CVDataList.get(i).prog);
-                    } else if (CVDataList.get(i).prog >= 55f && CVDataList.get(i).prog < 60f) {
-                        ViewHolder.pv_circular.setColor(ContextCompat.getColor(context, R.color.orangematerial));
-                        ViewHolder.pv_circular.setVisibility(View.VISIBLE);
-                        ViewHolder.Media.setVisibility(View.VISIBLE);
-                        if (CVDataList.get(i).title.equals("Media Generale")) {
-                            int unicode = 0x1F44E; //Pollice in giù
-                            ViewHolder.Des.setText(getEmojiByUnicode(unicode));
-                        }
-                        ViewHolder.pv_circular.setProgress(CVDataList.get(i).prog);
-                    } else if (CVDataList.get(i).prog == 0f) {
-                        ViewHolder.pv_circular.setVisibility(View.GONE);
-                        ViewHolder.pv_circular.setProgress(1f);
-                        ViewHolder.pv_circular.stopAnimation();
-
-                        if (CVDataList.get(i).des.equals("")) //Se la descrizione non c'è la nascondo
-                            ViewHolder.Des.setVisibility(View.GONE);
-                        else ViewHolder.Des.setVisibility(View.VISIBLE);
-
-                    } else {
-                        ViewHolder.pv_circular.setColor(ContextCompat.getColor(context, R.color.greenmaterial));
-                        ViewHolder.pv_circular.setVisibility(View.VISIBLE);
-                        ViewHolder.Media.setVisibility(View.VISIBLE);
-                        if (CVDataList.get(i).title.equals("Media Generale")) {
-                            int unicode = 0x1F44D; //Pollice in su
-                            ViewHolder.Des.setText(getEmojiByUnicode(unicode));
-                        }
-                        ViewHolder.pv_circular.setProgress(CVDataList.get(i).prog);
+                ViewHolder.pv_circular.setIndeterminate(false);
+                if (CVDataList.get(i).prog < 55f && CVDataList.get(i).prog != 0) {
+                    ViewHolder.pv_circular.setColor(ContextCompat.getColor(context, R.color.redmaterial));
+                    ViewHolder.pv_circular.setVisibility(View.VISIBLE);
+                    ViewHolder.Media.setVisibility(View.VISIBLE);
+                    if (CVDataList.get(i).title.equals("Media Generale")) {
+                        int unicode = 0x1F628; //Faccia impaurita
+                        ViewHolder.Des.setText(getEmojiByUnicode(unicode));
                     }
+                    ViewHolder.pv_circular.setProgress(CVDataList.get(i).prog);
+                } else if (CVDataList.get(i).prog >= 55f && CVDataList.get(i).prog < 60f) {
+                    ViewHolder.pv_circular.setColor(ContextCompat.getColor(context, R.color.orangematerial));
+                    ViewHolder.pv_circular.setVisibility(View.VISIBLE);
+                    ViewHolder.Media.setVisibility(View.VISIBLE);
+                    if (CVDataList.get(i).title.equals("Media Generale")) {
+                        int unicode = 0x1F44E; //Pollice in giù
+                        ViewHolder.Des.setText(getEmojiByUnicode(unicode));
+                    }
+                    ViewHolder.pv_circular.setProgress(CVDataList.get(i).prog);
+                } else if (CVDataList.get(i).prog == 0f) {
+                    ViewHolder.pv_circular.setVisibility(View.GONE);
+                    ViewHolder.pv_circular.setProgress(1f);
+                    ViewHolder.pv_circular.stopAnimation();
+
+                    if (CVDataList.get(i).des.equals("")) //Se la descrizione non c'è la nascondo
+                        ViewHolder.Des.setVisibility(View.GONE);
+                    else ViewHolder.Des.setVisibility(View.VISIBLE);
 
                 } else {
-                    ViewHolder.pv_circular.setColor(ContextCompat.getColor(context, R.color.bluematerial));
-                    ViewHolder.pv_circular.setIndeterminate(true);
+                    ViewHolder.pv_circular.setColor(ContextCompat.getColor(context, R.color.greenmaterial));
                     ViewHolder.pv_circular.setVisibility(View.VISIBLE);
+                    ViewHolder.Media.setVisibility(View.VISIBLE);
+                    if (CVDataList.get(i).title.equals("Media Generale")) {
+                        int unicode = 0x1F44D; //Pollice in su
+                        ViewHolder.Des.setText(getEmojiByUnicode(unicode));
+                    }
+                    ViewHolder.pv_circular.setProgress(CVDataList.get(i).prog);
                 }
-
-
             }
 
             @Override
