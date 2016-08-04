@@ -56,7 +56,6 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAv
 public class Notifiche extends BroadcastReceiver {
 
 
-    CookieManager msCookieManager = new CookieManager();
     Context ct;
     int nNotif = 0;
 
@@ -85,7 +84,7 @@ public class Notifiche extends BroadcastReceiver {
         c.close();
         db.close();
 
-        if (isNetworkAvailable(context) && count >= 0){
+        if (isNetworkAvailable(context) && count > 0){
             new GetStringFromUrl().execute(MainActivity.BASE_URL + "/home/app/default/login.php");
 
             if (sharePref.getBoolean("notifichevoti", true))
@@ -113,8 +112,6 @@ public class Notifiche extends BroadcastReceiver {
 
         @Override
         protected String doInBackground(String... params) {
-
-            final String COOKIES_HEADER = "Set-Cookie";
             Log.v("Scarico", params[0]);
 
             URL url;
