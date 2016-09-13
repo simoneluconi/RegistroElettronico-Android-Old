@@ -302,8 +302,8 @@ public class OggiAScuola extends AppCompatActivity {
                     url = new URL(params[0]);
 
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setReadTimeout(15000);
-                    conn.setConnectTimeout(15000);
+                    conn.setReadTimeout(5000);
+                    conn.setConnectTimeout(5000);
                     conn.setRequestMethod("GET");
                     conn.setDoInput(true);
                     conn.setDoOutput(true);

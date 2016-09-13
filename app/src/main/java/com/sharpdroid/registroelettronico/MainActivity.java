@@ -420,6 +420,7 @@ public class MainActivity extends AppCompatActivity {
                             .withIdentifier(i), i);
                 }
             }
+
             headerResult.addProfile(new ProfileSettingDrawerItem().withName(getResources().getString(R.string.aggacc))
                     .withIcon(ContextCompat.getDrawable(this, R.drawable.iconaccplus))
                     .withIdentifier(100010), i);
@@ -562,7 +563,7 @@ public class MainActivity extends AppCompatActivity {
                             uris.add(Uri.fromFile(backupDB));
 
                             Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-                            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"sharpdroidmail@gmail.com"});
+                            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"luconi.simone@gmail.com"});
                             intent.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico");
                             intent.putExtra(Intent.EXTRA_TEXT, "Inviando questa mail invierai anche il contenuto di voti, agenda e note.\n");
                             intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
