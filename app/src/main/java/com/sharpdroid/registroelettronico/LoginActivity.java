@@ -490,18 +490,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     in.close();
                     response = sb.toString();
 
-                    Document data = Jsoup.parse(sb.toString());
-                    element = data.select("p.double").select("span");
-                    for (Element el : element)
-                        if (el.text().contains("Studente")) {
-                            String tmp = el.text().replace("Studente", "").trim();
-                            Nome = ProfDecente(tmp);
-                            break;
-                        }
-                    mCodiceScuola = data.select("span.redtext").get(0).text().split("\\.")[0];
-                    url = new URL("http://sharpdroid.altervista.org/registroelettronico/scuole/AggiungiScuola.php?codice=" + mCodiceScuola);
-                    conn = (HttpURLConnection) url.openConnection();
-                    conn.getInputStream();
                     CancellaPagineLocali(LoginActivity.this);
                     SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPref.edit();
