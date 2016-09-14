@@ -162,31 +162,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-
-        TextView AccFail = (TextView) findViewById(R.id.FailAccesso);
-        AccFail.setPaintFlags(AccFail.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        AccFail.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                new MaterialDialog.Builder(LoginActivity.this)
-                        .title(R.string.nonriesciaccedere)
-                        .content(getString(R.string.trovacodicescuola))
-                        .theme(Theme.LIGHT)
-                        .positiveText(android.R.string.ok)
-                        .neutralText("Cerca Scuola")
-                        .onNeutral(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                Uri uri = Uri.parse("http://sharpdroid.altervista.org/registroelettronico/scuole/");
-                                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                                startActivity(intent);
-
-                            }
-                        }).show();
-            }
-        });
-
         populateAutoComplete();
 
     }
