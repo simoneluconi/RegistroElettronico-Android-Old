@@ -24,6 +24,9 @@ import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyDB;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
 
 import org.acra.ACRA;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -68,14 +71,15 @@ public class Notifiche extends BroadcastReceiver {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, 7);
 
-        String primadata, secondadata;
+        DateTime primadata, secondadata;
         int mm = Calendar.getInstance().get(Calendar.MONTH) + 1;
+        DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-MM-dd");
         if (mm >= 9 && mm <= 12) {
-            primadata = String.valueOf(Calendar.getInstance().get(Calendar.YEAR)) + "-09-01";
-            secondadata = String.valueOf(Calendar.getInstance().get(Calendar.YEAR) + 1) + "-09-01";
+            primadata = dtf.parseDateTime(Calendar.getInstance().get(Calendar.YEAR) + "-09-01");
+            secondadata = dtf.parseDateTime((Calendar.getInstance().get(Calendar.YEAR) + 1) + "-09-01");
         } else {
-            primadata = String.valueOf(Calendar.getInstance().get(Calendar.YEAR) - 1) + "-09-01";
-            secondadata = String.valueOf(Calendar.getInstance().get(Calendar.YEAR)) + "-09-01";
+            primadata = dtf.parseDateTime((Calendar.getInstance().get(Calendar.YEAR) - 1) + "-09-01");
+            secondadata = dtf.parseDateTime(Calendar.getInstance().get(Calendar.YEAR) + "-09-01");
         }
 
         SQLiteDatabase db = new MyUsers(context).getWritableDatabase();
@@ -91,7 +95,7 @@ public class Notifiche extends BroadcastReceiver {
                 new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/genitori_note.php");
 
             if (sharePref.getBoolean("notificheagenda", true))
-                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/xml_export.php?stampa=%3Astampa%3A&tipo=agenda&tipo_export=EVENTI_AGENDA_STUDENTI&ope=RPT&dal=" + primadata + "&al=" + secondadata + "&formato=html");
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/agenda_studenti.php?ope=get_events&start=" + primadata.getMillis() / 1000 + "&end=" + secondadata.getMillis() / 1000);
 
             if (sharePref.getBoolean("notifichescrutini", true))
                 new GetStringFromUrl().execute(MainActivity.BASE_URL + "/sol/app/default/documenti_sol.php");

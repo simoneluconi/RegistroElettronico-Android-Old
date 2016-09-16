@@ -1650,8 +1650,7 @@ public class MainActivity extends AppCompatActivity {
                                         compactCalendarView.removeEvents(c.getDataInizio().getMillis());
                                         compactCalendarView.addEvents(events);
 
-                                        Days d = Days.daysBetween(CalMostra, c.getDataInizio());
-                                        if (d.getDays() == 0) {
+                                        if (CalMostra.toLocalDate().isEqual(c.getDataInizio().withZone(CalMostra.getZone()).toLocalDate())) {
                                             compitishow.add(c);
                                             CVDataList.add(new CVData(autore, "<Agenda>" + c.getContenuto(), "", 0f));
                                         }
