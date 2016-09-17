@@ -494,7 +494,7 @@ public class MainActivity extends AppCompatActivity {
                                 url_car = BASE_URL + "/home/app/default/login_email.php?login=" + username + "&password=" + password + "&mode=email";
                             } else {
                                 String custcode = sharedPref.getString("Custcode", "");
-                                url_car = BASE_URL + "/home/app/default/login.php?custcode=" + custcode + "&login" + username + "&password" + password;
+                                url_car = BASE_URL + "/home/app/default/pxlogin.php?custcode=" + custcode + "&login" + username + "&password" + password;
                             }
 
                             Uri uri = Uri.parse(url_car);
@@ -702,7 +702,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 postDataParams.put("custcode", codicescuola);
                 postDataParams.put("login", username);
-                url_car = BASE_URL + "/home/app/default/login.php";
+                url_car = BASE_URL + "/home/app/default/pxlogin.php";
             }
             postDataParams.put("password", password);
 
@@ -1178,7 +1178,7 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         if (nTentativiDownloadDidattica < 2) {
                             Toast.makeText(context, "Sessione scaduta. Login in corso...", Toast.LENGTH_LONG).show();
-                            new GetStringFromUrl().execute(BASE_URL + "/home/app/default/login.php");
+                            new GetStringFromUrl().execute(BASE_URL + "/home/app/default/pxlogin.php");
                             new GetStringFromUrl().execute(url);
                         } else {
                             Toast.makeText(context, "Si è verificato un problema", Toast.LENGTH_LONG).show();
@@ -2605,7 +2605,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private static void AggiornaDati() {
-        new GetStringFromUrl().execute(BASE_URL + "/home/app/default/login.php");
+        new GetStringFromUrl().execute(BASE_URL + "/home/app/default/pxlogin.php");
         new GetStringFromUrl().execute(BASE_URL + "/cvv/app/default/genitori_note.php");
         new GetStringFromUrl().execute(BASE_URL + "/cvv/app/default/gioprof_note_studente.php");
         new GetStringFromUrl().execute(BASE_URL + "/cvv/app/default/agenda_studenti.php?ope=get_events&start=" + primadata.getMillis() / 1000 + "&end=" + secondadata.getMillis() / 1000);

@@ -94,7 +94,7 @@ public class Lezioni extends AppCompatActivity {
         context = Lezioni.this;
         if (isNetworkAvailable(context)) {
             if (MainActivity.msCookieManager.getCookieStore().getCookies().isEmpty())
-                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/home/app/default/login.php");
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/home/app/default/pxlogin.php");
             new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/regclasse_lezioni_xstudenti.php");
         }
     }
@@ -268,7 +268,7 @@ public class Lezioni extends AppCompatActivity {
             } else {
                 postDataParams.put("custcode", codicescuola);
                 postDataParams.put("login", username);
-                url_car = MainActivity.BASE_URL + "/home/app/default/login.php";
+                url_car = MainActivity.BASE_URL + "/home/app/default/pxlogin.php";
             }
             postDataParams.put("password", password);
 

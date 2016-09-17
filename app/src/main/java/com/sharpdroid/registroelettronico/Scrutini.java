@@ -113,7 +113,7 @@ public class Scrutini extends AppCompatActivity {
 
         if (isNetworkAvailable(Scrutini.this)) {
             if (MainActivity.msCookieManager.getCookieStore().getCookies().isEmpty())
-                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/home/app/default/login.php");
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/home/app/default/pxlogin.php");
             new GetStringFromUrl().execute(MainActivity.BASE_URL + "/sol/app/default/documenti_sol.php");
         } else
             Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
@@ -245,7 +245,7 @@ public class Scrutini extends AppCompatActivity {
             } else {
                 postDataParams.put("custcode", codicescuola);
                 postDataParams.put("login", username);
-                url_car = MainActivity.BASE_URL + "/home/app/default/login.php";
+                url_car = MainActivity.BASE_URL + "/home/app/default/pxlogin.php";
             }
             postDataParams.put("password", password);
 
