@@ -116,7 +116,7 @@ public class OggiAScuola extends AppCompatActivity {
         });
         if (isNetworkAvailable(OggiAScuola.this)) {
             if (MainActivity.msCookieManager.getCookieStore().getCookies().isEmpty())
-                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/home/app/default/login.php");
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/home/app/default/pxlogin.php");
             new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/regclasse.php");
         } else
             Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
@@ -250,7 +250,7 @@ public class OggiAScuola extends AppCompatActivity {
             } else {
                 postDataParams.put("custcode", codicescuola);
                 postDataParams.put("login", username);
-                url_car = MainActivity.BASE_URL + "/home/app/default/login.php";
+                url_car = MainActivity.BASE_URL + "/home/app/default/pxlogin.php";
             }
             postDataParams.put("password", password);
 

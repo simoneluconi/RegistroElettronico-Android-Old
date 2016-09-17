@@ -89,7 +89,7 @@ public class Notifiche extends BroadcastReceiver {
         db.close();
 
         if (isNetworkAvailable(context) && count > 0){
-            new GetStringFromUrl().execute(MainActivity.BASE_URL + "/home/app/default/login.php");
+            new GetStringFromUrl().execute(MainActivity.BASE_URL + "/home/app/default/pxlogin.php");
 
             if (sharePref.getBoolean("notifichevoti", true))
                 new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/genitori_note.php");
@@ -140,7 +140,7 @@ public class Notifiche extends BroadcastReceiver {
             } else {
                 postDataParams.put("custcode", codicescuola);
                 postDataParams.put("login", username);
-                url_car = MainActivity.BASE_URL + "/home/app/default/login.php";
+                url_car = MainActivity.BASE_URL + "/home/app/default/pxlogin.php";
             }
             postDataParams.put("password", password);
 

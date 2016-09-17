@@ -106,7 +106,7 @@ public class Circolari extends AppCompatActivity {
 
         if (isNetworkAvailable(Circolari.this)) {
             if (MainActivity.msCookieManager.getCookieStore().getCookies().isEmpty())
-                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/home/app/default/login.php");
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/home/app/default/pxlogin.php");
             new GetStringFromUrl().execute(MainActivity.BASE_URL + "/sif/app/default/bacheca_utente.php");
         } else
             Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
@@ -239,7 +239,7 @@ public class Circolari extends AppCompatActivity {
             } else {
                 postDataParams.put("custcode", codicescuola);
                 postDataParams.put("login", username);
-                url_car = MainActivity.BASE_URL + "/home/app/default/login.php";
+                url_car = MainActivity.BASE_URL + "/home/app/default/pxlogin.php";
             }
             postDataParams.put("password", password);
 

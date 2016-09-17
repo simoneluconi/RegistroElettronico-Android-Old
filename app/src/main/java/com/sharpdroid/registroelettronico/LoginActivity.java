@@ -396,7 +396,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             } else {
                 postDataParams.put("custcode", mCodiceScuola.toUpperCase().trim());
                 postDataParams.put("login", mEmail.trim());
-                url_car = "https://web.spaggiari.eu/home/app/default/login.php";
+                url_car = "https://web.spaggiari.eu/home/app/default/pxlogin.php";
             }
             postDataParams.put("password", mPassword.trim());
 
@@ -405,9 +405,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(15000);
-                conn.setConnectTimeout(15000);
-                conn.setRequestMethod("POST");
+                conn.setReadTimeout(5000);
+                conn.setConnectTimeout(5000);
+                conn.setRequestMethod("GET");
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
 
@@ -446,12 +446,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     if (size > 0)
                         return false;
 
-                    if (msCookieManager.getCookieStore().getCookies().size() > 0) {
-                        //Riutilizzo gli stessi cookie della sessione precedente
-                        conn.setRequestProperty("Cookie", TextUtils.join(";", msCookieManager.getCookieStore().getCookies()));
-                    }
-
-
                     url = new URL("https://web.spaggiari.eu/sso/app/default/me.php");
                     conn = (HttpURLConnection) url.openConnection();
                     BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -474,9 +468,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             break;
                         }
                     mCodiceScuola = data.select("span.redtext").get(0).text().split("\\.")[0];
-                    url = new URL("http://sharpdroid.altervista.org/registroelettronico/scuole/AggiungiScuola.php?codice=" + mCodiceScuola);
-                    conn = (HttpURLConnection) url.openConnection();
-                    conn.getInputStream();
 
                     CancellaPagineLocali(LoginActivity.this);
                     SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
