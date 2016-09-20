@@ -19,10 +19,4 @@
         <item name="background">@color/material_blue_500</item>
     </style>
 
-    <style name="PopupMenu" parent="Theme.AppCompat.Light">
-        <item name="android:background">@color/colorPrimaryDark</item>
-        <item name="android:textColorPrimary">#FFFFFF</item>
-    </style>
-
-
 </resources>

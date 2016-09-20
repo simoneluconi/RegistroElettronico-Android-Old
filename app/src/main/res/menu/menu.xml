@@ -1,27 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/obbiettivobtn"
-        android:title="@string/impostaobb"
-        android:showAsAction="never"
-        tools:ignore="AppCompatResource" />
+          android:title="@string/impostaobb"
+          app:showAsAction="never" />
 
     <item android:id="@+id/notifichevoti"
-        android:title="@string/notifichevoti"
-        android:showAsAction="ifRoom"
-        android:checkable="true"
-        tools:ignore="AppCompatResource" />
+          android:title="@string/notifichevoti"
+          android:checkable="true"
+          app:showAsAction="never" />
 
     <item android:id="@+id/notificheagenda"
-        android:title="@string/notificheagenda"
-        android:showAsAction="ifRoom"
-        android:checkable="true"
-        tools:ignore="AppCompatResource" />
+          android:title="@string/notificheagenda"
+          android:checkable="true"
+          app:showAsAction="never" />
 
     <item android:id="@+id/notifichescrutini"
-        android:title="@string/notifichescrutini"
-        android:showAsAction="ifRoom"
-        android:checkable="true"
-        tools:ignore="AppCompatResource" />
+          android:title="@string/notifichescrutini"
+          android:checkable="true"
+          app:showAsAction="never" />
 </menu>
