@@ -57,7 +57,7 @@ public class FileOffline extends AppCompatActivity {
     public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
         File[] files;
 
-        public class PersonViewHolder extends RecyclerView.ViewHolder {
+        class PersonViewHolder extends RecyclerView.ViewHolder {
             CardView cv;
             ImageView Ext;
             TextView Nome;

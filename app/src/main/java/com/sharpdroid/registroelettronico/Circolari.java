@@ -17,7 +17,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,16 +43,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
-import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -116,7 +111,7 @@ public class Circolari extends AppCompatActivity {
     public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
         List<Circolare> Circolaris;
 
-        public class PersonViewHolder extends RecyclerView.ViewHolder {
+        class PersonViewHolder extends RecyclerView.ViewHolder {
             CardView cv;
             TextView NCircolare;
             TextView Titolo;

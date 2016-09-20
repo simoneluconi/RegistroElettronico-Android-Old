@@ -11,6 +11,7 @@ android {
         versionCode 255
         versionName "255"
     }
+
     buildTypes {
         release {
             minifyEnabled false

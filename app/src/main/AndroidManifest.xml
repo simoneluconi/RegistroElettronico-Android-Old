@@ -71,7 +71,7 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".FileOffline" />
         <activity android:name=".Scrutini" />
-        <activity android:name=".Lezioni"></activity>
+        <activity android:name=".Lezioni" />
     </application>
 
 </manifest>
