@@ -444,7 +444,6 @@ public class MainActivity extends AppCompatActivity {
                             new PrimaryDrawerItem().withName(R.string.aprireg).withIcon(ContextCompat.getDrawable(this, R.drawable.web)),
                             new PrimaryDrawerItem().withName(R.string.forzacontrollo).withIcon(ContextCompat.getDrawable(this, R.drawable.refresh)),
                             new DividerDrawerItem(),
-                            new SecondaryDrawerItem().withName(R.string.paginafacebook).withIcon(ContextCompat.getDrawable(this, R.drawable.facebook)),
                             new SecondaryDrawerItem().withName(R.string.segnalaproblema).withIcon(ContextCompat.getDrawable(this, R.drawable.email))
                     ).build();
 
@@ -513,21 +512,6 @@ public class MainActivity extends AppCompatActivity {
                             break;
 
                         case 10:
-                            uri = Uri.parse("https://www.facebook.com/sharpdr0id/");
-                            try {
-                                ApplicationInfo applicationInfo = getPackageManager().getApplicationInfo("com.facebook.katana", 0);
-                                if (applicationInfo.enabled) {
-                                    // http://stackoverflow.com/a/24547437/1048340
-                                    uri = Uri.parse("fb://facewebmodal/f?href=" + "https://www.facebook.com/sharpdr0id/");
-                                }
-                            } catch (PackageManager.NameNotFoundException ignored) {
-                            }
-                            Intent openFb = new Intent(Intent.ACTION_VIEW, uri);
-                            startActivity(openFb);
-                            break;
-
-
-                        case 11:
                             File backupDB = new File(getExternalCacheDir(), "MyData.db");
                             try {
                                 PackageManager m = getPackageManager();
