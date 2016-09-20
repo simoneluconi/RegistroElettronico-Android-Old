@@ -46,7 +46,7 @@
     <string name="impostaobb">Imposta obiettivo</string>
     <string name="ultimaversione">Non hai l\'ultima versione dell\'app. Aggiornala dal play store!</string>
     <string name="impostaobbdes">Seleziona il voto a cui vuoi arrivare o che vuoi mantenere</string>
-    <string name="toast_crash">E\' stato rilevato un problema, verrà segnalato allo sviluppatore. Se puoi contattaci via mail: sharpdroidmail@gmail.com, risolveremo il problema più velocemente.</string>
+    <string name="toast_crash">E\' stato rilevato un problema, verrà segnalato allo sviluppatore. Se puoi contattaci via mail: luconi.simone@gmail.com, risolveremo il problema più velocemente.</string>
     <string name="nocampivuoti">Non lasciare campi vuoti!</string>
     <string name="tutorialdes">E\' la prima volta che apri l\'app. Se desideri avere informazioni sul suo funzionamento clicca sul pulsante OK. Inoltre troverai un link per scaricare la versione per Windows di questa app. Potrai sempre ritrovare questa opzione nel menu.</string>
     <string name="modificaevento">Cosa vuoi fare?</string>
