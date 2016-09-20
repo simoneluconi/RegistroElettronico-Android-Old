@@ -444,7 +444,6 @@ public class MainActivity extends AppCompatActivity {
                             new PrimaryDrawerItem().withName(R.string.aprireg).withIcon(ContextCompat.getDrawable(this, R.drawable.web)),
                             new PrimaryDrawerItem().withName(R.string.forzacontrollo).withIcon(ContextCompat.getDrawable(this, R.drawable.refresh)),
                             new DividerDrawerItem(),
-                            new SecondaryDrawerItem().withName(R.string.sitoweb).withIcon(ContextCompat.getDrawable(this, R.drawable.web)),
                             new SecondaryDrawerItem().withName(R.string.paginafacebook).withIcon(ContextCompat.getDrawable(this, R.drawable.facebook)),
                             new SecondaryDrawerItem().withName(R.string.segnalaproblema).withIcon(ContextCompat.getDrawable(this, R.drawable.email))
                     ).build();
@@ -509,25 +508,11 @@ public class MainActivity extends AppCompatActivity {
                                     });
                             break;
 
-
                         case 8:
                             AvviaNotifiche(MainActivity.this);
                             break;
 
                         case 10:
-                            uri = Uri.parse("http://sharpdroid.altervista.org/registroelettronico/");
-                            customTabsIntent = new CustomTabsIntent.Builder().setToolbarColor(Color.parseColor("#29b6f6")).setShowTitle(true).build();
-                            CustomTabActivityHelper.openCustomTab(MainActivity.this, customTabsIntent, uri,
-                                    new CustomTabActivityHelper.CustomTabFallback() {
-                                        @Override
-                                        public void openUri(Activity activity, Uri uri) {
-                                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                                            startActivity(intent);
-                                        }
-                                    });
-                            break;
-
-                        case 11:
                             uri = Uri.parse("https://www.facebook.com/sharpdr0id/");
                             try {
                                 ApplicationInfo applicationInfo = getPackageManager().getApplicationInfo("com.facebook.katana", 0);
@@ -542,7 +527,7 @@ public class MainActivity extends AppCompatActivity {
                             break;
 
 
-                        case 12:
+                        case 11:
                             File backupDB = new File(getExternalCacheDir(), "MyData.db");
                             try {
                                 PackageManager m = getPackageManager();
@@ -590,7 +575,6 @@ public class MainActivity extends AppCompatActivity {
                 notes = ReadNote(this);
 
                 if (isNetworkAvailable(MainActivity.this)) {
-                    AvviaNotifiche(MainActivity.this);
                     new GetStringFromUrl().execute("https://play.google.com/store/apps/details?id=com.sharpdroid.registroelettronico");
                     AggiornaDati();
                 } else
@@ -1198,7 +1182,7 @@ public class MainActivity extends AppCompatActivity {
 
         String[] tab = getResources().getStringArray(R.array.tab_title);
 
-        public PagerAdapter(FragmentManager fm) {
+        PagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -2055,7 +2039,7 @@ public class MainActivity extends AppCompatActivity {
         public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
             List<CVData> CVDataList;
 
-            public class ViewHolder extends RecyclerView.ViewHolder {
+            class ViewHolder extends RecyclerView.ViewHolder {
                 CardView cv;
                 TextView Title;
                 TextView Des;
