@@ -1577,11 +1577,12 @@ public class MainActivity extends AppCompatActivity {
 
                         final Calendar cal = Calendar.getInstance();
                         boolean AggiungiGiornoSeSabato = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY;
+                        boolean isDomenica = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
                         boolean OrarioScolastico = cal.get(Calendar.HOUR_OF_DAY) < 14;
                         if (AggiungiGiornoSeSabato && !OrarioScolastico)
+                            CalMostra = CalMostra.plusDays(2);
+                        else if (!OrarioScolastico || isDomenica)
                             CalMostra = CalMostra.plusDays(1);
-                        else if (OrarioScolastico)
-                            CalMostra = CalMostra.minusDays(1);
 
                         if (DataCal != null)
                             CalMostra = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(DataCal);
