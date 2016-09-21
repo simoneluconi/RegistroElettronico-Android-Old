@@ -441,7 +441,6 @@ public class MainActivity extends AppCompatActivity {
                             new PrimaryDrawerItem().withName(R.string.circolari).withIcon(ContextCompat.getDrawable(this, R.drawable.document)).withIdentifier(3).withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.redmaterial)),
                             new PrimaryDrawerItem().withName(R.string.scrutini).withIcon(ContextCompat.getDrawable(this, R.drawable.book)).withIdentifier(4).withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.redmaterial)),
                             new PrimaryDrawerItem().withName(R.string.fileoff).withIcon(ContextCompat.getDrawable(this, R.drawable.download)).withIdentifier(5).withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.bluematerial)),
-                            new PrimaryDrawerItem().withName(R.string.aprireg).withIcon(ContextCompat.getDrawable(this, R.drawable.web)),
                             new PrimaryDrawerItem().withName(R.string.forzacontrollo).withIcon(ContextCompat.getDrawable(this, R.drawable.refresh)),
                             new DividerDrawerItem(),
                             new SecondaryDrawerItem().withName(R.string.segnalaproblema).withIcon(ContextCompat.getDrawable(this, R.drawable.email))
@@ -484,34 +483,12 @@ public class MainActivity extends AppCompatActivity {
                             MainActivity.this.startActivity(myIntent);
                             break;
 
+
                         case 7:
-                            String username = sharedPref.getString("Username", "");
-                            String password = sharedPref.getString("Password", "");
-                            String url_car;
-                            if (username.contains("@")) {
-                                url_car = BASE_URL + "/home/app/default/login_email.php?login=" + username + "&password=" + password + "&mode=email";
-                            } else {
-                                String custcode = sharedPref.getString("Custcode", "");
-                                url_car = BASE_URL + "/home/app/default/pxlogin.php?custcode=" + custcode + "&login" + username + "&password" + password;
-                            }
-
-                            Uri uri = Uri.parse(url_car);
-                            CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder().setToolbarColor(ContextCompat.getColor(context, R.color.redmaterial)).setShowTitle(true).build();
-                            CustomTabActivityHelper.openCustomTab(MainActivity.this, customTabsIntent, uri,
-                                    new CustomTabActivityHelper.CustomTabFallback() {
-                                        @Override
-                                        public void openUri(Activity activity, Uri uri) {
-                                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                                            startActivity(intent);
-                                        }
-                                    });
-                            break;
-
-                        case 8:
                             AvviaNotifiche(MainActivity.this);
                             break;
 
-                        case 10:
+                        case 9:
                             File backupDB = new File(getExternalCacheDir(), "MyData.db");
                             try {
                                 PackageManager m = getPackageManager();
@@ -657,26 +634,12 @@ public class MainActivity extends AppCompatActivity {
             c.move(ActiveUsers);
             String username = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_USERNAME));
             String password = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_PASSWORD));
-            String codicescuola = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_CODICESCUOLA));
             c.close();
             db.close();
 
-            String url_car;
-            if (username.contains("@")) {
-                postDataParams.put("mode", "email");
-                postDataParams.put("login", username);
-                url_car = BASE_URL + "/home/app/default/login_email.php";
-
-            } else {
-                postDataParams.put("custcode", codicescuola);
-                postDataParams.put("login", username);
-                url_car = BASE_URL + "/home/app/default/pxlogin.php";
-            }
-            postDataParams.put("password", password);
-
-            if (params[0].contains("login")) {
+            if (params[0].contains("auth")) {
                 try {
-                    url = new URL(url_car);
+                    url = new URL(params[0]);
 
                     CookieHandler.setDefault(msCookieManager);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -685,6 +648,9 @@ public class MainActivity extends AppCompatActivity {
                     conn.setRequestMethod("POST");
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
+
+                    postDataParams.put("uid", username);
+                    postDataParams.put("pwd", password);
 
                     OutputStream os = conn.getOutputStream();
                     BufferedWriter writer = new BufferedWriter(
@@ -2574,7 +2540,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private static void AggiornaDati() {
-        new GetStringFromUrl().execute(BASE_URL + "/home/app/default/pxlogin.php");
+        new GetStringFromUrl().execute(BASE_URL + "/auth/app/default/AuthApi2.php?a=aLoginPwd");
         new GetStringFromUrl().execute(BASE_URL + "/cvv/app/default/genitori_note.php");
         new GetStringFromUrl().execute(BASE_URL + "/cvv/app/default/gioprof_note_studente.php");
         new GetStringFromUrl().execute(BASE_URL + "/cvv/app/default/agenda_studenti.php?ope=get_events&start=" + primadata.getMillis() / 1000 + "&end=" + secondadata.getMillis() / 1000);

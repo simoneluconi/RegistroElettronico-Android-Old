@@ -51,6 +51,7 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import static com.sharpdroid.registroelettronico.MainActivity.msCookieManager;
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.MateriaDecente;
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.ProfDecente;
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.getPostDataString;
@@ -86,8 +87,8 @@ public class Lezioni extends AppCompatActivity {
         // mTabs.setViewPager(mPager);
         context = Lezioni.this;
         if (isNetworkAvailable(context)) {
-            if (MainActivity.msCookieManager.getCookieStore().getCookies().isEmpty())
-                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/home/app/default/pxlogin.php");
+            if (msCookieManager.getCookieStore().getCookies().isEmpty())
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/auth/app/default/AuthApi2.php?a=aLoginPwd");
             new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/regclasse_lezioni_xstudenti.php");
         }
     }
@@ -248,36 +249,23 @@ public class Lezioni extends AppCompatActivity {
             c.move(ActiveUsers);
             String username = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_USERNAME));
             String password = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_PASSWORD));
-            String codicescuola = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_CODICESCUOLA));
             c.close();
             db.close();
 
-            String url_car;
-            if (username.contains("@")) {
-                postDataParams.put("mode", "email");
-                postDataParams.put("login", username);
-                url_car = MainActivity.BASE_URL + "/home/app/default/login_email.php";
-
-            } else {
-                postDataParams.put("custcode", codicescuola);
-                postDataParams.put("login", username);
-                url_car = MainActivity.BASE_URL + "/home/app/default/pxlogin.php";
-            }
-            postDataParams.put("password", password);
-
-            if (params[0].contains("login")) {
-                azione = Azione.LOGIN;
+            if (params[0].contains("auth")) {
                 try {
-                    url = new URL(url_car);
-                    this.url = url_car;
+                    url = new URL(params[0]);
 
-                    CookieHandler.setDefault(MainActivity.msCookieManager);
+                    CookieHandler.setDefault(msCookieManager);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setReadTimeout(5000);
                     conn.setConnectTimeout(5000);
                     conn.setRequestMethod("POST");
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
+
+                    postDataParams.put("uid", username);
+                    postDataParams.put("pwd", password);
 
                     OutputStream os = conn.getOutputStream();
                     BufferedWriter writer = new BufferedWriter(
@@ -288,16 +276,9 @@ public class Lezioni extends AppCompatActivity {
                     writer.close();
                     os.close();
                     int responseCode = conn.getResponseCode();
-
-                    StringBuilder sb = new StringBuilder();
                     if (responseCode == HttpsURLConnection.HTTP_OK) {
-                        String line;
-                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                        while ((line = br.readLine()) != null) {
-                            sb.append(line);
-                            sb.append("\n");
-                        }
-                        return sb.toString();
+                        //Non ho bisogno dei dati della pagina di login
+                        return null;
 
                     } else {
                         return null;

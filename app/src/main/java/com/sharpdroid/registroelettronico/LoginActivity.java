@@ -42,6 +42,8 @@ import android.widget.Toast;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
 
 import org.acra.ACRA;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -86,7 +88,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
-    private EditText mCodiceScuola;
     private View mProgressView;
     private View mLoginFormView;
     String Nome = "";
@@ -102,7 +103,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         context = this;
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
-        mCodiceScuola = (EditText) findViewById(R.id.codicescuola);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -113,37 +113,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 return false;
             }
         });
-
-        if (savedInstanceState == null) {
-            Bundle extras = getIntent().getExtras();
-            if (extras != null) {
-                String codicescuola = extras.getString("com.sharpdroid.registroelettronico.codicescuola", null);
-                if (codicescuola != null)
-                    mCodiceScuola.setText(codicescuola);
-            }
-        }
-
-        mEmailView.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start,
-                                      int before, int count) {
-                if (s.toString().contains("@"))
-                    mCodiceScuola.setVisibility(View.GONE);
-                else mCodiceScuola.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
 
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -233,7 +202,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
-        String codicescuola = mCodiceScuola.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -257,7 +225,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password, codicescuola);
+            mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
     }
@@ -367,34 +335,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
-        private String mCodiceScuola;
 
-        UserLoginTask(String email, String password, String codicescuola) {
+        UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
-            mCodiceScuola = codicescuola;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            final String COOKIES_HEADER = "Set-Cookie";
             URL url;
             String response = "";
-            CookieManager msCookieManager = new CookieManager();
             HashMap<String, String> postDataParams = new HashMap<>();
-            String url_car;
-            if (mEmail.contains("@")) {
-                postDataParams.put("mode", "email");
-                postDataParams.put("login", mEmail.trim());
-                url_car = "https://web.spaggiari.eu/home/app/default/login_email.php";
+            String url_car = MainActivity.BASE_URL + "/auth/app/default/AuthApi2.php?a=aLoginPwd";
 
-            } else {
-                postDataParams.put("custcode", mCodiceScuola.toUpperCase().trim());
-                postDataParams.put("login", mEmail.trim());
-                url_car = "https://web.spaggiari.eu/home/app/default/pxlogin.php";
-            }
-            postDataParams.put("password", mPassword.trim());
+            postDataParams.put("uid", mEmail.trim());
+            postDataParams.put("pwd", mPassword.trim());
 
             try {
                 url = new URL(url_car);
@@ -403,10 +359,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setReadTimeout(5000);
                 conn.setConnectTimeout(5000);
-                conn.setRequestMethod("GET");
+                conn.setRequestMethod("POST");
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
-
 
                 OutputStream os = conn.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(
@@ -418,15 +373,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 os.close();
                 int responseCode = conn.getResponseCode();
 
-                Map<String, List<String>> headerFields = conn.getHeaderFields();
-                List<String> cookiesHeader = headerFields.get(COOKIES_HEADER);
-
-                if (cookiesHeader != null) {
-                    for (String cookie : cookiesHeader) {
-                        msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
-                    }
-                }
-
 
                 if (responseCode == HttpsURLConnection.HTTP_OK) {
                     String line;
@@ -436,34 +382,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         sb.append(line);
                     }
 
-                    Elements element = Jsoup.parse(sb.toString()).select(".error-msg.double");
-                    ErrMsg = element.text();
-                    int size = element.size();
-                    if (size > 0)
-                        return false;
+                    JSONObject jo = new JSONObject(sb.toString()).getJSONObject("data").getJSONObject("auth");
 
-                    url = new URL("https://web.spaggiari.eu/sso/app/default/me.php");
-                    conn = (HttpURLConnection) url.openConnection();
-                    BufferedReader in = new BufferedReader(new InputStreamReader(
-                            conn.getInputStream()));
-                    String inputLine;
-                    sb = new StringBuilder();
-                    while ((inputLine = in.readLine()) != null) {
-                        sb.append(inputLine);
+                    JSONArray errors = jo.getJSONArray("errors");
+                    if (errors.length() > 0) {
+                        ErrMsg = errors.getString(0);
+                        return false;
                     }
 
-                    in.close();
-                    response = sb.toString();
+                    JSONObject info = jo.getJSONObject("accountInfo");
 
-                    Document data = Jsoup.parse(response);
-                    element = data.select("p.double").select("span");
-                    for (Element el : element)
-                        if (el.text().contains("Studente")) {
-                            String tmp = el.text().replace("Studente", "").trim();
-                            Nome = ProfDecente(tmp);
-                            break;
-                        }
-                    mCodiceScuola = data.select("span.redtext").get(0).text().split("\\.")[0];
+                    Nome = ProfDecente(info.getString("cognome") + " " + info.getString("nome"));
+
+                    if (info.getString("type").equals("G"))
+                        Toast.makeText(getApplicationContext(), "Salve genitore! Mi raccomando, non stressare troppo tuo/a figlio/a", Toast.LENGTH_LONG).show();
 
                     CancellaPagineLocali(LoginActivity.this);
                     SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
@@ -503,7 +435,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 SQLiteDatabase db = new MyUsers(context).getWritableDatabase();
                 ContentValues dati = new ContentValues();
                 dati.put(MyUsers.UserEntry.COLUMN_NAME_NAME, Nome);
-                dati.put(MyUsers.UserEntry.COLUMN_NAME_CODICESCUOLA, mCodiceScuola);
                 dati.put(MyUsers.UserEntry.COLUMN_NAME_USERNAME, mEmail);
                 dati.put(MyUsers.UserEntry.COLUMN_NAME_PASSWORD, mPassword);
                 db.insert(MyUsers.UserEntry.TABLE_NAME, MyUsers.UserEntry.COLUMN_NAME_NULLABLE, dati);
