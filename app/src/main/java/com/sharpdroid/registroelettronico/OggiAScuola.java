@@ -364,7 +364,7 @@ public class OggiAScuola extends AppCompatActivity {
                     if (oggiScuola.isEmpty()) {
                         Firma oggiScuolas = new Firma();
                         oggiScuolas.setDescrizione("");
-                        oggiScuolas.setOra("0");
+                        oggiScuolas.setOra("");
                         oggiScuolas.setMateria("");
                         oggiScuolas.setAttivita("");
                         oggiScuolas.setProf("Nessuna firma presente");
