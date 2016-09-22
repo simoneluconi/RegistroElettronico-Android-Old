@@ -390,9 +390,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     JSONObject info = jo.getJSONObject("accountInfo");
 
                     Nome = ProfDecente(info.getString("cognome") + " " + info.getString("nome"));
+                    final String tipo = info.getString("type");
 
-                    if (info.getString("type").equals("G"))
-                        Toast.makeText(getApplicationContext(), "Salve genitore! Mi raccomando, non stressare troppo tuo/a figlio/a", Toast.LENGTH_LONG).show();
+                    LoginActivity.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            if (tipo.equals("G"))
+                            Toast.makeText(LoginActivity.this, "Salve genitore! Mi raccomando, non stressare troppo tuo/a figlio/a", Toast.LENGTH_LONG).show();
+                        }
+                    });
 
                     CancellaPagineLocali(LoginActivity.this);
                     SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
