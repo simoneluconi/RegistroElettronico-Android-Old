@@ -9,12 +9,12 @@
     android:layout_marginTop="10dp"
     card_view:cardBackgroundColor="#fff">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:baselineAligned="false" >
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -32,7 +32,6 @@
                 android:textColor="@color/material_blue_grey"
                 android:textSize="18sp" />
 
-
             <TextView
                 android:id="@+id/des"
                 android:layout_width="wrap_content"
@@ -45,7 +44,6 @@
                 android:textColorLink="#0099ff"
                 android:textSize="13sp"
                 android:visibility="visible" />
-
 
             <LinearLayout
                 android:id="@+id/layoutData"
@@ -68,34 +66,31 @@
                     android:id="@+id/dataTx"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/Materia"
                     android:layout_marginBottom="1dp"
                     android:layout_marginLeft="3dp"
+                    android:layout_marginStart="3dp"
                     android:text="12-11-2015 12:25:54"
                     android:textColor="@color/textcolorgrey"
                     android:textColorLink="#0099ff"
                     android:textSize="13sp"
                     android:visibility="visible" />
 
-
             </LinearLayout>
 
         </RelativeLayout>
 
-
         <RelativeLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_weight="1"
             android:gravity="end">
-
 
             <com.github.rahatarmanahmed.cpv.CircularProgressView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/progressvoti"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_centerInParent="true"
+                android:layout_marginEnd="18dp"
                 android:layout_marginRight="18dp"
                 app:cpv_animAutostart="true"
                 app:cpv_indeterminate="false"
@@ -106,6 +101,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:layout_marginEnd="20dp"
                 android:layout_marginRight="20dp"
                 android:text="8.22"
                 android:textColor="@color/textcolorgrey"
@@ -113,6 +109,4 @@
 
         </RelativeLayout>
     </LinearLayout>
-
-
 </android.support.v7.widget.CardView>
