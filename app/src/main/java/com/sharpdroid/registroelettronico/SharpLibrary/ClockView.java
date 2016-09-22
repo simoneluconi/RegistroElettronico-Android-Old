@@ -27,7 +27,7 @@ import android.view.View;
 import com.sharpdroid.registroelettronico.R;
 
 public class ClockView extends View {
-    private Paint p;
+    private Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
     int c, h, m;
 
     public ClockView(Context context) {
@@ -59,7 +59,6 @@ public class ClockView extends View {
         int center_w = (getMeasuredWidth() / 2);
         int center_h = (getMeasuredHeight() / 2);
         int len = (getMeasuredWidth() / 2) - 3;
-        p = new Paint(Paint.ANTI_ALIAS_FLAG);
         p.setStyle(Paint.Style.FILL);
         p.setColor(c);
         canvas.drawCircle(center_w, center_h, len, p);
@@ -100,7 +99,7 @@ public class ClockView extends View {
     }
 
     private float getMinuteY(int l) {
-        int c = 0;
+        int c;
         if (m < 15) {
             c = m + 45;
         } else {
