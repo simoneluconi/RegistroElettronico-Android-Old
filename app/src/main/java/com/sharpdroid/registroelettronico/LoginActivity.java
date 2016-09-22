@@ -136,14 +136,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             return;
         }
 
-        AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
-        Account[] list = manager.getAccounts();
 
+        AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
         List<String> accounts = new ArrayList<>();
-        for (Account a :
-                list) {
-            if (!accounts.contains(a.name) && a.name.contains("@"))
-                accounts.add(a.name);
+
+        try {
+            Account[] list = manager.getAccounts();
+
+            for (Account account : list) {
+                if (!accounts.contains(account.name) && account.name.contains("@"))
+                    accounts.add(account.name);
+            }
+        } catch (SecurityException e) {
+            // nothing, permission must be enabled
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, accounts);
