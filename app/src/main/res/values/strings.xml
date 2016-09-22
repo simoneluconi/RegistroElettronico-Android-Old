@@ -51,7 +51,7 @@
     <string name="tutorialdes">E\' la prima volta che apri l\'app. Se desideri avere informazioni sul suo funzionamento clicca sul pulsante OK. Inoltre troverai un link per scaricare la versione per Windows di questa app. Potrai sempre ritrovare questa opzione nel menu.</string>
     <string name="modificaevento">Cosa vuoi fare?</string>
     <string name="permission_rationale">Il permesso per leggere i contatti è richiesto per l\'autocompletamento della mail.</string>
-    <string name="disclamer">Se avete più account associati alla vostra mail accedete con l\'username che trovate alla voce \'Identità utente\' che trovate nella sezione account. Se avete altri problemi di accesso contattaci via mail (luconi.simone@gmail.com), una recensione negativa non risolverà il problema. \nQuest\'app funziona solamente con il registro elettronico Spaggiari.\nSharpdroid non è in alcun modo legata al gruppo Spaggiari</string>
+    <string name="disclamer">Se avete problemi di accesso contattaci via mail (luconi.simone@gmail.com), una recensione negativa non risolverà il problema. \nQuest\'app funziona solamente con il registro elettronico Spaggiari.\nNon siamo in alcun modo legati al gruppo Spaggiari</string>
     <string name="title_activity_prova">Sign in</string>
     <string name="paginafacebook">Pagina Facebook</string>
     <string name="aggacc">Aggiungi Account</string>
