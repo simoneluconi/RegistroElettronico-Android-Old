@@ -25,6 +25,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -67,7 +68,6 @@ import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.melnykov.fab.FloatingActionButton;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -141,6 +141,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -1197,7 +1198,6 @@ public class MainActivity extends AppCompatActivity {
             rv.setLayoutManager(new GridLayoutManager(context, 1));
             Log.v("Colonne", String.valueOf(colonne));
             fab = (FloatingActionButton) layout.findViewById(R.id.fab);
-            fab.attachToRecyclerView(rv);
             CVDataList = new ArrayList<>();
             adapter = new RVAdapter(CVDataList);
             rv.setAdapter(adapter);
@@ -1212,7 +1212,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
             compactCalendarView = (CompactCalendarView) layout.findViewById(R.id.compactcalendar);
-            compactCalendarView.setLocale(Locale.ITALIAN);
+            compactCalendarView.setLocale(TimeZone.getTimeZone("Rome"), Locale.ITALIAN);
             compactCalendarView.setUseThreeLetterAbbreviation(true);
 
             final TextView txMese = (TextView) layout.findViewById(R.id.mesetx);
