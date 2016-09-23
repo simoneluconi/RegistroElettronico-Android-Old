@@ -497,147 +497,138 @@ public class MainActivity extends AppCompatActivity {
                     .addDrawerItems(
                             new PrimaryDrawerItem()
                                     .withName(R.string.home)
-                                    .withIcon(ContextCompat.getDrawable(this, R.drawable.home)),
+                                    .withIcon(ContextCompat.getDrawable(this, R.drawable.home))
+                                    .withSelectable(false),
                             new PrimaryDrawerItem()
                                     .withName(R.string.oggiscuola)
-                                    .withIcon(ContextCompat.getDrawable(this, R.drawable.calendartoday)),
+                                    .withIcon(ContextCompat.getDrawable(this, R.drawable.calendartoday))
+                                    .withSelectable(false),
                             new PrimaryDrawerItem()
                                     .withName(R.string.lezioni)
-                                    .withIcon(ContextCompat.getDrawable(this, R.drawable.school)),
+                                    .withIcon(ContextCompat.getDrawable(this, R.drawable.school))
+                                    .withSelectable(false),
                             new PrimaryDrawerItem()
                                     .withName(R.string.circolari)
                                     .withIcon(ContextCompat.getDrawable(this, R.drawable.document))
-                                    .withIdentifier(3)
+                                    .withSelectable(false)
                                     .withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE)
                                             .withColorRes(R.color.redmaterial)),
                             new PrimaryDrawerItem()
                                     .withName(R.string.scrutini)
                                     .withIcon(ContextCompat.getDrawable(this, R.drawable.book))
-                                    .withIdentifier(4)
+                                    .withSelectable(false)
                                     .withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE)
                                             .withColorRes(R.color.redmaterial)),
                             new PrimaryDrawerItem()
                                     .withName(R.string.versioneweb)
                                     .withIcon(ContextCompat.getDrawable(this, R.drawable.ic_web))
-                                    .withIdentifier(6),
+                                    .withSelectable(false),
                             new PrimaryDrawerItem()
                                     .withName(R.string.fileoff)
                                     .withIcon(ContextCompat.getDrawable(this, R.drawable.download))
-                                    .withIdentifier(5)
+                                    .withSelectable(false)
                                     .withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE)
                                             .withColorRes(R.color.bluematerial)),
                             new PrimaryDrawerItem()
                                     .withName(R.string.forzacontrollo)
-                                    .withIcon(ContextCompat.getDrawable(this, R.drawable.refresh)),
+                                    .withIcon(ContextCompat.getDrawable(this, R.drawable.refresh))
+                                    .withSelectable(false),
                             new DividerDrawerItem(),
                             new SecondaryDrawerItem()
                                     .withName(R.string.segnalaproblema)
                                     .withIcon(ContextCompat.getDrawable(this, R.drawable.email))
-                    ).build();
+                                    .withSelectable(false)
+                    )
+                    .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                        @Override
+                        public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                            if (drawerItem != null) {
+                                Intent intent = null;
 
-            Drawerresult.setSelection(0);
-            Drawerresult.setOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                @Override
-                public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                                switch (position) {
+                                    case 1:
+                                        mPager.setCurrentItem(sharedPref.getInt("tabiniziale", 0));
+                                        break;
+                                    case 2:
+                                        intent = new Intent(MainActivity.this, OggiAScuola.class);
+                                        break;
+                                    case 3:
+                                        intent = new Intent(MainActivity.this, Lezioni.class);
+                                        break;
+                                    case 4:
+                                        intent = new Intent(MainActivity.this, Circolari.class);
+                                        break;
+                                    case 5:
+                                        intent = new Intent(MainActivity.this, Scrutini.class);
+                                        break;
+                                    case 6:
+                                        try {
+                                            int ActiveUsers = sharedPref.getInt("CurrentProfile", 0);
+                                            SQLiteDatabase db = new MyUsers(context).getWritableDatabase();
+                                            Cursor c = db.rawQuery("SELECT * FROM " + MyUsers.UserEntry.TABLE_NAME, null);
+                                            c.move(ActiveUsers);
+                                            String username = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_USERNAME));
+                                            String password = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_PASSWORD));
+                                            c.close();
+                                            db.close();
 
-                    Drawerresult.setSelection(0);
+                                            Uri uri = Uri.parse("https://web.spaggiari.eu/auth/app/default/AuthApi2.php?a=aLoginPwd&uid=" + username + "&pwd=" + password);
+                                            Intent intent_web = new Intent("android.intent.action.VIEW", uri);
+                                            startActivity(intent_web);
 
-                    switch (position) {
-                        case 1:
-                            mPager.setCurrentItem(0);
-                            break;
+                                            Thread.sleep(2 * 1000);
 
-                        case 2:
-                            Intent myIntent = new Intent(MainActivity.this, OggiAScuola.class);
-                            MainActivity.this.startActivity(myIntent);
-                            break;
+                                            uri = Uri.parse("https://web.spaggiari.eu/home/app/default/menu_webinfoschool_studenti.php");
+                                            intent_web = new Intent("android.intent.action.VIEW", uri);
+                                            startActivity(intent_web);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        break;
+                                    case 7:
+                                        intent = new Intent(MainActivity.this, FileOffline.class);
+                                        MainActivity.this.startActivity(intent);
+                                        break;
+                                    case 8:
+                                        AvviaNotifiche(MainActivity.this);
+                                        break;
+                                    case 10:
+                                        File backupDB = new File(getExternalCacheDir(), "MyData.db");
+                                        try {
+                                            PackageManager m = getPackageManager();
+                                            PackageInfo p = m.getPackageInfo(getPackageName(), 0);
+                                            File currentDB = new File(p.applicationInfo.dataDir + "//databases//MyData.db");
 
-                        case 3:
-                            myIntent = new Intent(MainActivity.this, Lezioni.class);
-                            MainActivity.this.startActivity(myIntent);
-                            break;
+                                            FileChannel src = new FileInputStream(currentDB).getChannel();
+                                            FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                                            dst.transferFrom(src, 0, src.size());
+                                            src.close();
+                                            dst.close();
+                                        } catch (Exception e) {
+                                            Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
+                                        }
 
-                        case 4:
-                            myIntent = new Intent(MainActivity.this, Circolari.class);
-                            MainActivity.this.startActivity(myIntent);
-                            break;
+                                        ArrayList<Uri> uris = new ArrayList<>();
+                                        uris.add(Uri.fromFile(backupDB));
 
-                        case 5:
-                            myIntent = new Intent(MainActivity.this, Scrutini.class);
-                            MainActivity.this.startActivity(myIntent);
-                            break;
-
-
-                        case 6:
-                            try {
-
-                                int ActiveUsers = sharedPref.getInt("CurrentProfile", 0);
-                                SQLiteDatabase db = new MyUsers(context).getWritableDatabase();
-                                Cursor c = db.rawQuery("SELECT * FROM " + MyUsers.UserEntry.TABLE_NAME, null);
-                                c.move(ActiveUsers);
-                                String username = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_USERNAME));
-                                String password = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_PASSWORD));
-                                c.close();
-                                db.close();
-
-
-                                Uri uri = Uri.parse("https://web.spaggiari.eu/auth/app/default/AuthApi2.php?a=aLoginPwd&uid=" + username + "&pwd=" + password);
-                                Intent intent = new Intent("android.intent.action.VIEW", uri);
-                                startActivity(intent);
-
-                                Thread.sleep(2 * 1000);
-
-                                uri = Uri.parse("https://web.spaggiari.eu/home/app/default/menu_webinfoschool_studenti.php");
-                                intent = new Intent("android.intent.action.VIEW", uri);
-                                startActivity(intent);
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                                        Intent intent_mail = new Intent(Intent.ACTION_SEND_MULTIPLE);
+                                        intent_mail.putExtra(Intent.EXTRA_EMAIL, new String[]{"luconi.simone@gmail.com"});
+                                        intent_mail.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico");
+                                        intent_mail.putExtra(Intent.EXTRA_TEXT, "Inviando questa mail invierai anche il contenuto di voti, agenda e note.\n");
+                                        intent_mail.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+                                        intent_mail.setType("text/plain");
+                                        startActivity(Intent.createChooser(intent_mail, "Seleziona un client email:"));
+                                        break;
+                                }
+                                if (intent != null) {
+                                    startActivity(intent);
+                                }
                             }
-                            break;
-
-                        case 7:
-                            myIntent = new Intent(MainActivity.this, FileOffline.class);
-                            MainActivity.this.startActivity(myIntent);
-                            break;
-
-
-                        case 8:
-                            AvviaNotifiche(MainActivity.this);
-                            break;
-
-                        case 10:
-                            File backupDB = new File(getExternalCacheDir(), "MyData.db");
-                            try {
-                                PackageManager m = getPackageManager();
-                                PackageInfo p = m.getPackageInfo(getPackageName(), 0);
-                                File currentDB = new File(p.applicationInfo.dataDir + "//databases//MyData.db");
-
-                                FileChannel src = new FileInputStream(currentDB).getChannel();
-                                FileChannel dst = new FileOutputStream(backupDB).getChannel();
-                                dst.transferFrom(src, 0, src.size());
-                                src.close();
-                                dst.close();
-                            } catch (Exception e) {
-                                Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
-                            }
-
-                            ArrayList<Uri> uris = new ArrayList<>();
-                            uris.add(Uri.fromFile(backupDB));
-
-                            Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-                            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"luconi.simone@gmail.com"});
-                            intent.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico");
-                            intent.putExtra(Intent.EXTRA_TEXT, "Inviando questa mail invierai anche il contenuto di voti, agenda e note.\n");
-                            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-                            intent.setType("text/plain");
-                            startActivity(Intent.createChooser(intent, "Seleziona un client email:"));
-                            break;
-
-                    }
-                    return false;
-                }
-            });
+                            return false;
+                        }
+                    })
+                    .withSavedInstance(savedInstanceState)
+                    .build();
 
             updateMedie = true;
             updateTuttiVoti = true;
