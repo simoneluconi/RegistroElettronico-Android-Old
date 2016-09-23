@@ -142,7 +142,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.concurrent.ExecutionException;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -1932,25 +1931,24 @@ public class MainActivity extends AppCompatActivity {
 
 
                         compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
-                                                            @Override
-                                                            public void onDayClick(Date dateClicked) {
-                                                                CalMostra = new DateTime(dateClicked);
-                                                                updateAgenda = true;
-                                                                m_handlerAgenda.run();
-                                                                Log.v("NewDate", String.valueOf(dateClicked));
-                                                            }
+                            @Override
+                            public void onDayClick(Date dateClicked) {
+                                CalMostra = new DateTime(dateClicked);
+                                updateAgenda = true;
+                                m_handlerAgenda.run();
+                                Log.v("NewDate", String.valueOf(dateClicked));
+                            }
 
-                                                            @Override
-                                                            public void onMonthScroll(Date firstDayOfNewMonth) {
-                                                                String mese = new SimpleDateFormat("MMMM yyyy", Locale.ITALIAN).format(firstDayOfNewMonth.getTime());
-                                                                mese = InizialeMaiuscola(mese);
-                                                                txMese.setText(mese);
-                                                                CalMostra = new DateTime(firstDayOfNewMonth);
-                                                                updateAgenda = true;
-                                                                m_handlerAgenda.run();
-                                                            }
-                                                        }
-                        );
+                            @Override
+                            public void onMonthScroll(Date firstDayOfNewMonth) {
+                                String mese = new SimpleDateFormat("MMMM yyyy", Locale.ITALIAN).format(firstDayOfNewMonth.getTime());
+                                mese = InizialeMaiuscola(mese);
+                                txMese.setText(mese);
+                                CalMostra = new DateTime(firstDayOfNewMonth);
+                                updateAgenda = true;
+                                m_handlerAgenda.run();
+                            }
+                        });
 
                         compactCalendarView.setOnTouchListener(new View.OnTouchListener() {
                             @Override
