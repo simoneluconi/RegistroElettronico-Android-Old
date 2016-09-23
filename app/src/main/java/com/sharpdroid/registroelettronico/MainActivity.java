@@ -627,7 +627,6 @@ public class MainActivity extends AppCompatActivity {
                             return false;
                         }
                     })
-                    .withSavedInstance(savedInstanceState)
                     .build();
 
             updateMedie = true;
