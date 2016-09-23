@@ -7,11 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -59,11 +59,11 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAv
 
 public class OggiAScuola extends AppCompatActivity {
 
-    List<Firma> oggiScuola = new ArrayList<>();
     public static RVAdapter adapter;
-    SwipeRefreshLayout swipeRefreshLayout;
     static int SelectedDay;
     static CoordinatorLayout coordinatorLayout;
+    List<Firma> oggiScuola = new ArrayList<>();
+    SwipeRefreshLayout swipeRefreshLayout;
     Context context;
 
     @Override
@@ -136,35 +136,15 @@ public class OggiAScuola extends AppCompatActivity {
     public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
         List<Firma> oggiScuolas;
 
-        public class PersonViewHolder extends RecyclerView.ViewHolder {
-            CardView cv;
-            TextView Ora;
-            TextView Prof;
-            TextView Materia;
-            TextView Des;
-
-            PersonViewHolder(View itemView) {
-                super(itemView);
-                cv = (CardView) itemView.findViewById(R.id.OggiScuolaCv);
-                Ora = (TextView) itemView.findViewById(R.id.OggiScuolaOra);
-                Prof = (TextView) itemView.findViewById(R.id.OggiScuolaProf);
-                Materia = (TextView) itemView.findViewById(R.id.OggiScuolaMateria);
-                Des = (TextView) itemView.findViewById(R.id.OggiScuolaDes);
-
-            }
-        }
-
         RVAdapter(List<Firma> oggiScuolas) {
             this.oggiScuolas = oggiScuolas;
         }
-
 
         @Override
         public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_oggiascuola, parent, false);
             return new PersonViewHolder(v);
         }
-
 
         @Override
         public void onAttachedToRecyclerView(RecyclerView recyclerView) {
@@ -198,6 +178,24 @@ public class OggiAScuola extends AppCompatActivity {
         @Override
         public int getItemCount() {
             return oggiScuolas.size();
+        }
+
+        public class PersonViewHolder extends RecyclerView.ViewHolder {
+            CardView cv;
+            TextView Ora;
+            TextView Prof;
+            TextView Materia;
+            TextView Des;
+
+            PersonViewHolder(View itemView) {
+                super(itemView);
+                cv = (CardView) itemView.findViewById(R.id.OggiScuolaCv);
+                Ora = (TextView) itemView.findViewById(R.id.OggiScuolaOra);
+                Prof = (TextView) itemView.findViewById(R.id.OggiScuolaProf);
+                Materia = (TextView) itemView.findViewById(R.id.OggiScuolaMateria);
+                Des = (TextView) itemView.findViewById(R.id.OggiScuolaDes);
+
+            }
         }
 
     }

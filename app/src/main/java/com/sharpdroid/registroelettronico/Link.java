@@ -41,7 +41,7 @@ public class Link extends Activity {
                 try {
                     codicescuola = url.substring(url.indexOf(custcode) + custcode.length());
                     if (codicescuola.contains("&"))
-                        codicescuola = codicescuola.substring(0,codicescuola.indexOf("&"));
+                        codicescuola = codicescuola.substring(0, codicescuola.indexOf("&"));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

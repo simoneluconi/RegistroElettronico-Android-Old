@@ -22,13 +22,6 @@ import org.joda.time.LocalDateTime;
 public class Ranger extends HorizontalScrollView implements View.OnClickListener {
 
     public final static String TAG = Ranger.class.getSimpleName();
-
-    /**
-     * Constants
-     */
-    //Layouts
-    private final int WIDGET_LAYOUT_RES_ID = R.layout.ranger_layout;
-    private final int DAY_VIEW_LAYOUT_RES_ID = R.layout.day_layout;
     //Resource ids
     public static final int DAYS_CONTAINER_RES_ID = R.id.days_container;
     public static final int DAY_OF_WEEK_RES_ID = R.id.day_of_week;
@@ -37,8 +30,12 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
     //Delay
     public static final int DELAY_SELECTION = 300;
     public static final int NO_DELAY_SELECTION = 0;
-
-
+    /**
+     * Constants
+     */
+    //Layouts
+    private final int WIDGET_LAYOUT_RES_ID = R.layout.ranger_layout;
+    private final int DAY_VIEW_LAYOUT_RES_ID = R.layout.day_layout;
     /**
      * Variables
      */
@@ -60,27 +57,14 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
 
     //Listener
     DayViewOnClickListener mListener;
-
-    public void setDayViewOnClickListener(DayViewOnClickListener listener) {
-        mListener = listener;
-    }
-
-    public interface DayViewOnClickListener {
-        public void onDaySelected(int day);
-    }
-
     //Day View
     DayView mSelectedDayView;
-
-
     /**
      * Controls
      */
     Space mLeftSpace;
     LinearLayout mDaysContainer;
     Space mRightSpace;
-
-
     /**
      * Constructors
      */
@@ -88,17 +72,20 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
         super(context);
         init(context, null);
     }
-
     public Ranger(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
     }
+
 
     public Ranger(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs);
     }
 
+    public void setDayViewOnClickListener(DayViewOnClickListener listener) {
+        mListener = listener;
+    }
 
     /**
      * Initialization
@@ -151,7 +138,6 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
         setSelectedDay(currentDateTime.getDayOfMonth(), false, DELAY_SELECTION);
     }
 
-
     /***
      * State modification
      */
@@ -196,7 +182,6 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
     public int getSelectedDay() {
         return mSelectedDay;
     }
-
 
     /**
      * Ui
@@ -287,7 +272,6 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
         smoothScrollTo(x - mLeftSpace.getLayoutParams().width, y);
     }
 
-
     /**
      * On DayView click listener
      */
@@ -300,7 +284,6 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
         int selectedDay = dayView.getDay();
         setSelectedDay(selectedDay, true, NO_DELAY_SELECTION);
     }
-
 
     /**
      * Custom implementation for left and right spaces
@@ -321,7 +304,6 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
             mRightSpace.setLayoutParams(rightParams);
         }
     }
-
 
     /**
      * Configuration change handling
@@ -352,7 +334,20 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
         setSelectedDay(mSelectedDay, false, DELAY_SELECTION);
     }
 
+    public interface DayViewOnClickListener {
+        public void onDaySelected(int day);
+    }
+
     protected static class SavedState extends BaseSavedState {
+        public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
         int mSelectedDay;
         String mStartDateString;
         String mEndDateString;
@@ -376,24 +371,6 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
             out.writeString(mEndDateString);
         }
 
-        public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
-
-        public void setSelectedDay(int selectedDay) {
-            mSelectedDay = selectedDay;
-        }
-
-        public void setStartDateString(String startDateString) {
-            mStartDateString = startDateString;
-        }
-
         public void setEndDateString(String endDateString) {
             mEndDateString = endDateString;
         }
@@ -402,8 +379,16 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
             return mSelectedDay;
         }
 
+        public void setSelectedDay(int selectedDay) {
+            mSelectedDay = selectedDay;
+        }
+
         public String getStartDateString() {
             return mStartDateString;
+        }
+
+        public void setStartDateString(String startDateString) {
+            mStartDateString = startDateString;
         }
 
         public String getEndDateDateString() {

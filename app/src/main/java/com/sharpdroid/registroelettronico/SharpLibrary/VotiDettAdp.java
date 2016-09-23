@@ -65,7 +65,7 @@ public class VotiDettAdp extends BaseAdapter implements View.OnClickListener {
             txVoto.setTextColor(ContextCompat.getColor(mContext, R.color.redmaterial));
         else txVoto.setTextColor(ContextCompat.getColor(mContext, R.color.bluematerial));
 
-        ((TextView) convertView.findViewById(R.id.datatipo)).setText(String.format("%1$s - %2$s", votot.getData(),votot.getTipo()));
+        ((TextView) convertView.findViewById(R.id.datatipo)).setText(String.format("%1$s - %2$s", votot.getData(), votot.getTipo()));
         ((TextView) convertView.findViewById(R.id.commento)).setText(votiDetts.get(position).getCommento());
         return convertView;
     }

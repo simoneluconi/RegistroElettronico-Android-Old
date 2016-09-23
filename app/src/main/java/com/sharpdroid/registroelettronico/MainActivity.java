@@ -172,11 +172,16 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAv
 
 public class MainActivity extends AppCompatActivity {
 
-    static final String FILE_PROVIDER_STRING = "com.sharpdroid.fileprovider";
     public static final String BASE_URL = "https://web.spaggiari.eu";
+    public static final int CONTROLLO_VOTI_ID = 111101;
+    static final String FILE_PROVIDER_STRING = "com.sharpdroid.fileprovider";
+    public static List<Event> events;
+    public static String SEPARATORE_MATERIE = "grautext open_sans_condensed_bold font_size_14";
+    public static App application;
+    public static Tracker mTracker;
+    public static String DataCal = null; //Data da aprire nel calendario dalla notifica
     static CookieManager msCookieManager = new CookieManager(null, CookiePolicy.ACCEPT_ALL); //Gestore Cookie
     static SwipeViewPager mPager;
-    SlidingTabLayout mTabs;
     static Drawer Drawerresult;
     //Runnable
     static Runnable m_handlerMedie;
@@ -186,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
     static Runnable m_handlerNote;
     static Runnable m_handlerAgenda;
     static Runnable m_handlerDidattica;
-
     //Variabili per aggiornare i dati
     static boolean datiOffline = true;
     static boolean updateMedie = true;
@@ -196,44 +200,104 @@ public class MainActivity extends AppCompatActivity {
     static boolean updateNote = true;
     static boolean updateAgenda = true;
     static boolean updateDidattica = true;
-
     //Stringhe con i dati WEB
     static String WP_Didattica = null;
-
     //Stringhe con i dati offline
     static String Off_Didattica = null;
-
     //Medie dei vari periodi
     static List<Medie> MedieVotiMG = new ArrayList<>();
     static List<Medie> MedieVotiP1 = new ArrayList<>();
     static List<Medie> MedieVotiP2 = new ArrayList<>();
-
     //Liste per dati
     static List<FileDid> fileDids = new ArrayList<>();
     static List<Compito> compitiDatas = new ArrayList<>();
     static List<Materia> votis = new ArrayList<>();
     static List<Nota> notes = new ArrayList<>();
-    public static List<Event> events;
     static List<Compito> compitishow = new ArrayList<>();
-
     static int currPage = 0;
     static int currProf;
     static DateTime primadata;
     static DateTime secondadata;
     static Context context;
-    public static final int CONTROLLO_VOTI_ID = 111101;
     static CoordinatorLayout coordinatorLayout;
     static CompactCalendarView compactCalendarView;
     static SwipeRefreshLayout swipeRefreshLayout;
     static int[] didatticaPos = {0, 0, 0};//Posizione, Elemento, Click
     static int nTentativiDownloadDidattica = 0; //Numero tentativi di download dei file della didattica
     static boolean giaAperta = false; //L'app era già aperta?
-    public static String SEPARATORE_MATERIE = "grautext open_sans_condensed_bold font_size_14";
-    public static App application;
-    public static Tracker mTracker;
-    public static String DataCal = null; //Data da aprire nel calendario dalla notifica
     static File DownloadFolder;
     static DateTime CalMostra = new DateTime();
+    SlidingTabLayout mTabs;
+
+    public static void AggiornaFileOffline() {
+        if (DownloadFolder != null) {
+            File[] files = DownloadFolder.listFiles();
+            if (files != null)
+                Drawerresult.updateBadge(5, new StringHolder(files.length + ""));
+        }
+    }
+
+    public static void AggiornaNCircolari(int n) {
+        if (n != 0)
+            Drawerresult.updateBadge(3, new StringHolder(n + ""));
+    }
+
+    public static void AggiornaFileScrutini(int n) {
+        if (n != 0)
+            Drawerresult.updateBadge(4, new StringHolder(n + ""));
+    }
+
+    private static void CaricaVotiOffline() {
+        MyDB DBVoti = new MyDB(context);
+        SQLiteDatabase db = DBVoti.getReadableDatabase();
+        votis.clear();
+        LinkedHashMap<String, List<Voto>> hashMap = new LinkedHashMap<>();
+
+        Cursor c = db.rawQuery("select * from " + MyDB.VotoEntry.TABLE_NAME, null);
+        if (c.moveToFirst()) {
+            while (!c.isAfterLast()) {
+
+                String materia = c.getString(c.getColumnIndex(MyDB.VotoEntry.COLUMN_NAME_MATERIA));
+                Voto voto = new Voto();
+                voto.setVoto(c.getString(c.getColumnIndex(MyDB.VotoEntry.COLUMN_NAME_VOTO)));
+                boolean VotoBlu = c.getInt(c.getColumnIndex(MyDB.VotoEntry.COLUMN_NAME_VOTOBLU)) == 1;
+                voto.setVotoblu(VotoBlu);
+                voto.setData(c.getString(c.getColumnIndex(MyDB.VotoEntry.COLUMN_NAME_DATA)));
+                voto.setTipo(c.getString(c.getColumnIndex(MyDB.VotoEntry.COLUMN_NAME_TIPO)));
+                voto.setPeriodo(c.getString(c.getColumnIndex(MyDB.VotoEntry.COLUMN_NAME_PERIODO)));
+                voto.setCommento(c.getString(c.getColumnIndex(MyDB.VotoEntry.COLUMN_NAME_COMMENTO)));
+
+                if (!hashMap.containsKey(materia)) {
+                    List<Voto> list = new ArrayList<>();
+                    list.add(voto);
+                    hashMap.put(materia, list);
+                } else {
+                    hashMap.get(materia).add(voto);
+                }
+
+                c.moveToNext();
+            }
+        }
+
+        for (Map.Entry<String, List<Voto>> entry : hashMap.entrySet()) {
+            Materia materia = new Materia(entry.getKey());
+            materia.setVoti(entry.getValue());
+            votis.add(materia);
+        }
+
+        db.close();
+        c.close();
+    }
+
+    private static void AggiornaDati() {
+        new GetStringFromUrl().execute(BASE_URL + "/auth/app/default/AuthApi2.php?a=aLoginPwd");
+        new GetStringFromUrl().execute(BASE_URL + "/cvv/app/default/genitori_note.php");
+        new GetStringFromUrl().execute(BASE_URL + "/cvv/app/default/gioprof_note_studente.php");
+        new GetStringFromUrl().execute(BASE_URL + "/cvv/app/default/agenda_studenti.php?ope=get_events&start=" + primadata.getMillis() / 1000 + "&end=" + secondadata.getMillis() / 1000);
+        new GetStringFromUrl().execute(BASE_URL + "/cvv/app/default/didattica_genitori.php");
+        new GetStringFromUrl().execute(BASE_URL + "/sif/app/default/bacheca_utente.php");
+        new GetStringFromUrl().execute(BASE_URL + "/sol/app/default/documenti_sol.php");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -405,8 +469,7 @@ public class MainActivity extends AppCompatActivity {
 
             int i = 0;
             if (!Accounts.isEmpty()) {
-
-                for (i = 0; i < Accounts.size(); i++) {
+                for (; i < Accounts.size(); i++) {
                     MyAccount a = Accounts.get(i);
                     headerResult.addProfile(new ProfileDrawerItem()
                             .withName(a.getName())
@@ -431,15 +494,40 @@ public class MainActivity extends AppCompatActivity {
                     .withActionBarDrawerToggleAnimated(true)
                     .withSelectedItemByPosition(0)
                     .addDrawerItems(
-                            new PrimaryDrawerItem().withName(R.string.home).withIcon(ContextCompat.getDrawable(this, R.drawable.home)),
-                            new PrimaryDrawerItem().withName(R.string.oggiscuola).withIcon(ContextCompat.getDrawable(this, R.drawable.calendartoday)),
-                            new PrimaryDrawerItem().withName(R.string.lezioni).withIcon(ContextCompat.getDrawable(this, R.drawable.school)),
-                            new PrimaryDrawerItem().withName(R.string.circolari).withIcon(ContextCompat.getDrawable(this, R.drawable.document)).withIdentifier(3).withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.redmaterial)),
-                            new PrimaryDrawerItem().withName(R.string.scrutini).withIcon(ContextCompat.getDrawable(this, R.drawable.book)).withIdentifier(4).withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.redmaterial)),
-                            new PrimaryDrawerItem().withName(R.string.fileoff).withIcon(ContextCompat.getDrawable(this, R.drawable.download)).withIdentifier(5).withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.bluematerial)),
-                            new PrimaryDrawerItem().withName(R.string.forzacontrollo).withIcon(ContextCompat.getDrawable(this, R.drawable.refresh)),
+                            new PrimaryDrawerItem()
+                                    .withName(R.string.home)
+                                    .withIcon(ContextCompat.getDrawable(this, R.drawable.home)),
+                            new PrimaryDrawerItem()
+                                    .withName(R.string.oggiscuola)
+                                    .withIcon(ContextCompat.getDrawable(this, R.drawable.calendartoday)),
+                            new PrimaryDrawerItem()
+                                    .withName(R.string.lezioni)
+                                    .withIcon(ContextCompat.getDrawable(this, R.drawable.school)),
+                            new PrimaryDrawerItem()
+                                    .withName(R.string.circolari)
+                                    .withIcon(ContextCompat.getDrawable(this, R.drawable.document))
+                                    .withIdentifier(3)
+                                    .withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE)
+                                            .withColorRes(R.color.redmaterial)),
+                            new PrimaryDrawerItem()
+                                    .withName(R.string.scrutini)
+                                    .withIcon(ContextCompat.getDrawable(this, R.drawable.book))
+                                    .withIdentifier(4)
+                                    .withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE)
+                                            .withColorRes(R.color.redmaterial)),
+                            new PrimaryDrawerItem()
+                                    .withName(R.string.fileoff)
+                                    .withIcon(ContextCompat.getDrawable(this, R.drawable.download))
+                                    .withIdentifier(5)
+                                    .withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE)
+                                            .withColorRes(R.color.bluematerial)),
+                            new PrimaryDrawerItem()
+                                    .withName(R.string.forzacontrollo)
+                                    .withIcon(ContextCompat.getDrawable(this, R.drawable.refresh)),
                             new DividerDrawerItem(),
-                            new SecondaryDrawerItem().withName(R.string.segnalaproblema).withIcon(ContextCompat.getDrawable(this, R.drawable.email))
+                            new SecondaryDrawerItem()
+                                    .withName(R.string.segnalaproblema)
+                                    .withIcon(ContextCompat.getDrawable(this, R.drawable.email))
                     ).build();
 
             Drawerresult.setSelection(0);
@@ -490,7 +578,6 @@ public class MainActivity extends AppCompatActivity {
                                 PackageManager m = getPackageManager();
                                 PackageInfo p = m.getPackageInfo(getPackageName(), 0);
                                 File currentDB = new File(p.applicationInfo.dataDir + "//databases//MyData.db");
-
 
                                 FileChannel src = new FileInputStream(currentDB).getChannel();
                                 FileChannel dst = new FileOutputStream(backupDB).getChannel();
@@ -588,11 +675,257 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+
+        if (currPage == 6 && didatticaPos[0] > 0) {
+            didatticaPos[0]--;
+            updateDidattica = true;
+            m_handlerDidattica.run();
+        } else {
+            if (Drawerresult != null)
+                if (Drawerresult.isDrawerOpen())
+                    Drawerresult.closeDrawer();
+                else
+                    moveTaskToBack(true);
+            else moveTaskToBack(true);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mTracker.setScreenName("MainActivity");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancelAll(); //Cancello tutte le notifiche dell'app se ci sono
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
+        menu.getItem(1).setChecked(sharedPref.getBoolean("notifichevoti", true));
+        menu.getItem(2).setChecked(sharedPref.getBoolean("notificheagenda", true));
+        menu.getItem(3).setChecked(sharedPref.getBoolean("notifichescrutini", true));
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.obbiettivobtn: {
+                final SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
+                final int[] obbv = {sharedPref.getInt("obiettivovoto", 20)};
+                MaterialDialog dialog = new MaterialDialog.Builder(MainActivity.this)
+                        .title(R.string.impostaobb)
+                        .theme(Theme.LIGHT)
+                        .customView(R.layout.fragment_imposta_obb, true)
+                        .positiveText(android.R.string.ok)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.putInt("obiettivovoto", obbv[0]);
+                                editor.apply();
+
+                                if (m_handlerMedie != null) {
+                                    updateMedie = true;
+                                    m_handlerMedie.run();
+                                }
+
+                                if (m_handlerQ1 != null) {
+                                    updateQ1 = true;
+                                    m_handlerQ1.run();
+                                }
+
+                                if (m_handlerQ2 != null) {
+                                    updateQ2 = true;
+                                    m_handlerQ2.run();
+                                }
+                            }
+                        })
+                        .build();
+
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplication(), R.layout.spinner_item, getResources().getStringArray(R.array.votispinner));
+                adapter.setDropDownViewResource(R.layout.spinner_item);
+                MaterialSpinner spinner = (MaterialSpinner) dialog.findViewById(R.id.spinner);
+                spinner.setAdapter(adapter);
+                spinner.setSelection(obbv[0]);
+
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        if (position >= 0) {
+                            obbv[0] = position;
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+
+                dialog.show();
+            }
+            break;
+
+            case R.id.tabbtn: {
+                final SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
+                final int tab = sharedPref.getInt("tabiniziale", 0);
+                new MaterialDialog.Builder(MainActivity.this)
+                        .title(R.string.seltabpartenza)
+                        .theme(Theme.LIGHT)
+                        .items(R.array.tab_title)
+                        .itemsCallbackSingleChoice(tab, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.putInt("tabiniziale", which);
+                                editor.apply();
+                                return true;
+                            }
+                        })
+                        .show();
+            }
+            break;
+
+            case R.id.notifichevoti: {
+
+                SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+
+                if (item.isChecked()) {
+                    if (sharedPref.getBoolean("notificheagenda", true) || sharedPref.getBoolean("notifichescrutini", true)) {
+                        editor.putBoolean("notifichevoti", false);
+                    } else {
+
+                        AlarmManager mAlarmManger = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                        Intent intent = new Intent(MainActivity.this, Notifiche.class);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        mAlarmManger.cancel(pendingIntent);
+                        editor.putBoolean("notifichevoti", false);
+                    }
+                    item.setChecked(false);
+                } else {
+                    if (sharedPref.getBoolean("notificheagenda", true) || sharedPref.getBoolean("notifichescrutini", true)) {
+                        editor.putBoolean("notifichevoti", true);
+                    } else {
+
+                        AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                        Intent intent = new Intent(this, Notifiche.class);
+                        PendingIntent alarmIntent = PendingIntent.getBroadcast(this, CONTROLLO_VOTI_ID, intent, 0);
+
+                        alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_HALF_HOUR, alarmIntent);
+                        editor.putBoolean("notifichevoti", true);
+                    }
+                    item.setChecked(true);
+                }
+
+                editor.apply();
+
+
+            }
+            break;
+
+            case R.id.notificheagenda: {
+
+                SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+
+                if (item.isChecked()) {
+                    if (sharedPref.getBoolean("notifichevoti", true) || sharedPref.getBoolean("notifichescrutini", true)) {
+                        editor.putBoolean("notificheagenda", false);
+                    } else {
+
+                        AlarmManager mAlarmManger = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                        Intent intent = new Intent(MainActivity.this, Notifiche.class);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        mAlarmManger.cancel(pendingIntent);
+                        editor.putBoolean("notificheagenda", false);
+                    }
+
+                    item.setChecked(false);
+                } else {
+                    if (sharedPref.getBoolean("notificheavoti", true) || sharedPref.getBoolean("notifichescrutini", true)) {
+                        editor.putBoolean("notificheagenda", true);
+                    } else {
+
+                        AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                        Intent intent = new Intent(this, Notifiche.class);
+                        PendingIntent alarmIntent = PendingIntent.getBroadcast(this, CONTROLLO_VOTI_ID, intent, 0);
+
+                        alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_HALF_HOUR, alarmIntent);
+                        editor.putBoolean("notificheagenda", true);
+                    }
+                    item.setChecked(true);
+                }
+
+                editor.apply();
+
+            }
+            break;
+
+            case R.id.notifichescrutini: {
+                SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+
+                if (item.isChecked()) {
+                    if (sharedPref.getBoolean("notifichevoti", true) || sharedPref.getBoolean("notificheagenda", true)) {
+                        editor.putBoolean("notifichescrutini", false);
+                    } else {
+
+                        AlarmManager mAlarmManger = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                        Intent intent = new Intent(MainActivity.this, Notifiche.class);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        mAlarmManger.cancel(pendingIntent);
+                        editor.putBoolean("notifichescrutini", false);
+                        editor.putInt("NFileScrutini", -1);
+                    }
+
+                    item.setChecked(false);
+                } else {
+                    if (sharedPref.getBoolean("notifichevoti", true) || sharedPref.getBoolean("notificheagenda", true)) {
+                        editor.putBoolean("notifichescrutini", true);
+                    } else {
+
+                        AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                        Intent intent = new Intent(this, Notifiche.class);
+                        PendingIntent alarmIntent = PendingIntent.getBroadcast(this, CONTROLLO_VOTI_ID, intent, 0);
+
+                        alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_HALF_HOUR, alarmIntent);
+                        editor.putBoolean("notifichescrutini", true);
+                    }
+                    item.setChecked(true);
+                }
+
+                editor.apply();
+            }
+            break;
+
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return true;
+    }
+
     public static class GetStringFromUrl extends AsyncTask<String, Integer, String> {
 
+        private static final int BUFFER_SIZE = 4096;
         String azione = "";
         String url = "";
-        private static final int BUFFER_SIZE = 4096;
         Snackbar DownloadProgressSnak;
 
         @Override
@@ -704,7 +1037,6 @@ public class MainActivity extends AppCompatActivity {
 
                     url = new URL(params[0]);
                     conn = (HttpURLConnection) url.openConnection();
-
 
                     if (!azione.equals(Azione.DOWNLOAD)) {
                         BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -1123,34 +1455,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-        }
-    }
-
-    class PagerAdapter extends FragmentPagerAdapter {
-
-        String[] tab = getResources().getStringArray(R.array.tab_title);
-
-        PagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            MyFragment myFragment = new MyFragment();
-            myFragment = myFragment.getInstance(position);
-
-            //MyFragment myFragment = MyFragment.getInstance(position);
-            return myFragment;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return tab[position];
-        }
-
-        @Override
-        public int getCount() {
-            return tab.length;
         }
     }
 
@@ -1987,6 +2291,116 @@ public class MainActivity extends AppCompatActivity {
         public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
             List<CVData> CVDataList;
 
+            RVAdapter(List<CVData> CVDataList) {
+                this.CVDataList = CVDataList;
+            }
+
+            @Override
+            public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_card, parent, false);
+                return new ViewHolder(v);
+            }
+
+            @Override
+            public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+                super.onAttachedToRecyclerView(recyclerView);
+            }
+
+            @Override
+            public void onBindViewHolder(ViewHolder ViewHolder, int i) {
+                if (CVDataList.get(i).title.contains("Nota disciplinare"))  //Se contiene nota disciplinare
+                {
+                    ViewHolder.Title.setTextColor(ContextCompat.getColor(context, R.color.redmaterial));
+                } else
+                    ViewHolder.Title.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey));
+                ViewHolder.Title.setText(CVDataList.get(i).title);
+
+                if (CVDataList.get(i).dess != null)
+                    ViewHolder.Des.setText(CVDataList.get(i).dess);
+                else
+                    ViewHolder.Des.setText(CVDataList.get(i).des);
+                ViewHolder.Media.setText(CVDataList.get(i).media);
+
+                if (CVDataList.get(i).des.contains("<Agenda>")) //Se contiene "<Data>" fa parte della sezione agenda, quindi la splitto e la imposto
+                {
+                    CVDataList.get(i).des = CVDataList.get(i).des.replace("<Agenda>", "");
+                    ViewHolder.Des.setTextIsSelectable(true);
+                    ViewHolder.LayoutData.setVisibility(View.VISIBLE);
+                    try {
+                        //Comparo le date
+                        Compito compito = compitishow.get(i);
+                        Days d = Days.daysBetween(compito.getDataInserimento(), compito.getDataInizio());
+
+                        //Imposto l'orologio
+                        ViewHolder.clockView.setHour(compito.getDataInserimento().getHourOfDay());
+                        ViewHolder.clockView.setMinute(compito.getDataInserimento().getMinuteOfHour());
+                        DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yy HH:mm:ss");
+                        int days = d.getDays();
+                        String date = dtf.print(compito.getDataInserimento());
+                        SpannableString s;
+                        if (days == 0) {
+                            s = new SpannableString(getString(R.string.datainsogg, date));
+                        } else if (days == 1)
+                            s = new SpannableString(getString(R.string.datains, dtf.print(compito.getDataInserimento()), days, "o"));
+                        else
+                            s = new SpannableString(getString(R.string.datains, dtf.print(compito.getDataInserimento()), days, "i"));
+
+                        s.setSpan(new StyleSpan(Typeface.BOLD), 0, date.length(), 0);
+                        ViewHolder.data.setText(s);
+                        ViewHolder.Des.setText(CVDataList.get(i).des);
+                    } catch (Exception e) {
+                        ACRA.getErrorReporter().handleException(e, false);
+                    }
+                } else {
+                    ViewHolder.LayoutData.setVisibility(View.GONE);
+                    ViewHolder.Des.setTextIsSelectable(false);
+                }
+
+                ViewHolder.pv_circular.setIndeterminate(false);
+                if (CVDataList.get(i).prog < 55f && CVDataList.get(i).prog != 0) {
+                    ViewHolder.pv_circular.setColor(ContextCompat.getColor(context, R.color.redmaterial));
+                    ViewHolder.pv_circular.setVisibility(View.VISIBLE);
+                    ViewHolder.Media.setVisibility(View.VISIBLE);
+                    if (CVDataList.get(i).title.equals("Media Generale")) {
+                        int unicode = 0x1F628; //Faccia impaurita
+                        ViewHolder.Des.setText(getEmojiByUnicode(unicode));
+                    }
+                    ViewHolder.pv_circular.setProgress(CVDataList.get(i).prog);
+                } else if (CVDataList.get(i).prog >= 55f && CVDataList.get(i).prog < 60f) {
+                    ViewHolder.pv_circular.setColor(ContextCompat.getColor(context, R.color.orangematerial));
+                    ViewHolder.pv_circular.setVisibility(View.VISIBLE);
+                    ViewHolder.Media.setVisibility(View.VISIBLE);
+                    if (CVDataList.get(i).title.equals("Media Generale")) {
+                        int unicode = 0x1F44E; //Pollice in giù
+                        ViewHolder.Des.setText(getEmojiByUnicode(unicode));
+                    }
+                    ViewHolder.pv_circular.setProgress(CVDataList.get(i).prog);
+                } else if (CVDataList.get(i).prog == 0f) {
+                    ViewHolder.pv_circular.setVisibility(View.GONE);
+                    ViewHolder.pv_circular.setProgress(1f);
+                    ViewHolder.pv_circular.stopAnimation();
+
+                    if (CVDataList.get(i).des.equals("")) //Se la descrizione non c'è la nascondo
+                        ViewHolder.Des.setVisibility(View.GONE);
+                    else ViewHolder.Des.setVisibility(View.VISIBLE);
+
+                } else {
+                    ViewHolder.pv_circular.setColor(ContextCompat.getColor(context, R.color.greenmaterial));
+                    ViewHolder.pv_circular.setVisibility(View.VISIBLE);
+                    ViewHolder.Media.setVisibility(View.VISIBLE);
+                    if (CVDataList.get(i).title.equals("Media Generale")) {
+                        int unicode = 0x1F44D; //Pollice in su
+                        ViewHolder.Des.setText(getEmojiByUnicode(unicode));
+                    }
+                    ViewHolder.pv_circular.setProgress(CVDataList.get(i).prog);
+                }
+            }
+
+            @Override
+            public int getItemCount() {
+                return CVDataList.size();
+            }
+
             class ViewHolder extends RecyclerView.ViewHolder {
                 CardView cv;
                 TextView Title;
@@ -2360,436 +2774,35 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            RVAdapter(List<CVData> CVDataList) {
-                this.CVDataList = CVDataList;
-            }
-
-            @Override
-            public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_card, parent, false);
-                return new ViewHolder(v);
-            }
-
-
-            @Override
-            public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-                super.onAttachedToRecyclerView(recyclerView);
-            }
-
-            @Override
-            public void onBindViewHolder(ViewHolder ViewHolder, int i) {
-                if (CVDataList.get(i).title.contains("Nota disciplinare"))  //Se contiene nota disciplinare
-                {
-                    ViewHolder.Title.setTextColor(ContextCompat.getColor(context, R.color.redmaterial));
-                } else
-                    ViewHolder.Title.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey));
-                ViewHolder.Title.setText(CVDataList.get(i).title);
-
-                if (CVDataList.get(i).dess != null)
-                    ViewHolder.Des.setText(CVDataList.get(i).dess);
-                else
-                    ViewHolder.Des.setText(CVDataList.get(i).des);
-                ViewHolder.Media.setText(CVDataList.get(i).media);
-
-                if (CVDataList.get(i).des.contains("<Agenda>")) //Se contiene "<Data>" fa parte della sezione agenda, quindi la splitto e la imposto
-                {
-                    CVDataList.get(i).des = CVDataList.get(i).des.replace("<Agenda>", "");
-                    ViewHolder.Des.setTextIsSelectable(true);
-                    ViewHolder.LayoutData.setVisibility(View.VISIBLE);
-                    try {
-                        //Comparo le date
-                        Compito compito = compitishow.get(i);
-                        Days d = Days.daysBetween(compito.getDataInserimento(), compito.getDataInizio());
-
-                        //Imposto l'orologio
-                        ViewHolder.clockView.setHour(compito.getDataInserimento().getHourOfDay());
-                        ViewHolder.clockView.setMinute(compito.getDataInserimento().getMinuteOfHour());
-                        DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yy HH:mm:ss");
-                        int days = d.getDays();
-                        String date = dtf.print(compito.getDataInserimento());
-                        SpannableString s;
-                        if (days == 0) {
-                            s = new SpannableString(getString(R.string.datainsogg, date));
-                        } else if (days == 1)
-                            s = new SpannableString(getString(R.string.datains, dtf.print(compito.getDataInserimento()), days, "o"));
-                        else
-                            s = new SpannableString(getString(R.string.datains, dtf.print(compito.getDataInserimento()), days, "i"));
-
-                        s.setSpan(new StyleSpan(Typeface.BOLD), 0, date.length(), 0);
-                        ViewHolder.data.setText(s);
-                        ViewHolder.Des.setText(CVDataList.get(i).des);
-                    } catch (Exception e) {
-                        ACRA.getErrorReporter().handleException(e, false);
-                    }
-                } else {
-                    ViewHolder.LayoutData.setVisibility(View.GONE);
-                    ViewHolder.Des.setTextIsSelectable(false);
-                }
-
-                ViewHolder.pv_circular.setIndeterminate(false);
-                if (CVDataList.get(i).prog < 55f && CVDataList.get(i).prog != 0) {
-                    ViewHolder.pv_circular.setColor(ContextCompat.getColor(context, R.color.redmaterial));
-                    ViewHolder.pv_circular.setVisibility(View.VISIBLE);
-                    ViewHolder.Media.setVisibility(View.VISIBLE);
-                    if (CVDataList.get(i).title.equals("Media Generale")) {
-                        int unicode = 0x1F628; //Faccia impaurita
-                        ViewHolder.Des.setText(getEmojiByUnicode(unicode));
-                    }
-                    ViewHolder.pv_circular.setProgress(CVDataList.get(i).prog);
-                } else if (CVDataList.get(i).prog >= 55f && CVDataList.get(i).prog < 60f) {
-                    ViewHolder.pv_circular.setColor(ContextCompat.getColor(context, R.color.orangematerial));
-                    ViewHolder.pv_circular.setVisibility(View.VISIBLE);
-                    ViewHolder.Media.setVisibility(View.VISIBLE);
-                    if (CVDataList.get(i).title.equals("Media Generale")) {
-                        int unicode = 0x1F44E; //Pollice in giù
-                        ViewHolder.Des.setText(getEmojiByUnicode(unicode));
-                    }
-                    ViewHolder.pv_circular.setProgress(CVDataList.get(i).prog);
-                } else if (CVDataList.get(i).prog == 0f) {
-                    ViewHolder.pv_circular.setVisibility(View.GONE);
-                    ViewHolder.pv_circular.setProgress(1f);
-                    ViewHolder.pv_circular.stopAnimation();
-
-                    if (CVDataList.get(i).des.equals("")) //Se la descrizione non c'è la nascondo
-                        ViewHolder.Des.setVisibility(View.GONE);
-                    else ViewHolder.Des.setVisibility(View.VISIBLE);
-
-                } else {
-                    ViewHolder.pv_circular.setColor(ContextCompat.getColor(context, R.color.greenmaterial));
-                    ViewHolder.pv_circular.setVisibility(View.VISIBLE);
-                    ViewHolder.Media.setVisibility(View.VISIBLE);
-                    if (CVDataList.get(i).title.equals("Media Generale")) {
-                        int unicode = 0x1F44D; //Pollice in su
-                        ViewHolder.Des.setText(getEmojiByUnicode(unicode));
-                    }
-                    ViewHolder.pv_circular.setProgress(CVDataList.get(i).prog);
-                }
-            }
-
-            @Override
-            public int getItemCount() {
-                return CVDataList.size();
-            }
-
         }
 
     }
 
-    public static void AggiornaFileOffline() {
-        if (DownloadFolder != null) {
-            File[] files = DownloadFolder.listFiles();
-            if (files != null)
-                Drawerresult.updateBadge(5, new StringHolder(files.length + ""));
-        }
-    }
+    class PagerAdapter extends FragmentPagerAdapter {
 
-    public static void AggiornaNCircolari(int n) {
-        if (n != 0)
-            Drawerresult.updateBadge(3, new StringHolder(n + ""));
-    }
+        String[] tab = getResources().getStringArray(R.array.tab_title);
 
-    public static void AggiornaFileScrutini(int n) {
-        if (n != 0)
-            Drawerresult.updateBadge(4, new StringHolder(n + ""));
-    }
-
-    private static void CaricaVotiOffline() {
-        MyDB DBVoti = new MyDB(context);
-        SQLiteDatabase db = DBVoti.getReadableDatabase();
-        votis.clear();
-        LinkedHashMap<String, List<Voto>> hashMap = new LinkedHashMap<>();
-
-        Cursor c = db.rawQuery("select * from " + MyDB.VotoEntry.TABLE_NAME, null);
-        if (c.moveToFirst()) {
-            while (!c.isAfterLast()) {
-
-                String materia = c.getString(c.getColumnIndex(MyDB.VotoEntry.COLUMN_NAME_MATERIA));
-                Voto voto = new Voto();
-                voto.setVoto(c.getString(c.getColumnIndex(MyDB.VotoEntry.COLUMN_NAME_VOTO)));
-                boolean VotoBlu = c.getInt(c.getColumnIndex(MyDB.VotoEntry.COLUMN_NAME_VOTOBLU)) == 1;
-                voto.setVotoblu(VotoBlu);
-                voto.setData(c.getString(c.getColumnIndex(MyDB.VotoEntry.COLUMN_NAME_DATA)));
-                voto.setTipo(c.getString(c.getColumnIndex(MyDB.VotoEntry.COLUMN_NAME_TIPO)));
-                voto.setPeriodo(c.getString(c.getColumnIndex(MyDB.VotoEntry.COLUMN_NAME_PERIODO)));
-                voto.setCommento(c.getString(c.getColumnIndex(MyDB.VotoEntry.COLUMN_NAME_COMMENTO)));
-
-                if (!hashMap.containsKey(materia)) {
-                    List<Voto> list = new ArrayList<>();
-                    list.add(voto);
-                    hashMap.put(materia, list);
-                } else {
-                    hashMap.get(materia).add(voto);
-                }
-
-                c.moveToNext();
-            }
+        PagerAdapter(FragmentManager fm) {
+            super(fm);
         }
 
-        for (Map.Entry<String, List<Voto>> entry : hashMap.entrySet()) {
-            Materia materia = new Materia(entry.getKey());
-            materia.setVoti(entry.getValue());
-            votis.add(materia);
+        @Override
+        public Fragment getItem(int position) {
+            MyFragment myFragment = new MyFragment();
+            myFragment = myFragment.getInstance(position);
+
+            //MyFragment myFragment = MyFragment.getInstance(position);
+            return myFragment;
         }
 
-        db.close();
-        c.close();
-    }
-
-
-    private static void AggiornaDati() {
-        new GetStringFromUrl().execute(BASE_URL + "/auth/app/default/AuthApi2.php?a=aLoginPwd");
-        new GetStringFromUrl().execute(BASE_URL + "/cvv/app/default/genitori_note.php");
-        new GetStringFromUrl().execute(BASE_URL + "/cvv/app/default/gioprof_note_studente.php");
-        new GetStringFromUrl().execute(BASE_URL + "/cvv/app/default/agenda_studenti.php?ope=get_events&start=" + primadata.getMillis() / 1000 + "&end=" + secondadata.getMillis() / 1000);
-        new GetStringFromUrl().execute(BASE_URL + "/cvv/app/default/didattica_genitori.php");
-        new GetStringFromUrl().execute(BASE_URL + "/sif/app/default/bacheca_utente.php");
-        new GetStringFromUrl().execute(BASE_URL + "/sol/app/default/documenti_sol.php");
-    }
-
-
-    @Override
-    public void onBackPressed() {
-
-        if (currPage == 6 && didatticaPos[0] > 0) {
-            didatticaPos[0]--;
-            updateDidattica = true;
-            m_handlerDidattica.run();
-        } else {
-            if (Drawerresult != null)
-                if (Drawerresult.isDrawerOpen())
-                    Drawerresult.closeDrawer();
-                else
-                    moveTaskToBack(true);
-            else moveTaskToBack(true);
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return tab[position];
         }
-    }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mTracker.setScreenName("MainActivity");
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.cancelAll(); //Cancello tutte le notifiche dell'app se ci sono
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
-        menu.getItem(1).setChecked(sharedPref.getBoolean("notifichevoti", true));
-        menu.getItem(2).setChecked(sharedPref.getBoolean("notificheagenda", true));
-        menu.getItem(3).setChecked(sharedPref.getBoolean("notifichescrutini", true));
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-
-            case R.id.obbiettivobtn: {
-                final SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
-                final int[] obbv = {sharedPref.getInt("obiettivovoto", 20)};
-                MaterialDialog dialog = new MaterialDialog.Builder(MainActivity.this)
-                        .title(R.string.impostaobb)
-                        .theme(Theme.LIGHT)
-                        .customView(R.layout.fragment_imposta_obb, true)
-                        .positiveText(android.R.string.ok)
-                        .onPositive(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                SharedPreferences.Editor editor = sharedPref.edit();
-                                editor.putInt("obiettivovoto", obbv[0]);
-                                editor.apply();
-
-                                if (m_handlerMedie != null) {
-                                    updateMedie = true;
-                                    m_handlerMedie.run();
-                                }
-
-                                if (m_handlerQ1 != null) {
-                                    updateQ1 = true;
-                                    m_handlerQ1.run();
-                                }
-
-                                if (m_handlerQ2 != null) {
-                                    updateQ2 = true;
-                                    m_handlerQ2.run();
-                                }
-                            }
-                        })
-                        .build();
-
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplication(), R.layout.spinner_item, getResources().getStringArray(R.array.votispinner));
-                adapter.setDropDownViewResource(R.layout.spinner_item);
-                MaterialSpinner spinner = (MaterialSpinner) dialog.findViewById(R.id.spinner);
-                spinner.setAdapter(adapter);
-                spinner.setSelection(obbv[0]);
-
-                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        if (position >= 0) {
-                            obbv[0] = position;
-                        }
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-
-                    }
-                });
-
-                dialog.show();
-            }
-            break;
-
-            case R.id.tabbtn: {
-                final SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
-                final int tab = sharedPref.getInt("tabiniziale", 0);
-                new MaterialDialog.Builder(MainActivity.this)
-                        .title(R.string.seltabpartenza)
-                        .theme(Theme.LIGHT)
-                        .items(R.array.tab_title)
-                        .itemsCallbackSingleChoice(tab, new MaterialDialog.ListCallbackSingleChoice() {
-                            @Override
-                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                                SharedPreferences.Editor editor = sharedPref.edit();
-                                editor.putInt("tabiniziale", which);
-                                editor.apply();
-                                return true;
-                            }
-                        })
-                        .show();
-            }
-            break;
-
-            case R.id.notifichevoti: {
-
-                SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-
-                if (item.isChecked()) {
-                    if (sharedPref.getBoolean("notificheagenda", true) || sharedPref.getBoolean("notifichescrutini", true)) {
-                        editor.putBoolean("notifichevoti", false);
-                    } else {
-
-                        AlarmManager mAlarmManger = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                        Intent intent = new Intent(MainActivity.this, Notifiche.class);
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                        mAlarmManger.cancel(pendingIntent);
-                        editor.putBoolean("notifichevoti", false);
-                    }
-                    item.setChecked(false);
-                } else {
-                    if (sharedPref.getBoolean("notificheagenda", true) || sharedPref.getBoolean("notifichescrutini", true)) {
-                        editor.putBoolean("notifichevoti", true);
-                    } else {
-
-                        AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                        Intent intent = new Intent(this, Notifiche.class);
-                        PendingIntent alarmIntent = PendingIntent.getBroadcast(this, CONTROLLO_VOTI_ID, intent, 0);
-
-                        alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_HALF_HOUR, alarmIntent);
-                        editor.putBoolean("notifichevoti", true);
-                    }
-                    item.setChecked(true);
-                }
-
-                editor.apply();
-
-
-            }
-            break;
-
-            case R.id.notificheagenda: {
-
-                SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-
-                if (item.isChecked()) {
-                    if (sharedPref.getBoolean("notifichevoti", true) || sharedPref.getBoolean("notifichescrutini", true)) {
-                        editor.putBoolean("notificheagenda", false);
-                    } else {
-
-                        AlarmManager mAlarmManger = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                        Intent intent = new Intent(MainActivity.this, Notifiche.class);
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                        mAlarmManger.cancel(pendingIntent);
-                        editor.putBoolean("notificheagenda", false);
-                    }
-
-                    item.setChecked(false);
-                } else {
-                    if (sharedPref.getBoolean("notificheavoti", true) || sharedPref.getBoolean("notifichescrutini", true)) {
-                        editor.putBoolean("notificheagenda", true);
-                    } else {
-
-                        AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                        Intent intent = new Intent(this, Notifiche.class);
-                        PendingIntent alarmIntent = PendingIntent.getBroadcast(this, CONTROLLO_VOTI_ID, intent, 0);
-
-                        alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_HALF_HOUR, alarmIntent);
-                        editor.putBoolean("notificheagenda", true);
-                    }
-                    item.setChecked(true);
-                }
-
-                editor.apply();
-
-            }
-            break;
-
-            case R.id.notifichescrutini: {
-                SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-
-                if (item.isChecked()) {
-                    if (sharedPref.getBoolean("notifichevoti", true) || sharedPref.getBoolean("notificheagenda", true)) {
-                        editor.putBoolean("notifichescrutini", false);
-                    } else {
-
-                        AlarmManager mAlarmManger = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                        Intent intent = new Intent(MainActivity.this, Notifiche.class);
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                        mAlarmManger.cancel(pendingIntent);
-                        editor.putBoolean("notifichescrutini", false);
-                        editor.putInt("NFileScrutini", -1);
-                    }
-
-                    item.setChecked(false);
-                } else {
-                    if (sharedPref.getBoolean("notifichevoti", true) || sharedPref.getBoolean("notificheagenda", true)) {
-                        editor.putBoolean("notifichescrutini", true);
-                    } else {
-
-                        AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                        Intent intent = new Intent(this, Notifiche.class);
-                        PendingIntent alarmIntent = PendingIntent.getBroadcast(this, CONTROLLO_VOTI_ID, intent, 0);
-
-                        alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_HALF_HOUR, alarmIntent);
-                        editor.putBoolean("notifichescrutini", true);
-                    }
-                    item.setChecked(true);
-                }
-
-                editor.apply();
-            }
-            break;
-
-
-            default:
-                return super.onOptionsItemSelected(item);
+        @Override
+        public int getCount() {
+            return tab.length;
         }
-        return true;
     }
 }

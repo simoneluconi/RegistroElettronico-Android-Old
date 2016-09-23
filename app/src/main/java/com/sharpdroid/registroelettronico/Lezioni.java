@@ -6,13 +6,13 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -61,10 +61,10 @@ public class Lezioni extends AppCompatActivity {
 
     static RVAdapter adapter;
     static SwipeViewPager mPager;
-    SlidingTabLayout mTabs;
     static Context context;
     static List<LezioneM> lezioniMateries = new ArrayList<>();
     static List<Lezione> lezioni = new ArrayList<>();
+    SlidingTabLayout mTabs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,30 +90,6 @@ public class Lezioni extends AppCompatActivity {
             if (msCookieManager.getCookieStore().getCookies().isEmpty())
                 new GetStringFromUrl().execute(MainActivity.BASE_URL + "/auth/app/default/AuthApi2.php?a=aLoginPwd");
             new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/regclasse_lezioni_xstudenti.php");
-        }
-    }
-
-    class PagerAdapter extends FragmentPagerAdapter {
-
-        PagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            MyFragment myFragment = new MyFragment();
-            myFragment = myFragment.getInstance(position);
-            return myFragment;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return lezioniMateries.get(position).getMateria();
-        }
-
-        @Override
-        public int getCount() {
-            return lezioniMateries.size();
         }
     }
 
@@ -178,6 +154,33 @@ public class Lezioni extends AppCompatActivity {
     public static class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
         List<Lezione> leziones;
 
+        RVAdapter(List<Lezione> leziones) {
+            this.leziones = leziones;
+        }
+
+        @Override
+        public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_lezioni, parent, false);
+            return new PersonViewHolder(v);
+        }
+
+        @Override
+        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+            super.onAttachedToRecyclerView(recyclerView);
+        }
+
+        @Override
+        public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
+            personViewHolder.Prof.setText(leziones.get(i).getProf());
+            personViewHolder.Desc.setText(leziones.get(i).getDescrizione());
+            personViewHolder.Data.setText(leziones.get(i).getData());
+        }
+
+        @Override
+        public int getItemCount() {
+            return leziones.size();
+        }
+
         public class PersonViewHolder extends RecyclerView.ViewHolder {
             CardView cv;
             TextView Prof;
@@ -193,35 +196,30 @@ public class Lezioni extends AppCompatActivity {
             }
         }
 
-        RVAdapter(List<Lezione> leziones) {
-            this.leziones = leziones;
+    }
+
+    class PagerAdapter extends FragmentPagerAdapter {
+
+        PagerAdapter(FragmentManager fm) {
+            super(fm);
         }
 
         @Override
-        public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_lezioni, parent, false);
-            return new PersonViewHolder(v);
-        }
-
-
-        @Override
-        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-            super.onAttachedToRecyclerView(recyclerView);
-        }
-
-
-        @Override
-        public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
-            personViewHolder.Prof.setText(leziones.get(i).getProf());
-            personViewHolder.Desc.setText(leziones.get(i).getDescrizione());
-            personViewHolder.Data.setText(leziones.get(i).getData());
+        public Fragment getItem(int position) {
+            MyFragment myFragment = new MyFragment();
+            myFragment = myFragment.getInstance(position);
+            return myFragment;
         }
 
         @Override
-        public int getItemCount() {
-            return leziones.size();
+        public CharSequence getPageTitle(int position) {
+            return lezioniMateries.get(position).getMateria();
         }
 
+        @Override
+        public int getCount() {
+            return lezioniMateries.size();
+        }
     }
 
     public class GetStringFromUrl extends AsyncTask<String, Void, String> {

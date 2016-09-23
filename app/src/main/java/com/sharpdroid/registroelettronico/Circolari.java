@@ -7,12 +7,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -60,8 +60,8 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAv
 
 public class Circolari extends AppCompatActivity {
 
-    static List<Circolare> Circolaris = new ArrayList<>();
     public static RVAdapter adapter;
+    static List<Circolare> Circolaris = new ArrayList<>();
     static SwipeRefreshLayout swipeRefreshLayout;
     static CoordinatorLayout coordinatorLayout;
     static Context context;
@@ -112,6 +112,35 @@ public class Circolari extends AppCompatActivity {
     public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
         List<Circolare> Circolaris;
 
+        RVAdapter(List<Circolare> Circolaris) {
+            this.Circolaris = Circolaris;
+        }
+
+        @Override
+        public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_oggiascuola, parent, false);
+            return new PersonViewHolder(v);
+        }
+
+        @Override
+        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+            super.onAttachedToRecyclerView(recyclerView);
+        }
+
+        @Override
+        public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
+            personViewHolder.Titolo.setText(Circolaris.get(i).getTitolo());
+            personViewHolder.NCircolare.setText(Circolaris.get(i).getNCircolare());
+            personViewHolder.Tipo.setText(String.format("%1$s - %2$s", Circolaris.get(i).getData(), Circolaris.get(i).getTipo()));
+            personViewHolder.Data.setText("");
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return Circolaris.size();
+        }
+
         class PersonViewHolder extends RecyclerView.ViewHolder {
             CardView cv;
             TextView NCircolare;
@@ -140,45 +169,13 @@ public class Circolari extends AppCompatActivity {
 
         }
 
-        RVAdapter(List<Circolare> Circolaris) {
-            this.Circolaris = Circolaris;
-        }
-
-
-        @Override
-        public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_oggiascuola, parent, false);
-            return new PersonViewHolder(v);
-        }
-
-
-        @Override
-        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-            super.onAttachedToRecyclerView(recyclerView);
-        }
-
-
-        @Override
-        public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
-            personViewHolder.Titolo.setText(Circolaris.get(i).getTitolo());
-            personViewHolder.NCircolare.setText(Circolaris.get(i).getNCircolare());
-            personViewHolder.Tipo.setText(String.format("%1$s - %2$s", Circolaris.get(i).getData(), Circolaris.get(i).getTipo()));
-            personViewHolder.Data.setText("");
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return Circolaris.size();
-        }
-
     }
 
     public class GetStringFromUrl extends AsyncTask<String, Integer, String> {
 
+        private static final int BUFFER_SIZE = 4096;
         Snackbar DownloadProgressSnak;
         String azione = "";
-        private static final int BUFFER_SIZE = 4096;
 
         @Override
         protected void onPreExecute() {
@@ -236,7 +233,7 @@ public class Circolari extends AppCompatActivity {
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
 
-                    postDataParams.put("uid",username);
+                    postDataParams.put("uid", username);
                     postDataParams.put("pwd", password);
 
                     OutputStream os = conn.getOutputStream();
@@ -258,7 +255,7 @@ public class Circolari extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }  else {
+            } else {
 
                 if (params[0].equals(MainActivity.BASE_URL + "/sif/app/default/bacheca_utente.php"))
                     azione = Azione.CIRCOLARI;
