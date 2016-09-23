@@ -6,6 +6,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
         android:gravity="center_horizontal"
         android:layout_gravity="center_horizontal">
@@ -17,13 +18,12 @@
             android:textSize="25sp"
             android:id="@+id/textVoto"/>
 
-
     </LinearLayout>
-
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:orientation="vertical"
+        android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginBottom="15dp"
         android:layout_height="wrap_content">
@@ -43,11 +43,5 @@
             android:textColor="@color/textcolorgrey"
             android:text="Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."/>
 
-
-
     </LinearLayout>
-
-
-
-
 </LinearLayout>

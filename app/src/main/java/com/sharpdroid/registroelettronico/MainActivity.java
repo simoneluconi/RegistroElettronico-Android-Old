@@ -1908,129 +1908,114 @@ public class MainActivity extends AppCompatActivity {
 
 
                         compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
-                                                            @Override
-                                                            public void onDayClick(Date dateClicked) {
-                                                                CalMostra = new DateTime(dateClicked);
-                                                                updateAgenda = true;
-                                                                m_handlerAgenda.run();
-                                                                Log.v("NewDate", String.valueOf(dateClicked));
-                                                            }
+                            @Override
+                            public void onDayClick(Date dateClicked) {
+                                CalMostra = new DateTime(dateClicked);
+                                updateAgenda = true;
+                                m_handlerAgenda.run();
+                                Log.v("NewDate", String.valueOf(dateClicked));
+                            }
 
-                                                            @Override
-                                                            public void onMonthScroll(Date firstDayOfNewMonth) {
-                                                                String mese = new SimpleDateFormat("MMMM yyyy", Locale.ITALIAN).format(firstDayOfNewMonth.getTime());
-                                                                mese = InizialeMaiuscola(mese);
-                                                                txMese.setText(mese);
-                                                                CalMostra = new DateTime(firstDayOfNewMonth);
-                                                                updateAgenda = true;
-                                                                m_handlerAgenda.run();
-                                                            }
-                                                        }
-
+                            @Override
+                            public void onMonthScroll(Date firstDayOfNewMonth) {
+                                String mese = new SimpleDateFormat("MMMM yyyy", Locale.ITALIAN).format(firstDayOfNewMonth.getTime());
+                                mese = InizialeMaiuscola(mese);
+                                txMese.setText(mese);
+                                CalMostra = new DateTime(firstDayOfNewMonth);
+                                updateAgenda = true;
+                                m_handlerAgenda.run();
+                                }
+                            }
                         );
 
-                        compactCalendarView.setOnTouchListener(new View.OnTouchListener()
-
-                                                               {
-                                                                   @Override
-                                                                   public boolean onTouch(View v, MotionEvent event) {
-
-                                                                       switch (event.getAction()) {
-                                                                           case MotionEvent.ACTION_UP:
-                                                                               mPager.setPagingEnabled(true);
-                                                                               break;
-                                                                           default:
-                                                                               mPager.setPagingEnabled(false);
-                                                                               break;
-                                                                       }
-                                                                       return false;
-
-                                                                   }
-                                                               }
-
-                        );
-
+                        compactCalendarView.setOnTouchListener(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View v, MotionEvent event) {
+                                v.performClick();
+                                switch (event.getAction()) {
+                                    case MotionEvent.ACTION_UP:
+                                        mPager.setPagingEnabled(true);
+                                        break;
+                                    default:
+                                        mPager.setPagingEnabled(false);
+                                        break;
+                                }
+                                return false;
+                            }
+                        });
 
                         fab.setOnClickListener(null);
-                        fab.setOnClickListener(new View.OnClickListener()
+                        fab.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                final String data = DateTimeFormat.forPattern("dd/MM/yyyy").print(CalMostra);
+                                final String dataCal = DateTimeFormat.forPattern("yyyy-MM-dd").print(CalMostra);
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ITALIAN);
+                                final String dataInserimento = sdf.format(Calendar.getInstance().getTime());
+                                final MaterialDialog dialog = new MaterialDialog.Builder(getContext())
+                                        .title(getResources().getString(R.string.aggcal))
+                                        .theme(Theme.LIGHT)
+                                        .iconRes(R.drawable.calendartoday)
+                                        .customView(R.layout.adapter_cust_comp, true)
+                                        .positiveText("Aggiungi")
+                                        .negativeText(android.R.string.cancel)
+                                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                            @Override
+                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                //Autore, DataInizio, DataInserimento, Commento
+                                                EditText Autore = (EditText) dialog.findViewById(R.id.Tit);
+                                                EditText Cont = (EditText) dialog.findViewById(R.id.Cont);
+                                                ContentValues dati = new ContentValues();
+                                                dati.put(MyDB.MyCompitoEntry.COLUMN_NAME_AUTORE, Autore.getText().toString().trim());
+                                                dati.put(MyDB.MyCompitoEntry.COLUMN_NAME_DATA, dataCal);
+                                                dati.put(MyDB.MyCompitoEntry.COLUMN_NAME_DATAINSERIMENTO, dataInserimento);
+                                                dati.put(MyDB.MyCompitoEntry.COLUMN_NAME_CONTENUTO, Cont.getText().toString().trim());
+                                                SaveMyCompito(getContext(), dati);
+                                                updateAgenda = true;
+                                                m_handlerAgenda.run();
+                                            }
+                                        }).build();
+                                dialog.getActionButton(DialogAction.POSITIVE).setEnabled(false);
+                                TextView CurrDate = (TextView) dialog.findViewById(R.id.CurrTime);
+                                CurrDate.setText(getString(R.string.eventoperil, data));
+                                final EditText Autore = (EditText) dialog.findViewById(R.id.Tit);
+                                final EditText Cont = (EditText) dialog.findViewById(R.id.Cont);
+                                Autore.addTextChangedListener(new TextWatcher() {
+                                    @Override
+                                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                                               {
-                                                   @Override
-                                                   public void onClick(View v) {
-                                                       final String data = DateTimeFormat.forPattern("dd/MM/yyyy").print(CalMostra);
-                                                       final String dataCal = DateTimeFormat.forPattern("yyyy-MM-dd").print(CalMostra);
-                                                       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ITALIAN);
-                                                       final String dataInserimento = sdf.format(Calendar.getInstance().getTime());
-                                                       final MaterialDialog dialog = new MaterialDialog.Builder(getContext())
-                                                               .title(getResources().getString(R.string.aggcal))
-                                                               .theme(Theme.LIGHT)
-                                                               .iconRes(R.drawable.calendartoday)
-                                                               .customView(R.layout.adapter_cust_comp, true)
-                                                               .positiveText("Aggiungi")
-                                                               .negativeText(android.R.string.cancel)
-                                                               .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                                                   @Override
-                                                                   public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    }
 
-                                                                       //Autore, DataInizio, DataInserimento, Commento
-                                                                       EditText Autore = (EditText) dialog.findViewById(R.id.Tit);
-                                                                       EditText Cont = (EditText) dialog.findViewById(R.id.Cont);
-                                                                       ContentValues dati = new ContentValues();
-                                                                       dati.put(MyDB.MyCompitoEntry.COLUMN_NAME_AUTORE, Autore.getText().toString().trim());
-                                                                       dati.put(MyDB.MyCompitoEntry.COLUMN_NAME_DATA, dataCal);
-                                                                       dati.put(MyDB.MyCompitoEntry.COLUMN_NAME_DATAINSERIMENTO, dataInserimento);
-                                                                       dati.put(MyDB.MyCompitoEntry.COLUMN_NAME_CONTENUTO, Cont.getText().toString().trim());
-                                                                       SaveMyCompito(getContext(), dati);
-                                                                       updateAgenda = true;
-                                                                       m_handlerAgenda.run();
+                                    @Override
+                                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                        dialog.getActionButton(DialogAction.POSITIVE).setEnabled(charSequence.length() > 0 && Cont.length() > 0);
+                                    }
 
-                                                                   }
-                                                               }).build();
+                                    @Override
+                                    public void afterTextChanged(Editable editable) {
 
-                                                       dialog.getActionButton(DialogAction.POSITIVE).setEnabled(false);
-                                                       TextView CurrDate = (TextView) dialog.findViewById(R.id.CurrTime);
-                                                       CurrDate.setText(getString(R.string.eventoperil, data));
-                                                       final EditText Autore = (EditText) dialog.findViewById(R.id.Tit);
-                                                       final EditText Cont = (EditText) dialog.findViewById(R.id.Cont);
-                                                       Autore.addTextChangedListener(new TextWatcher() {
-                                                           @Override
-                                                           public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                    }
+                                });
 
-                                                           }
+                                Cont.addTextChangedListener(new TextWatcher() {
+                                    @Override
+                                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                    }
 
-                                                           @Override
-                                                           public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                                               dialog.getActionButton(DialogAction.POSITIVE).setEnabled(charSequence.length() > 0 && Cont.length() > 0);
-                                                           }
+                                    @Override
+                                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                        dialog.getActionButton(DialogAction.POSITIVE).setEnabled(charSequence.length() > 0 && Autore.length() > 0);
+                                    }
 
-                                                           @Override
-                                                           public void afterTextChanged(Editable editable) {
-
-                                                           }
-                                                       });
-
-                                                       Cont.addTextChangedListener(new TextWatcher() {
-                                                           @Override
-                                                           public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                                           }
-
-                                                           @Override
-                                                           public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                                               dialog.getActionButton(DialogAction.POSITIVE).setEnabled(charSequence.length() > 0 && Autore.length() > 0);
-                                                           }
-
-                                                           @Override
-                                                           public void afterTextChanged(Editable editable) {
-
-                                                           }
-                                                       });
+                                    @Override
+                                    public void afterTextChanged(Editable editable) {
+                                    }
+                                });
 
 
-                                                       dialog.show();
-                                                   }
-                                               }
-
-                        );
+                                dialog.show();
+                            }
+                        });
 
                     }
                     break;
