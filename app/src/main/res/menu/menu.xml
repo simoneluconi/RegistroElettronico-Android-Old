@@ -3,21 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/obbiettivobtn"
-          android:title="@string/impostaobb"
-          app:showAsAction="never" />
+        android:title="@string/impostaobb"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/tabbtn"
+        android:title="@string/tabpartenza"
+        app:showAsAction="never" />
 
     <item android:id="@+id/notifichevoti"
-          android:title="@string/notifichevoti"
-          android:checkable="true"
-          app:showAsAction="never" />
+        android:title="@string/notifichevoti"
+        android:checkable="true"
+        app:showAsAction="never" />
 
     <item android:id="@+id/notificheagenda"
-          android:title="@string/notificheagenda"
-          android:checkable="true"
-          app:showAsAction="never" />
+        android:title="@string/notificheagenda"
+        android:checkable="true"
+        app:showAsAction="never" />
 
     <item android:id="@+id/notifichescrutini"
-          android:title="@string/notifichescrutini"
-          android:checkable="true"
-          app:showAsAction="never" />
+        android:title="@string/notifichescrutini"
+        android:checkable="true"
+        app:showAsAction="never" />
 </menu>
