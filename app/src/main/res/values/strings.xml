@@ -68,6 +68,8 @@
     <string name="nessundato">Nessun dato, riprova tra qualche istante.</string>
     <string name="gruppotelegram">Gruppo Telegram</string>
     <string name="title_activity_intro">Intro</string>
+    <string name="tabpartenza">Tab di partenza</string>
+    <string name="seltabpartenza">Selezione tab di partenza</string>
     <string-array name="tab_title">
         <item>Medie</item>
         <item>P1</item>

@@ -282,22 +282,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Recupero il tab da aprrie se l'app è stata aperta da una notifica
-        int tabDaAprire = 0;
+        //Recupero il tab da aprire se l'app è stata aperta da una notifica
+        final SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
+        int tabDaAprire = sharedPref.getInt("tabiniziale", 0);
 
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
-            if (extras == null) {
-                tabDaAprire = 0;
-            } else {
-                tabDaAprire = extras.getInt("com.sharpdroid.registroelettronico.notifiche.TAB", 0);
+            if (extras != null) {
+                tabDaAprire = extras.getInt("com.sharpdroid.registroelettronico.notifiche.TAB", tabDaAprire);
                 if (tabDaAprire == 4)
                     DataCal = extras.getString("com.sharpdroid.registroelettronico.notifiche.DATACAL", null);
             }
         }
         mPager.setCurrentItem(tabDaAprire);
-
-        final SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
 
         //Scarico tutti i compiti dell'anno
         int mm = Calendar.getInstance().get(Calendar.MONTH) + 1;
@@ -2651,6 +2648,26 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 dialog.show();
+            }
+            break;
+
+            case R.id.tabbtn: {
+                final SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
+                final int tab = sharedPref.getInt("tabiniziale", 0);
+                new MaterialDialog.Builder(MainActivity.this)
+                        .title(R.string.seltabpartenza)
+                        .theme(Theme.LIGHT)
+                        .items(R.array.tab_title)
+                        .itemsCallbackSingleChoice(tab, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.putInt("tabiniziale", which);
+                                editor.apply();
+                                return true;
+                            }
+                        })
+                        .show();
             }
             break;
 
