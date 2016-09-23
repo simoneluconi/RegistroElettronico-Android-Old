@@ -335,7 +335,7 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
     }
 
     public interface DayViewOnClickListener {
-        public void onDaySelected(int day);
+        void onDaySelected(int day);
     }
 
     protected static class SavedState extends BaseSavedState {
