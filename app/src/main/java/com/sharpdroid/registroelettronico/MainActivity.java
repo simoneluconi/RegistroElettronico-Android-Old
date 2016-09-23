@@ -142,6 +142,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.concurrent.ExecutionException;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -516,6 +517,10 @@ public class MainActivity extends AppCompatActivity {
                                     .withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE)
                                             .withColorRes(R.color.redmaterial)),
                             new PrimaryDrawerItem()
+                                    .withName(R.string.versioneweb)
+                                    .withIcon(ContextCompat.getDrawable(this, R.drawable.ic_web))
+                                    .withIdentifier(6),
+                            new PrimaryDrawerItem()
                                     .withName(R.string.fileoff)
                                     .withIcon(ContextCompat.getDrawable(this, R.drawable.download))
                                     .withIdentifier(5)
@@ -562,17 +567,46 @@ public class MainActivity extends AppCompatActivity {
                             MainActivity.this.startActivity(myIntent);
                             break;
 
+
                         case 6:
+                            try {
+
+                                int ActiveUsers = sharedPref.getInt("CurrentProfile", 0);
+                                SQLiteDatabase db = new MyUsers(context).getWritableDatabase();
+                                Cursor c = db.rawQuery("SELECT * FROM " + MyUsers.UserEntry.TABLE_NAME, null);
+                                c.move(ActiveUsers);
+                                String username = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_USERNAME));
+                                String password = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_PASSWORD));
+                                c.close();
+                                db.close();
+
+
+                                Uri uri = Uri.parse("https://web.spaggiari.eu/auth/app/default/AuthApi2.php?a=aLoginPwd&uid=" + username + "&pwd=" + password);
+                                Intent intent = new Intent("android.intent.action.VIEW", uri);
+                                startActivity(intent);
+
+                                Thread.sleep(2 * 1000);
+
+                                uri = Uri.parse("https://web.spaggiari.eu/home/app/default/menu_webinfoschool_studenti.php");
+                                intent = new Intent("android.intent.action.VIEW", uri);
+                                startActivity(intent);
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            break;
+
+                        case 7:
                             myIntent = new Intent(MainActivity.this, FileOffline.class);
                             MainActivity.this.startActivity(myIntent);
                             break;
 
 
-                        case 7:
+                        case 8:
                             AvviaNotifiche(MainActivity.this);
                             break;
 
-                        case 9:
+                        case 10:
                             File backupDB = new File(getExternalCacheDir(), "MyData.db");
                             try {
                                 PackageManager m = getPackageManager();
@@ -1908,24 +1942,24 @@ public class MainActivity extends AppCompatActivity {
 
 
                         compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
-                            @Override
-                            public void onDayClick(Date dateClicked) {
-                                CalMostra = new DateTime(dateClicked);
-                                updateAgenda = true;
-                                m_handlerAgenda.run();
-                                Log.v("NewDate", String.valueOf(dateClicked));
-                            }
+                                                            @Override
+                                                            public void onDayClick(Date dateClicked) {
+                                                                CalMostra = new DateTime(dateClicked);
+                                                                updateAgenda = true;
+                                                                m_handlerAgenda.run();
+                                                                Log.v("NewDate", String.valueOf(dateClicked));
+                                                            }
 
-                            @Override
-                            public void onMonthScroll(Date firstDayOfNewMonth) {
-                                String mese = new SimpleDateFormat("MMMM yyyy", Locale.ITALIAN).format(firstDayOfNewMonth.getTime());
-                                mese = InizialeMaiuscola(mese);
-                                txMese.setText(mese);
-                                CalMostra = new DateTime(firstDayOfNewMonth);
-                                updateAgenda = true;
-                                m_handlerAgenda.run();
-                                }
-                            }
+                                                            @Override
+                                                            public void onMonthScroll(Date firstDayOfNewMonth) {
+                                                                String mese = new SimpleDateFormat("MMMM yyyy", Locale.ITALIAN).format(firstDayOfNewMonth.getTime());
+                                                                mese = InizialeMaiuscola(mese);
+                                                                txMese.setText(mese);
+                                                                CalMostra = new DateTime(firstDayOfNewMonth);
+                                                                updateAgenda = true;
+                                                                m_handlerAgenda.run();
+                                                            }
+                                                        }
                         );
 
                         compactCalendarView.setOnTouchListener(new View.OnTouchListener() {

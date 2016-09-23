@@ -73,6 +73,16 @@ public class OggiAScuola extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.setTitle(getString(R.string.oggiscuola));
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.ic_arrow_back));
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         context = this;
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayoutOggiScuola);
         adapter = new RVAdapter(oggiScuola);
