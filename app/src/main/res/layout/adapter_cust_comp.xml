@@ -1,34 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
 
     <TextView
+        android:id="@+id/CurrTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/CurrTime"
-        android:textColor="@color/textcolorgrey"
-        android:text="yyyy-MM-dd HH:mm:ss"/>
+        android:text="yyyy-MM-dd HH:mm:ss"
+        android:textColor="@color/textcolorgrey" />
 
     <EditText
+        android:id="@+id/Tit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:ems="10"
+        android:hint="Titolo"
         android:inputType="textPersonName"
         android:textColor="@color/textcolorbittitle"
-        android:hint="Titolo"
-        android:textColorHint="@color/textcolorgrey"
-        android:ems="10"
-        android:id="@+id/Tit" />
+        android:textColorHint="@color/textcolorgrey" />
 
     <EditText
+        android:id="@+id/Cont"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/Cont"
         android:layout_gravity="center_horizontal"
-        android:textColor="@color/textcolorbittitle"
-        android:textColorHint="@color/textcolorgrey"
+        android:layout_marginTop="20dp"
         android:hint="Contenuto"
-        android:layout_marginTop="20dp" />
+        android:textColor="@color/textcolorbittitle"
+        android:textColorHint="@color/textcolorgrey" />
 </LinearLayout>

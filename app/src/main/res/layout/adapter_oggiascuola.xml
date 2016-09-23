@@ -14,29 +14,29 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/OggiScuolaOra"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/OggiScuolaOra"
-            android:textColor="@color/md_material_blue_800"
-            android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
-            android:text="1^"/>
+            android:layout_marginStart="10dp"
+            android:text="1^"
+            android:textColor="@color/md_material_blue_800" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginRight="20dp">
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp">
 
             <LinearLayout
+                android:id="@+id/OggiScuolaPrimoLay"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/OggiScuolaPrimoLay">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/OggiScuolaProf"
@@ -50,8 +50,8 @@
                     android:id="@+id/OggiScuolaMateria"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="1dp"
                     android:layout_marginLeft="1dp"
+                    android:layout_marginStart="1dp"
                     android:text="(Pozioni)"
                     android:textColor="@color/material_blue_grey"
                     android:textSize="12sp" />
