@@ -27,8 +27,8 @@ import android.view.View;
 import com.sharpdroid.registroelettronico.R;
 
 public class ClockView extends View {
-    private Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
     int c, h, m;
+    private Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     public ClockView(Context context) {
         super(context);

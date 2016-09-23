@@ -2,10 +2,10 @@ package com.sharpdroid.registroelettronico;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -57,6 +57,41 @@ public class FileOffline extends AppCompatActivity {
     public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
         File[] files;
 
+        RVAdapter(File[] files) {
+            this.files = files;
+        }
+
+        @Override
+        public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_file_offline, parent, false);
+            return new PersonViewHolder(v);
+        }
+
+        @Override
+        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+            super.onAttachedToRecyclerView(recyclerView);
+        }
+
+        @Override
+        public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
+
+            File file = files[i];
+            String filename = file.getName().substring(0, file.getName().lastIndexOf("."));
+
+            personViewHolder.Nome.setText(filename);
+            personViewHolder.Ext.setImageBitmap(FileImage(String.valueOf(file.getName().substring(file.getName().lastIndexOf(".")))));
+            personViewHolder.Size.setText(ConvertiDimensione(file.length()));
+            Date date = new Date(file.lastModified());
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy HH:mm:ss", Locale.ITALIAN);
+            personViewHolder.LastModified.setText(sdf.format(date));
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return files.length;
+        }
+
         class PersonViewHolder extends RecyclerView.ViewHolder {
             CardView cv;
             ImageView Ext;
@@ -95,44 +130,6 @@ public class FileOffline extends AppCompatActivity {
                 });
             }
 
-        }
-
-        RVAdapter(File[] files) {
-            this.files = files;
-        }
-
-
-        @Override
-        public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_file_offline, parent, false);
-            return new PersonViewHolder(v);
-        }
-
-
-        @Override
-        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-            super.onAttachedToRecyclerView(recyclerView);
-        }
-
-
-        @Override
-        public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
-
-            File file = files[i];
-            String filename = file.getName().substring(0, file.getName().lastIndexOf("."));
-
-            personViewHolder.Nome.setText(filename);
-            personViewHolder.Ext.setImageBitmap(FileImage(String.valueOf(file.getName().substring(file.getName().lastIndexOf(".")))));
-            personViewHolder.Size.setText(ConvertiDimensione(file.length()));
-            Date date = new Date(file.lastModified());
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy HH:mm:ss", Locale.ITALIAN);
-            personViewHolder.LastModified.setText(sdf.format(date));
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return files.length;
         }
 
     }

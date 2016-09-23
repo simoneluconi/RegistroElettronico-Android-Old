@@ -37,11 +37,11 @@ dependencies {
     compile 'com.github.sundeepk:compact-calendar-view:1.9.1'
     compile 'com.google.android.gms:play-services-analytics:9.6.0'
     compile 'com.google.code.gson:gson:2.7'
-    compile 'joda-time:joda-time:2.9.4'
     compile('com.mikepenz:materialdrawer:5.6.0@aar') {
         transitive = true
     }
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'joda-time:joda-time:2.9.4'
     compile 'org.jsoup:jsoup:1.9.2'
     testCompile 'junit:junit:4.12'
 }

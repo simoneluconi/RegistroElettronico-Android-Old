@@ -7,12 +7,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -67,11 +67,11 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAv
 
 public class Scrutini extends AppCompatActivity {
 
+    public static RVAdapter adapter;
     static Context context;
     static SwipeRefreshLayout swipeRefreshLayout;
     static CoordinatorLayout coordinatorLayout;
     static List<ScrutiniFile> scrutiniFiles = new ArrayList<>();
-    public static RVAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +119,36 @@ public class Scrutini extends AppCompatActivity {
     public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
         List<ScrutiniFile> scrutiniFiles;
 
+        RVAdapter(List<ScrutiniFile> scrutiniFiles) {
+            this.scrutiniFiles = scrutiniFiles;
+        }
+
+        @Override
+        public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_scrutini, parent, false);
+            return new PersonViewHolder(v);
+        }
+
+        @Override
+        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+            super.onAttachedToRecyclerView(recyclerView);
+        }
+
+        @Override
+        public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
+            personViewHolder.Nome.setText(scrutiniFiles.get(i).getNome());
+            String imglink = scrutiniFiles.get(i).getImgLink();
+            if (imglink != null) {
+                Picasso.with(context).load(imglink).into(personViewHolder.imageView);
+            }
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return scrutiniFiles.size();
+        }
+
         public class PersonViewHolder extends RecyclerView.ViewHolder {
             CardView cv;
             TextView Nome;
@@ -143,46 +173,13 @@ public class Scrutini extends AppCompatActivity {
 
         }
 
-        RVAdapter(List<ScrutiniFile> scrutiniFiles) {
-            this.scrutiniFiles = scrutiniFiles;
-        }
-
-
-        @Override
-        public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_scrutini, parent, false);
-            return new PersonViewHolder(v);
-        }
-
-
-        @Override
-        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-            super.onAttachedToRecyclerView(recyclerView);
-        }
-
-
-        @Override
-        public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
-            personViewHolder.Nome.setText(scrutiniFiles.get(i).getNome());
-            String imglink = scrutiniFiles.get(i).getImgLink();
-            if (imglink != null) {
-                Picasso.with(context).load(imglink).into(personViewHolder.imageView);
-            }
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return scrutiniFiles.size();
-        }
-
     }
 
     public class GetStringFromUrl extends AsyncTask<String, Integer, String> {
 
+        private static final int BUFFER_SIZE = 4096;
         Snackbar DownloadProgressSnak;
         String azione = "";
-        private static final int BUFFER_SIZE = 4096;
 
         @Override
         protected void onPreExecute() {

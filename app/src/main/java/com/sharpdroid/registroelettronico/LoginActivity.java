@@ -70,20 +70,18 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAv
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
     private static final int REQUEST_READ_CONTACTS = 0;
-
+    Context context;
+    String Nome = "";
+    String ErrMsg = "Errore sconosciuto";
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
-
-    Context context;
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    String Nome = "";
-    String ErrMsg = "Errore sconosciuto";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -395,7 +393,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     LoginActivity.this.runOnUiThread(new Runnable() {
                         public void run() {
                             if (tipo.equals("G"))
-                            Toast.makeText(LoginActivity.this, "Salve genitore! Mi raccomando, non stressare troppo tuo/a figlio/a", Toast.LENGTH_LONG).show();
+                                Toast.makeText(LoginActivity.this, "Salve genitore! Mi raccomando, non stressare troppo tuo/a figlio/a", Toast.LENGTH_LONG).show();
                         }
                     });
 
