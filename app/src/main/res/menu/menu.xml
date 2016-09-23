@@ -2,26 +2,31 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/obbiettivobtn"
+    <item
+        android:id="@+id/obbiettivobtn"
         android:title="@string/impostaobb"
         app:showAsAction="never" />
 
-    <item android:id="@+id/tabbtn"
+    <item
+        android:id="@+id/tabbtn"
         android:title="@string/tabpartenza"
         app:showAsAction="never" />
 
-    <item android:id="@+id/notifichevoti"
+    <item
+        android:id="@+id/notifichevoti"
+        android:checkable="true"
         android:title="@string/notifichevoti"
-        android:checkable="true"
         app:showAsAction="never" />
 
-    <item android:id="@+id/notificheagenda"
+    <item
+        android:id="@+id/notificheagenda"
+        android:checkable="true"
         android:title="@string/notificheagenda"
-        android:checkable="true"
         app:showAsAction="never" />
 
-    <item android:id="@+id/notifichescrutini"
-        android:title="@string/notifichescrutini"
+    <item
+        android:id="@+id/notifichescrutini"
         android:checkable="true"
+        android:title="@string/notifichescrutini"
         app:showAsAction="never" />
 </menu>

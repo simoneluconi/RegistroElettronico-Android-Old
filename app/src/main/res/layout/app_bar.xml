@@ -4,6 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="56dp"
     android:theme="@style/ToolbarColor"
-    app:popupTheme="@style/AppBarTheme" >
+    app:popupTheme="@style/AppBarTheme">
 
 </android.support.v7.widget.Toolbar>

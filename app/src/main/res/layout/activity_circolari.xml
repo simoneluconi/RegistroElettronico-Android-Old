@@ -23,7 +23,6 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             tools:context="com.sharpdroid.registroelettronico.Circolari">
 
-
             <android.support.v4.widget.SwipeRefreshLayout
                 android:id="@+id/swiperefreshCircolari"
                 android:layout_width="match_parent"
