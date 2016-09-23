@@ -770,46 +770,48 @@ public class MainActivity extends AppCompatActivity {
                                             Materia materias = new Materia(materia);
                                             i++;
                                             boolean esci = false;
-                                            while (!metaElems.get(i).select("td").get(0).className().contains(MainActivity.SEPARATORE_MATERIE) && !esci) {
+                                            if (i < metaElems.size()) {
+                                                while (!metaElems.get(i).select("td").get(0).className().contains(MainActivity.SEPARATORE_MATERIE) && !esci) {
 
-                                                Elements elT = metaElems.get(i).select("span"); //Tipo - data
-                                                Elements elV = metaElems.get(i).select("p"); // Voto
-                                                String tmp[] = elT.get(0).text().trim().split("-");
-                                                boolean VotoBlu = metaElems.get(i).select("div").attr("class").contains("f_reg_voto_dettaglio");
+                                                    Elements elT = metaElems.get(i).select("span"); //Tipo - data
+                                                    Elements elV = metaElems.get(i).select("p"); // Voto
+                                                    String tmp[] = elT.get(0).text().trim().split("-");
+                                                    boolean VotoBlu = metaElems.get(i).select("div").attr("class").contains("f_reg_voto_dettaglio");
 
-                                                String[] periodotmp = metaElems.get(i).select("td").get(1).className().split("\\s+");
-                                                String periodo = periodotmp[periodotmp.length - 1];
-                                                String data = tmp[1].trim();
-                                                String voto = elV.get(1).text().trim();
-                                                String tipo = tmp[0].trim();
-                                                String commento = elT.get(1).text();
+                                                    String[] periodotmp = metaElems.get(i).select("td").get(1).className().split("\\s+");
+                                                    String periodo = periodotmp[periodotmp.length - 1];
+                                                    String data = tmp[1].trim();
+                                                    String voto = elV.get(1).text().trim();
+                                                    String tipo = tmp[0].trim();
+                                                    String commento = elT.get(1).text();
 
-                                                Voto votos = new Voto();
-                                                votos.setVoto(voto);
-                                                votos.setCommento(commento);
-                                                votos.setData(data);
-                                                votos.setTipo(tipo);
-                                                votos.setVotoblu(VotoBlu);
-                                                votos.setPeriodo(periodo);
-                                                materias.addVoto(votos);
+                                                    Voto votos = new Voto();
+                                                    votos.setVoto(voto);
+                                                    votos.setCommento(commento);
+                                                    votos.setData(data);
+                                                    votos.setTipo(tipo);
+                                                    votos.setVotoblu(VotoBlu);
+                                                    votos.setPeriodo(periodo);
+                                                    materias.addVoto(votos);
 
-                                                ContentValues dati = new ContentValues();
-                                                dati.put(MyDB.VotoEntry.COLUMN_NAME_MATERIA, materia);
-                                                dati.put(MyDB.VotoEntry.COLUMN_NAME_DATA, data);
-                                                dati.put(MyDB.VotoEntry.COLUMN_NAME_TIPO, tipo);
-                                                dati.put(MyDB.VotoEntry.COLUMN_NAME_VOTOBLU, VotoBlu);
-                                                dati.put(MyDB.VotoEntry.COLUMN_NAME_VOTO, voto);
-                                                dati.put(MyDB.VotoEntry.COLUMN_NAME_COMMENTO, commento);
-                                                dati.put(MyDB.VotoEntry.COLUMN_NAME_PERIODO, periodo);
-                                                db.insert(MyDB.VotoEntry.TABLE_NAME, MyDB.VotoEntry.COLUMN_NAME_NULLABLE, dati);
+                                                    ContentValues dati = new ContentValues();
+                                                    dati.put(MyDB.VotoEntry.COLUMN_NAME_MATERIA, materia);
+                                                    dati.put(MyDB.VotoEntry.COLUMN_NAME_DATA, data);
+                                                    dati.put(MyDB.VotoEntry.COLUMN_NAME_TIPO, tipo);
+                                                    dati.put(MyDB.VotoEntry.COLUMN_NAME_VOTOBLU, VotoBlu);
+                                                    dati.put(MyDB.VotoEntry.COLUMN_NAME_VOTO, voto);
+                                                    dati.put(MyDB.VotoEntry.COLUMN_NAME_COMMENTO, commento);
+                                                    dati.put(MyDB.VotoEntry.COLUMN_NAME_PERIODO, periodo);
+                                                    db.insert(MyDB.VotoEntry.TABLE_NAME, MyDB.VotoEntry.COLUMN_NAME_NULLABLE, dati);
 
-                                                if (i + 1 != metaElems.size())
-                                                    i++;
-                                                else esci = true;
+                                                    if (i + 1 != metaElems.size())
+                                                        i++;
+                                                    else esci = true;
 
+                                                }
+
+                                                votis.add(materias);
                                             }
-
-                                            votis.add(materias);
 
                                             i--;
                                         }
@@ -1644,6 +1646,7 @@ public class MainActivity extends AppCompatActivity {
 
                         );
 
+
                         fab.setOnClickListener(null);
                         fab.setOnClickListener(new View.OnClickListener()
 
@@ -1673,7 +1676,6 @@ public class MainActivity extends AppCompatActivity {
                                                                        dati.put(MyDB.MyCompitoEntry.COLUMN_NAME_DATA, dataCal);
                                                                        dati.put(MyDB.MyCompitoEntry.COLUMN_NAME_DATAINSERIMENTO, dataInserimento);
                                                                        dati.put(MyDB.MyCompitoEntry.COLUMN_NAME_CONTENUTO, Cont.getText().toString().trim());
-
                                                                        SaveMyCompito(getContext(), dati);
                                                                        updateAgenda = true;
                                                                        m_handlerAgenda.run();
