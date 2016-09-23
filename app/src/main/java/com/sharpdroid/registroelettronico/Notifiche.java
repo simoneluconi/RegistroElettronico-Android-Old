@@ -234,83 +234,85 @@ public class Notifiche extends BroadcastReceiver {
                                 String materia = MateriaDecente(metaElems.get(i).text().trim());
                                 i++;
                                 boolean esci = false;
-                                while (!metaElems.get(i).select("td").get(0).className().contains(MainActivity.SEPARATORE_MATERIE) && !esci) {
+                                if (i < metaElems.size()) {
+                                    while (!metaElems.get(i).select("td").get(0).className().contains(MainActivity.SEPARATORE_MATERIE) && !esci) {
 
-                                    Elements elT = metaElems.get(i).select("span"); //Tipo - data
-                                    Elements elV = metaElems.get(i).select("p"); // Voto
-                                    String tmp[] = elT.get(0).text().trim().split("-");
-                                    boolean VotoBlu = metaElems.get(i).select("div").attr("class").contains("f_reg_voto_dettaglio");
+                                        Elements elT = metaElems.get(i).select("span"); //Tipo - data
+                                        Elements elV = metaElems.get(i).select("p"); // Voto
+                                        String tmp[] = elT.get(0).text().trim().split("-");
+                                        boolean VotoBlu = metaElems.get(i).select("div").attr("class").contains("f_reg_voto_dettaglio");
 
-                                    String[] periodotmp = metaElems.get(i).select("td").get(1).className().split("\\s+");
-                                    String periodo = periodotmp[periodotmp.length - 1];
-                                    String data = tmp[1].trim();
-                                    String voto = elV.get(1).text().trim();
-                                    String tipo = tmp[0].trim();
-                                    String commento = elT.get(1).text();
+                                        String[] periodotmp = metaElems.get(i).select("td").get(1).className().split("\\s+");
+                                        String periodo = periodotmp[periodotmp.length - 1];
+                                        String data = tmp[1].trim();
+                                        String voto = elV.get(1).text().trim();
+                                        String tipo = tmp[0].trim();
+                                        String commento = elT.get(1).text();
 
-                                    String fakebool = VotoBlu ? "1" : "0";
-                                    String[] datas = new String[]{materia, voto, fakebool, data, periodo, tipo};
-                                    String command = MyDB.VotoEntry.COLUMN_NAME_MATERIA + "= ? AND "
-                                            + MyDB.VotoEntry.COLUMN_NAME_VOTO + "= ? AND "
-                                            + MyDB.VotoEntry.COLUMN_NAME_VOTOBLU + "= ? AND "
-                                            + MyDB.VotoEntry.COLUMN_NAME_DATA + "= ? AND "
-                                            + MyDB.VotoEntry.COLUMN_NAME_PERIODO + "= ? AND "
-                                            + MyDB.VotoEntry.COLUMN_NAME_TIPO + "= ?";
+                                        String fakebool = VotoBlu ? "1" : "0";
+                                        String[] datas = new String[]{materia, voto, fakebool, data, periodo, tipo};
+                                        String command = MyDB.VotoEntry.COLUMN_NAME_MATERIA + "= ? AND "
+                                                + MyDB.VotoEntry.COLUMN_NAME_VOTO + "= ? AND "
+                                                + MyDB.VotoEntry.COLUMN_NAME_VOTOBLU + "= ? AND "
+                                                + MyDB.VotoEntry.COLUMN_NAME_DATA + "= ? AND "
+                                                + MyDB.VotoEntry.COLUMN_NAME_PERIODO + "= ? AND "
+                                                + MyDB.VotoEntry.COLUMN_NAME_TIPO + "= ?";
 
-                                    c = db.rawQuery("select * from " + MyDB.VotoEntry.TABLE_NAME + " where " + command, datas);
+                                        c = db.rawQuery("select * from " + MyDB.VotoEntry.TABLE_NAME + " where " + command, datas);
 
-                                    if (c.getCount() <= 0) {
-                                        ContentValues dati = new ContentValues();
-                                        dati.put(MyDB.VotoEntry.COLUMN_NAME_MATERIA, materia);
-                                        dati.put(MyDB.VotoEntry.COLUMN_NAME_DATA, data);
-                                        dati.put(MyDB.VotoEntry.COLUMN_NAME_TIPO, tipo);
-                                        dati.put(MyDB.VotoEntry.COLUMN_NAME_VOTOBLU, VotoBlu);
-                                        dati.put(MyDB.VotoEntry.COLUMN_NAME_VOTO, voto);
-                                        dati.put(MyDB.VotoEntry.COLUMN_NAME_PERIODO, periodo);
-                                        dati.put(MyDB.VotoEntry.COLUMN_NAME_COMMENTO, commento);
-                                        db.insert(MyDB.VotoEntry.TABLE_NAME, MyDB.VotoEntry.COLUMN_NAME_NULLABLE, dati);
+                                        if (c.getCount() <= 0) {
+                                            ContentValues dati = new ContentValues();
+                                            dati.put(MyDB.VotoEntry.COLUMN_NAME_MATERIA, materia);
+                                            dati.put(MyDB.VotoEntry.COLUMN_NAME_DATA, data);
+                                            dati.put(MyDB.VotoEntry.COLUMN_NAME_TIPO, tipo);
+                                            dati.put(MyDB.VotoEntry.COLUMN_NAME_VOTOBLU, VotoBlu);
+                                            dati.put(MyDB.VotoEntry.COLUMN_NAME_VOTO, voto);
+                                            dati.put(MyDB.VotoEntry.COLUMN_NAME_PERIODO, periodo);
+                                            dati.put(MyDB.VotoEntry.COLUMN_NAME_COMMENTO, commento);
+                                            db.insert(MyDB.VotoEntry.TABLE_NAME, MyDB.VotoEntry.COLUMN_NAME_NULLABLE, dati);
 
-                                        if (notifica) {
-                                            Intent intent = new Intent(ct, MainActivity.class);
-                                            intent.putExtra("com.sharpdroid.registroelettronico.notifiche.TAB", 3);
-                                            PendingIntent pIntent = PendingIntent.getActivity(ct, 0, intent, 0);
-                                            Log.v("NuovoVoto", "Nuovo voto trovato");
-                                            mBuilder = new NotificationCompat.Builder(ct)
-                                                    .setSmallIcon(R.drawable.notification)
-                                                    .setContentTitle(voto + " in " + materia)
-                                                    .setContentText("Il " + data + " (" + tipo + ")")
-                                                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                                                    .setLights(Color.BLUE, 3000, 3000)
-                                                    .setVibrate(new long[]{250, 250, 250, 250, 250, 250})
-                                                    .setContentIntent(pIntent)
-                                                    .setAutoCancel(true);
+                                            if (notifica) {
+                                                Intent intent = new Intent(ct, MainActivity.class);
+                                                intent.putExtra("com.sharpdroid.registroelettronico.notifiche.TAB", 3);
+                                                PendingIntent pIntent = PendingIntent.getActivity(ct, 0, intent, 0);
+                                                Log.v("NuovoVoto", "Nuovo voto trovato");
+                                                mBuilder = new NotificationCompat.Builder(ct)
+                                                        .setSmallIcon(R.drawable.notification)
+                                                        .setContentTitle(voto + " in " + materia)
+                                                        .setContentText("Il " + data + " (" + tipo + ")")
+                                                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                                                        .setLights(Color.BLUE, 3000, 3000)
+                                                        .setVibrate(new long[]{250, 250, 250, 250, 250, 250})
+                                                        .setContentIntent(pIntent)
+                                                        .setAutoCancel(true);
 
-                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                                double votod = ConvertiInVoto(voto);
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                                    double votod = ConvertiInVoto(voto);
 
-                                                if (votod >= 6)
-                                                    mBuilder.setColor(ContextCompat.getColor(ct, R.color.greenmaterial));
-                                                else if (votod < 6 && votod >= 5.5)
-                                                    mBuilder.setColor(ContextCompat.getColor(ct, R.color.orangematerial));
-                                                else if (votod != -1)
-                                                    mBuilder.setColor(ContextCompat.getColor(ct, R.color.redmaterial));
-                                                else
-                                                    mBuilder.setColor(ContextCompat.getColor(ct, R.color.bluematerial));
+                                                    if (votod >= 6)
+                                                        mBuilder.setColor(ContextCompat.getColor(ct, R.color.greenmaterial));
+                                                    else if (votod < 6 && votod >= 5.5)
+                                                        mBuilder.setColor(ContextCompat.getColor(ct, R.color.orangematerial));
+                                                    else if (votod != -1)
+                                                        mBuilder.setColor(ContextCompat.getColor(ct, R.color.redmaterial));
+                                                    else
+                                                        mBuilder.setColor(ContextCompat.getColor(ct, R.color.bluematerial));
 
 
-                                                notificationManager = NotificationManagerCompat.from(ct);
-                                                notificationManager.notify(nNotif, mBuilder.build());
-                                                nNotif++;
+                                                    notificationManager = NotificationManagerCompat.from(ct);
+                                                    notificationManager.notify(nNotif, mBuilder.build());
+                                                    nNotif++;
+                                                }
                                             }
                                         }
+
+                                        c.close();
+
+                                        if (i + 1 != metaElems.size())
+                                            i++;
+                                        else esci = true;
+
                                     }
-
-                                    c.close();
-
-                                    if (i + 1 != metaElems.size())
-                                        i++;
-                                    else esci = true;
-
                                 }
                                 i--;
                             }
