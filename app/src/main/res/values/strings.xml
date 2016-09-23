@@ -43,9 +43,10 @@
     <string name="fileoff">File Offline</string>
     <string name="oggiscuola">Oggi a scuola</string>
     <string name="circolari">Circolari</string>
-    <string name="scrutini">Scrutini [BETA]</string>
+    <string name="scrutini">Scrutini</string>
     <string name="lezioni">Lezioni</string>
     <string name="title_activity_intro">Intro</string>
+    <string name="versioneweb">Versione Web [ALPHA]</string>
     <string name="tabpartenza">Tab di partenza</string>
     <string name="seltabpartenza">Selezione tab di partenza</string>
     <string-array name="tab_title">
