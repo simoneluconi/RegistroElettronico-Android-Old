@@ -8,8 +8,8 @@ android {
         applicationId "com.sharpdroid.registroelettronico"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 261
-        versionName "261"
+        versionCode 262
+        versionName "262"
     }
 
     buildTypes {
