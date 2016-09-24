@@ -2640,7 +2640,8 @@ public class MainActivity extends AppCompatActivity {
                                 calIntent.putExtra(CalendarContract.Events.DESCRIPTION, compito.getContenuto());
                                 calIntent.putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, compito.isTuttoIlGiorno());
                                 calIntent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, compito.getDataInizio().getMillis());
-                                calIntent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, compito.getDataFine().getMillis());
+                                if (!compito.isTuttoIlGiorno())
+                                    calIntent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, compito.getDataFine().getMillis());
                                 startActivity(calIntent);
 
                             } else if (currPage <= 2 && getAdapterPosition() < CVDataList.size() - 1) {
