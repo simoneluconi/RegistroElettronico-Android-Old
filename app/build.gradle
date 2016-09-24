@@ -35,7 +35,7 @@ dependencies {
     compile 'com.github.paolorotolo:appintro:4.0.0'
     compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
     compile 'com.github.sundeepk:compact-calendar-view:1.9.1'
-    compile 'com.google.android.gms:play-services-analytics:9.6.0'
+    compile 'com.google.android.gms:play-services-analytics:9.6.1'
     compile 'com.google.code.gson:gson:2.7'
     compile('com.mikepenz:materialdrawer:5.6.0@aar') {
         transitive = true
