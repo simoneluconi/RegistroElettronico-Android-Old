@@ -735,9 +735,9 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
-        menu.getItem(1).setChecked(sharedPref.getBoolean("notifichevoti", true));
-        menu.getItem(2).setChecked(sharedPref.getBoolean("notificheagenda", true));
-        menu.getItem(3).setChecked(sharedPref.getBoolean("notifichescrutini", true));
+        menu.getItem(2).setChecked(sharedPref.getBoolean("notifichevoti", true));
+        menu.getItem(3).setChecked(sharedPref.getBoolean("notificheagenda", true));
+        menu.getItem(4).setChecked(sharedPref.getBoolean("notifichescrutini", true));
 
         return true;
     }
@@ -827,7 +827,7 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPref.edit();
 
                 boolean notifiche_att = sharedPref.getBoolean("notificheagenda", true) ||
-                        sharedPref.getBoolean("notifichscrutini", true);
+                        sharedPref.getBoolean("notifichescrutini", true);
 
                 AlarmManager mAlarmManger = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                 Intent intent = new Intent(MainActivity.this, Notifiche.class);
