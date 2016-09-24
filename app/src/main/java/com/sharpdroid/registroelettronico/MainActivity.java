@@ -660,8 +660,9 @@ public class MainActivity extends AppCompatActivity {
 
             SharedPreferences.Editor editor = sharedPref.edit();
             if (sharedPref.getBoolean("primaapertura", true)) {
-
-                if (sharedPref.getBoolean("notifichevoti", true) || sharedPref.getBoolean("notificheagenda", true)) {
+                if (sharedPref.getBoolean("notifichevoti", true) ||
+                        sharedPref.getBoolean("notificheagenda", true) ||
+                        sharedPref.getBoolean("notifichescrutini", true)) {
 
                     AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                     Intent intent = new Intent(this, Notifiche.class);
@@ -743,9 +744,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
-
             case R.id.obbiettivobtn: {
                 final SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
                 final int[] obbv = {sharedPref.getInt("obiettivovoto", 20)};
@@ -778,7 +777,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         })
                         .build();
-
 
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplication(), R.layout.spinner_item, getResources().getStringArray(R.array.votispinner));
                 adapter.setDropDownViewResource(R.layout.spinner_item);
@@ -825,78 +823,58 @@ public class MainActivity extends AppCompatActivity {
             break;
 
             case R.id.notifichevoti: {
-
                 SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
 
-                if (item.isChecked()) {
-                    if (sharedPref.getBoolean("notificheagenda", true) || sharedPref.getBoolean("notifichescrutini", true)) {
-                        editor.putBoolean("notifichevoti", false);
-                    } else {
+                boolean notifiche_att = sharedPref.getBoolean("notificheagenda", true) ||
+                        sharedPref.getBoolean("notifichscrutini", true);
 
-                        AlarmManager mAlarmManger = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                        Intent intent = new Intent(MainActivity.this, Notifiche.class);
+                AlarmManager mAlarmManger = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                Intent intent = new Intent(MainActivity.this, Notifiche.class);
+                if (item.isChecked()) {
+                    if (!notifiche_att) {
                         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                         mAlarmManger.cancel(pendingIntent);
-                        editor.putBoolean("notifichevoti", false);
                     }
+                    editor.putBoolean("notifichevoti", false);
                     item.setChecked(false);
                 } else {
-                    if (sharedPref.getBoolean("notificheagenda", true) || sharedPref.getBoolean("notifichescrutini", true)) {
-                        editor.putBoolean("notifichevoti", true);
-                    } else {
-
-                        AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                        Intent intent = new Intent(this, Notifiche.class);
+                    if (!notifiche_att) {
                         PendingIntent alarmIntent = PendingIntent.getBroadcast(this, CONTROLLO_VOTI_ID, intent, 0);
-
-                        alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_HALF_HOUR, alarmIntent);
-                        editor.putBoolean("notifichevoti", true);
+                        mAlarmManger.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_HALF_HOUR, alarmIntent);
                     }
+                    editor.putBoolean("notifichevoti", true);
                     item.setChecked(true);
                 }
-
                 editor.apply();
-
-
             }
             break;
 
             case R.id.notificheagenda: {
-
                 SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
 
-                if (item.isChecked()) {
-                    if (sharedPref.getBoolean("notifichevoti", true) || sharedPref.getBoolean("notifichescrutini", true)) {
-                        editor.putBoolean("notificheagenda", false);
-                    } else {
+                boolean notifiche_att = sharedPref.getBoolean("notifichescrutini", true) ||
+                        sharedPref.getBoolean("notifichevoti", true);
 
-                        AlarmManager mAlarmManger = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                        Intent intent = new Intent(MainActivity.this, Notifiche.class);
+                AlarmManager mAlarmManger = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                Intent intent = new Intent(MainActivity.this, Notifiche.class);
+                if (item.isChecked()) {
+                    if (!notifiche_att) {
                         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                         mAlarmManger.cancel(pendingIntent);
-                        editor.putBoolean("notificheagenda", false);
                     }
-
+                    editor.putBoolean("notificheagenda", false);
                     item.setChecked(false);
                 } else {
-                    if (sharedPref.getBoolean("notificheavoti", true) || sharedPref.getBoolean("notifichescrutini", true)) {
-                        editor.putBoolean("notificheagenda", true);
-                    } else {
-
-                        AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                        Intent intent = new Intent(this, Notifiche.class);
+                    if (!notifiche_att) {
                         PendingIntent alarmIntent = PendingIntent.getBroadcast(this, CONTROLLO_VOTI_ID, intent, 0);
-
-                        alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_HALF_HOUR, alarmIntent);
-                        editor.putBoolean("notificheagenda", true);
+                        mAlarmManger.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_HALF_HOUR, alarmIntent);
                     }
+                    editor.putBoolean("notificheagenda", true);
                     item.setChecked(true);
                 }
-
                 editor.apply();
-
             }
             break;
 
@@ -904,43 +882,34 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
 
-                if (item.isChecked()) {
-                    if (sharedPref.getBoolean("notifichevoti", true) || sharedPref.getBoolean("notificheagenda", true)) {
-                        editor.putBoolean("notifichescrutini", false);
-                    } else {
+                boolean notifiche_att = sharedPref.getBoolean("notificheagenda", true) ||
+                        sharedPref.getBoolean("notifichevoti", true);
 
-                        AlarmManager mAlarmManger = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                        Intent intent = new Intent(MainActivity.this, Notifiche.class);
+                AlarmManager mAlarmManger = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                Intent intent = new Intent(MainActivity.this, Notifiche.class);
+                if (item.isChecked()) {
+                    if (!notifiche_att) {
                         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                         mAlarmManger.cancel(pendingIntent);
-                        editor.putBoolean("notifichescrutini", false);
-                        editor.putInt("NFileScrutini", -1);
                     }
-
+                    editor.putBoolean("notifichescrutini", false);
                     item.setChecked(false);
                 } else {
-                    if (sharedPref.getBoolean("notifichevoti", true) || sharedPref.getBoolean("notificheagenda", true)) {
-                        editor.putBoolean("notifichescrutini", true);
-                    } else {
-
-                        AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                        Intent intent = new Intent(this, Notifiche.class);
+                    if (!notifiche_att) {
                         PendingIntent alarmIntent = PendingIntent.getBroadcast(this, CONTROLLO_VOTI_ID, intent, 0);
-
-                        alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_HALF_HOUR, alarmIntent);
-                        editor.putBoolean("notifichescrutini", true);
+                        mAlarmManger.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_HALF_HOUR, alarmIntent);
                     }
+                    editor.putBoolean("notifichescrutini", true);
                     item.setChecked(true);
                 }
-
                 editor.apply();
             }
             break;
 
-
             default:
                 return super.onOptionsItemSelected(item);
         }
+
         return true;
     }
 

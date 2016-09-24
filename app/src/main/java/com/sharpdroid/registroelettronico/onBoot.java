@@ -12,7 +12,9 @@ public class onBoot extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         SharedPreferences sharedPref = context.getSharedPreferences("Dati", Context.MODE_PRIVATE);
-        if (sharedPref.getBoolean("notifichevoti", true) || sharedPref.getBoolean("notificheagenda", true) || sharedPref.getBoolean("notifichescrutini", true)) {
+        if (sharedPref.getBoolean("notifichevoti", true) ||
+                sharedPref.getBoolean("notificheagenda", true) ||
+                sharedPref.getBoolean("notifichescrutini", true)) {
             AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             Intent intent2 = new Intent(context, Notifiche.class);
             PendingIntent alarmIntent = PendingIntent.getBroadcast(context, MainActivity.CONTROLLO_VOTI_ID, intent2, 0);
