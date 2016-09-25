@@ -1507,7 +1507,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
             compactCalendarView = (CompactCalendarView) layout.findViewById(R.id.compactcalendar);
-            compactCalendarView.setLocale(TimeZone.getTimeZone("Rome"), Locale.ITALIAN);
+            compactCalendarView.setLocale(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);
             compactCalendarView.setUseThreeLetterAbbreviation(true);
 
             final TextView txMese = (TextView) layout.findViewById(R.id.mesetx);
@@ -1834,7 +1834,7 @@ public class MainActivity extends AppCompatActivity {
                         updateAgenda = true;
                         events = new ArrayList<>();
 
-                        final Calendar cal = Calendar.getInstance();
+                        final Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);
                         boolean AggiungiGiornoSeSabato = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY;
                         boolean isDomenica = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
                         boolean OrarioScolastico = cal.get(Calendar.HOUR_OF_DAY) < 14;
