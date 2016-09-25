@@ -7,10 +7,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 
-import com.github.paolorotolo.appintro.AppIntro;
+import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntroFragment;
 
-public class Intro extends AppIntro {
+public class Intro extends AppIntro2 {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +48,7 @@ public class Intro extends AppIntro {
                 ("Sei pronto!", "Ora sei pronto per utilizzare al meglio quest app. Ricorda, per qualsiasi problema contattaci a sharpdroidmail@gmail.com",
                         R.drawable.done,
                         ContextCompat.getColor(this, R.color.colorPrimary)));
-        setBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
-        showSkipButton(true);
         setProgressButtonEnabled(true);
     }
 
