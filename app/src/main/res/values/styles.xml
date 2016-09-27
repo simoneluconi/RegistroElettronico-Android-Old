@@ -11,8 +11,4 @@
     <style name="SplashTheme" parent="AppTheme">
         <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
-
-    <style name="TabLayoutTheme" parent="Widget.Design.TabLayout">
-        <item name="tabMaxWidth">16dp</item>
-    </style>
 </resources>
