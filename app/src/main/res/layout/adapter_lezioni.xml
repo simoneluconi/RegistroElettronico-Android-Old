@@ -27,7 +27,7 @@
                 android:id="@+id/LezioneProf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Prof. Severus Piton"
+                android:text="@string/prof_severus_piton"
                 android:textColor="@color/material_blue_grey"
                 android:textSize="18sp" />
 
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="3dp"
                 android:layout_marginStart="3dp"
-                android:text="(14/12/2015)"
+                android:text="@string/_14_12_2015"
                 android:textColor="@color/material_blue_grey"
                 android:textSize="12sp" />
 
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/LezionePrimoLay"
             android:layout_marginBottom="3dp"
-            android:text="Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. "
+            android:text="@string/lorem1"
             android:textColor="@color/textcolorgrey"
             android:textColorLink="#0099ff"
             android:textSize="13sp"

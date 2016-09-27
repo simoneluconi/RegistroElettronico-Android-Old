@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
-            android:text="1^"
+            android:text="@string/_1"
             android:textColor="@color/md_material_blue_800" />
 
         <RelativeLayout
@@ -42,7 +42,7 @@
                     android:id="@+id/OggiScuolaProf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Prof. Severus Piton"
+                    android:text="@string/prof_severus_piton"
                     android:textColor="@color/material_blue_grey"
                     android:textSize="18sp" />
 
@@ -52,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="1dp"
                     android:layout_marginStart="1dp"
-                    android:text="(Pozioni)"
+                    android:text="@string/pozioni"
                     android:textColor="@color/material_blue_grey"
                     android:textSize="12sp" />
 
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/OggiScuolaPrimoLay"
                 android:layout_marginBottom="3dp"
-                android:text="Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. "
+                android:text="@string/lorem1"
                 android:textColor="@color/textcolorgrey"
                 android:textColorLink="#0099ff"
                 android:textSize="13sp"

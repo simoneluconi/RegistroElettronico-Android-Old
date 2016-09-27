@@ -55,6 +55,9 @@
     <string name="ero">Ero:</string>
     <string name="oggi">Oggi:</string>
     <string name="saro">Sarò?</string>
+    <string name="titolo">Titolo</string>
+    <string name="contenuto">Contenuto</string>
+    <string name="caricamento_dati_in_corso">Caricamento dati in corso…</string>
 
     <string-array name="tab_title">
         <item>Medie</item>
@@ -65,4 +68,24 @@
         <item>Note</item>
         <item>Didattica</item>
     </string-array>
+
+    <!-- Stringhe di test -->
+    <string name="yyyy_mm_dd_hh_mm_ss">yyyy-MM-dd HH:mm:ss</string>
+    <string name="_5">5</string>
+    <string name="_01_01_orale">01/01 - Orale</string>
+    <string name="lorem1">Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+    <string name="matematica">Matematica</string>
+    <string name="filebellissimo_pdf">filebellissimo.pdf</string>
+    <string name="_14_12_2015">(14/12/2015)</string>
+    <string name="prof_severus_piton">Prof. Severus Piton</string>
+    <string name="lorem2">Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua.</string>
+    <string name="_15_19_70_12_50_12">15/19/70 12:50:12</string>
+    <string name="_15_78gb">15.78gb</string>
+    <string name="_8_22">8.22</string>
+    <string name="pozioni">(Pozioni)</string>
+    <string name="_1">1^</string>
+    <string name="devi_prendere_almeno_5">Devi prendere almeno 5</string>
+    <string name="freddembre_2025">Freddembre 2025</string>
+    <string name="_12_11_2015_12_25_54">12–11–2015 12:25:54</string>
+    <!-- Fine stringhe di test -->
 </resources>

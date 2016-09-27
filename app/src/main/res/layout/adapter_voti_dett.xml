@@ -16,7 +16,7 @@
             android:id="@+id/textVoto"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:text="5"
+            android:text="@string/_5"
             android:textSize="25sp" />
 
     </LinearLayout>
@@ -33,7 +33,7 @@
             android:id="@+id/datatipo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="01/01 - Orale"
+            android:text="@string/_01_01_orale"
             android:textColor="@color/textcolorgrey" />
 
         <TextView
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
-            android:text="Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+            android:text="@string/lorem2"
             android:textColor="@color/textcolorgrey" />
 
     </LinearLayout>
