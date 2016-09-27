@@ -1,11 +1,11 @@
 package com.sharpdroid.registroelettronico.SharpLibrary.Classi;
 
 public class Circolare {
-    String NCircolare;
-    String Titolo;
-    String Data;
-    String Tipo;
-    String id;
+    private String NCircolare;
+    private String Titolo;
+    private String Data;
+    private String Tipo;
+    private String id;
 
     public Circolare() {
     }

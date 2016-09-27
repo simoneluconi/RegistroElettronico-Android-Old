@@ -12,7 +12,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -59,12 +58,12 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAv
 
 public class Lezioni extends AppCompatActivity {
 
-    static RVAdapter adapter;
-    static ViewPager mPager;
-    static Context context;
-    static List<LezioneM> lezioniMateries = new ArrayList<>();
-    static List<Lezione> lezioni = new ArrayList<>();
-    TabLayout mTabs;
+    private static RVAdapter adapter;
+    private static ViewPager mPager;
+    private static Context context;
+    private static final List<LezioneM> lezioniMateries = new ArrayList<>();
+    private static List<Lezione> lezioni = new ArrayList<>();
+    private TabLayout mTabs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +72,9 @@ public class Lezioni extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.setTitle(getString(R.string.lezioni));
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -153,7 +154,7 @@ public class Lezioni extends AppCompatActivity {
     }
 
     public static class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
-        List<Lezione> leziones;
+        final List<Lezione> leziones;
 
         RVAdapter(List<Lezione> leziones) {
             this.leziones = leziones;
@@ -163,11 +164,6 @@ public class Lezioni extends AppCompatActivity {
         public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_lezioni, parent, false);
             return new PersonViewHolder(v);
-        }
-
-        @Override
-        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-            super.onAttachedToRecyclerView(recyclerView);
         }
 
         @Override
@@ -182,11 +178,11 @@ public class Lezioni extends AppCompatActivity {
             return leziones.size();
         }
 
-        public class PersonViewHolder extends RecyclerView.ViewHolder {
-            CardView cv;
-            TextView Prof;
-            TextView Data;
-            TextView Desc;
+        class PersonViewHolder extends RecyclerView.ViewHolder {
+            final CardView cv;
+            final TextView Prof;
+            final TextView Data;
+            final TextView Desc;
 
             PersonViewHolder(View itemView) {
                 super(itemView);
@@ -228,14 +224,7 @@ public class Lezioni extends AppCompatActivity {
         String url;
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
         protected String doInBackground(String... params) {
-
-            final String COOKIES_HEADER = "Set-Cookie";
             Log.v("Scarico", params[0]);
 
             URL url;

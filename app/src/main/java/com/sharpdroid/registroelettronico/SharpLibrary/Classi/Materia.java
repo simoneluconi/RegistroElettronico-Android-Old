@@ -7,8 +7,8 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.MateriaDece
 
 public class Materia {
 
-    List<Voto> voti = new ArrayList<>();
-    String materia;
+    private List<Voto> voti = new ArrayList<>();
+    private final String materia;
 
     public Materia(String materia) {
         this.materia = MateriaDecente(materia);

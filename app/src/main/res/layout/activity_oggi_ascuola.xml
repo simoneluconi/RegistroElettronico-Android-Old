@@ -40,7 +40,7 @@
                         android:id="@+id/Statoutente"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="Caricamento dati in corso..."
+                        android:text="@string/caricamento_dati_in_corso"
                         android:textColor="@color/textcolorgrey" />
 
                     <TextView

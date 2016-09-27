@@ -70,9 +70,9 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAv
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
     private static final int REQUEST_READ_CONTACTS = 0;
-    Context context;
-    String Nome = "";
-    String ErrMsg = "Errore sconosciuto";
+    private Context context;
+    private String Nome = "";
+    private String ErrMsg = "Errore sconosciuto";
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -319,7 +319,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         };
 
         int ADDRESS = 0;
-        int IS_PRIMARY = 1;
     }
 
     /**

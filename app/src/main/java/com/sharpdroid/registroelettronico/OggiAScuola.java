@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -59,12 +58,11 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAv
 
 public class OggiAScuola extends AppCompatActivity {
 
-    public static RVAdapter adapter;
-    static int SelectedDay;
-    static CoordinatorLayout coordinatorLayout;
-    List<Firma> oggiScuola = new ArrayList<>();
-    SwipeRefreshLayout swipeRefreshLayout;
-    Context context;
+    private static RVAdapter adapter;
+    private static int SelectedDay;
+    private final List<Firma> oggiScuola = new ArrayList<>();
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +71,9 @@ public class OggiAScuola extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.setTitle(getString(R.string.oggiscuola));
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,7 +82,6 @@ public class OggiAScuola extends AppCompatActivity {
         });
 
         context = this;
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayoutOggiScuola);
         adapter = new RVAdapter(oggiScuola);
         ObservableRecyclerView rv = (ObservableRecyclerView) findViewById(R.id.OggiScuolCardList);
         rv.setHasFixedSize(true);
@@ -112,10 +111,10 @@ public class OggiAScuola extends AppCompatActivity {
 
                 int gg = cl.get(Calendar.DAY_OF_MONTH);
                 if (gg > day)
-                    statoUtente.setText("Ero:");
+                    statoUtente.setText(getString(R.string.ero));
                 else if (gg == day)
-                    statoUtente.setText("Oggi:");
-                else statoUtente.setText("Sarò?");
+                    statoUtente.setText(getString(R.string.oggi));
+                else statoUtente.setText(getString(R.string.saro));
             }
         });
         if (isNetworkAvailable(OggiAScuola.this)) {
@@ -142,7 +141,7 @@ public class OggiAScuola extends AppCompatActivity {
     }
 
     public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
-        List<Firma> oggiScuolas;
+        final List<Firma> oggiScuolas;
 
         RVAdapter(List<Firma> oggiScuolas) {
             this.oggiScuolas = oggiScuolas;
@@ -152,11 +151,6 @@ public class OggiAScuola extends AppCompatActivity {
         public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_oggiascuola, parent, false);
             return new PersonViewHolder(v);
-        }
-
-        @Override
-        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-            super.onAttachedToRecyclerView(recyclerView);
         }
 
         @Override
@@ -188,12 +182,12 @@ public class OggiAScuola extends AppCompatActivity {
             return oggiScuolas.size();
         }
 
-        public class PersonViewHolder extends RecyclerView.ViewHolder {
-            CardView cv;
-            TextView Ora;
-            TextView Prof;
-            TextView Materia;
-            TextView Des;
+        class PersonViewHolder extends RecyclerView.ViewHolder {
+            final CardView cv;
+            final TextView Ora;
+            final TextView Prof;
+            final TextView Materia;
+            final TextView Des;
 
             PersonViewHolder(View itemView) {
                 super(itemView);
@@ -224,9 +218,6 @@ public class OggiAScuola extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-
-
-            final String COOKIES_HEADER = "Set-Cookie";
             Log.v("Scarico", params[0]);
 
             URL url;
@@ -320,11 +311,10 @@ public class OggiAScuola extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-
             TextView TxStato = (TextView) findViewById(R.id.StatoutenteEff);
             TextView statoUtente = (TextView) findViewById(R.id.Statoutente);
-            if (statoUtente.getText().equals("Caricamento dati in corso..."))
-                statoUtente.setText("Oggi:");
+            if (statoUtente.getText().equals(getString(R.string.caricamento_dati_in_corso)))
+                statoUtente.setText(getString(R.string.oggi));
             if (azione.equals(Azione.OGGI_SCUOLA)) {
                 swipeRefreshLayout.setRefreshing(false);
                 if (result != null && result.length() > 0) {

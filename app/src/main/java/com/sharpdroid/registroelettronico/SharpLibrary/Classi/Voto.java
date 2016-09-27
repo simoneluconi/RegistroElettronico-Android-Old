@@ -5,15 +5,15 @@ import java.util.Calendar;
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.ConvertiInVoto;
 
 public class Voto {
-    String tipo;
-    String data;
-    String periodo;
-    String voto;
-    Double votod;
-    String commento;
+    private String tipo;
+    private String data;
+    private String periodo;
+    private String voto;
+    private Double votod;
+    private String commento;
     public static final String P1 = "q1";
     public static final String P2 = "q3";
-    boolean votoblu = false;
+    private boolean votoblu = false;
 
     public Voto() {
     }
@@ -52,7 +52,7 @@ public class Voto {
     }
 
     public boolean isVotoblu() {
-        return votoblu;
+        return !votoblu;
     }
 
     public void setCommento(String commento) {
