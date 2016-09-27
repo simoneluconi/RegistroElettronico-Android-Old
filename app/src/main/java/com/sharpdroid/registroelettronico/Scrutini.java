@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -68,11 +67,11 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAv
 
 public class Scrutini extends AppCompatActivity {
 
-    public static RVAdapter adapter;
-    static Context context;
-    static SwipeRefreshLayout swipeRefreshLayout;
-    static CoordinatorLayout coordinatorLayout;
-    static List<ScrutiniFile> scrutiniFiles = new ArrayList<>();
+    private static RVAdapter adapter;
+    private static Context context;
+    private static SwipeRefreshLayout swipeRefreshLayout;
+    private static CoordinatorLayout coordinatorLayout;
+    private static final List<ScrutiniFile> scrutiniFiles = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +80,9 @@ public class Scrutini extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.setTitle(getString(R.string.scrutini));
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,7 +94,7 @@ public class Scrutini extends AppCompatActivity {
         context = this;
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefreshScrutini);
 
-        adapter = new RVAdapter(scrutiniFiles);
+        adapter = new RVAdapter();
         ObservableRecyclerView rv = (ObservableRecyclerView) findViewById(R.id.ScrutiniCardList);
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(Scrutini.this);
@@ -126,21 +127,16 @@ public class Scrutini extends AppCompatActivity {
 
 
     public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
-        List<ScrutiniFile> scrutiniFiles;
+        final List<ScrutiniFile> scrutiniFiles;
 
-        RVAdapter(List<ScrutiniFile> scrutiniFiles) {
-            this.scrutiniFiles = scrutiniFiles;
+        RVAdapter() {
+            this.scrutiniFiles = Scrutini.scrutiniFiles;
         }
 
         @Override
         public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_scrutini, parent, false);
             return new PersonViewHolder(v);
-        }
-
-        @Override
-        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-            super.onAttachedToRecyclerView(recyclerView);
         }
 
         @Override
@@ -158,10 +154,10 @@ public class Scrutini extends AppCompatActivity {
             return scrutiniFiles.size();
         }
 
-        public class PersonViewHolder extends RecyclerView.ViewHolder {
-            CardView cv;
-            TextView Nome;
-            ImageView imageView;
+        class PersonViewHolder extends RecyclerView.ViewHolder {
+            final CardView cv;
+            final TextView Nome;
+            final ImageView imageView;
 
             PersonViewHolder(View itemView) {
                 super(itemView);
@@ -232,7 +228,6 @@ public class Scrutini extends AppCompatActivity {
             c.move(ActiveUsers);
             String username = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_USERNAME));
             String password = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_PASSWORD));
-            String codicescuola = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_CODICESCUOLA));
             c.close();
             db.close();
 

@@ -30,8 +30,7 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.FileImage;
 
 public class FileOffline extends AppCompatActivity {
 
-    public static RVAdapter adapter;
-    CoordinatorLayout coordinatorLayout;
+    private CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +41,9 @@ public class FileOffline extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.setTitle(getString(R.string.fileoff));
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,7 +52,7 @@ public class FileOffline extends AppCompatActivity {
         });
 
         File[] files = MainActivity.DownloadFolder.listFiles();
-        adapter = new RVAdapter(files);
+        RVAdapter adapter = new RVAdapter(files);
         ObservableRecyclerView rv = (ObservableRecyclerView) findViewById(R.id.OfflineFileList);
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(FileOffline.this);
@@ -63,7 +64,7 @@ public class FileOffline extends AppCompatActivity {
     }
 
     public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
-        File[] files;
+        final File[] files;
 
         RVAdapter(File[] files) {
             this.files = files;
@@ -73,11 +74,6 @@ public class FileOffline extends AppCompatActivity {
         public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_file_offline, parent, false);
             return new PersonViewHolder(v);
-        }
-
-        @Override
-        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-            super.onAttachedToRecyclerView(recyclerView);
         }
 
         @Override
@@ -101,11 +97,11 @@ public class FileOffline extends AppCompatActivity {
         }
 
         class PersonViewHolder extends RecyclerView.ViewHolder {
-            CardView cv;
-            ImageView Ext;
-            TextView Nome;
-            TextView LastModified;
-            TextView Size;
+            final CardView cv;
+            final ImageView Ext;
+            final TextView Nome;
+            final TextView LastModified;
+            final TextView Size;
 
             PersonViewHolder(View itemView) {
                 super(itemView);

@@ -26,7 +26,10 @@
     <string name="modifica">Modifica</string>
     <string name="elimina">Elimina</string>
     <string name="eventodel">Evento del %1$s-%2$s-%3$s</string>
-    <string name="datains"> %1$s (%2$d giorn%3$s prima)</string>
+    <plurals name="datains">
+        <item quantity="one">%1$s (%2$d giorno prima)</item>
+        <item quantity="other">%1$s (%2$d giorni prima)</item>
+    </plurals>
     <string name="datainsogg"> %1$s (Il giorno stesso)</string>
     <string name="impostaobb">Imposta obiettivo</string>
     <string name="ultimaversione">Non hai l\'ultima versione dell\'app. Aggiornala dal play store!</string>
@@ -49,6 +52,26 @@
     <string name="versioneweb">Versione Web [ALPHA]</string>
     <string name="tabpartenza">Tab di partenza</string>
     <string name="seltabpartenza">Selezione tab di partenza</string>
+    <string name="ero">Ero:</string>
+    <string name="oggi">Oggi:</string>
+    <string name="saro">Sarò?</string>
+    <string name="titolo">Titolo</string>
+    <string name="contenuto">Contenuto</string>
+    <string name="caricamento_dati_in_corso">Caricamento dati in corso…</string>
+    <string name="intro_app_desc">Verrai introdotto ad alcune funzionalità dell\'app.</string>
+    <string name="dettagli_medie_titolo">Dettaglio medie</string>
+    <string name="dettaglio_media_desc">Nei primi tre tab premi sulla scheda di una materia per visualizzare il dettaglio delle medie</string>
+    <string name="media_ipotetica_titolo">Media ipotetica</string>
+    <string name="media_ipotetica_desc">oppure tieni premuto per visualizzare la media ipotetica</string>
+    <string name="dettaglio_voti_titolo">Dettaglio voti</string>
+    <string name="dettaglio_voti_desc">Nel tab voti clicca su una scheda per visualizzare i commenti dei voti</string>
+    <string name="agenda_titolo">Agenda</string>
+    <string name="agenda_desc">Nell\'agenda le verifiche vengono indicate con dei pallini rossi, mentre i compiti con dei pallini gialli</string>
+    <string name="ultima_cosa_titolo">Un ultima cosa</string>
+    <string name="ultima_cosa_desc">Abbiamo bisogno dei permessi di archiviazione per scaricare le circolari e i file dalla didattica</string>
+    <string name="sei_pronto_titolo">Sei pronto!</string>
+    <string name="sei_pronto_desc">Ora sei pronto per utilizzare al meglio quest app. Ricorda, per qualsiasi problema contattaci a sharpdroidmail@gmail.com</string>
+
     <string-array name="tab_title">
         <item>Medie</item>
         <item>P1</item>

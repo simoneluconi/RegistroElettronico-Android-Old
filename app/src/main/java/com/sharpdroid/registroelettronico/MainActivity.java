@@ -1,7 +1,6 @@
 package com.sharpdroid.registroelettronico;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -23,6 +22,8 @@ import android.os.Environment;
 import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
+import android.support.annotation.WorkerThread;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -48,7 +49,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -175,59 +175,56 @@ public class MainActivity extends AppCompatActivity {
     public static final String BASE_URL = "https://web.spaggiari.eu";
     public static final int CONTROLLO_VOTI_ID = 111101;
     static final String FILE_PROVIDER_STRING = "com.sharpdroid.fileprovider";
-    public static List<Event> events;
-    public static String SEPARATORE_MATERIE = "grautext open_sans_condensed_bold font_size_14";
-    public static App application;
-    public static Tracker mTracker;
-    public static String DataCal = null; //Data da aprire nel calendario dalla notifica
-    static CookieManager msCookieManager = new CookieManager(null, CookiePolicy.ACCEPT_ALL); //Gestore Cookie
-    static ViewPager mPager;
-    static Drawer Drawerresult;
+    public static final String SEPARATORE_MATERIE = "grautext open_sans_condensed_bold font_size_14";
+    private static Tracker mTracker;
+    private static String DataCal = null; //Data da aprire nel calendario dalla notifica
+    static final CookieManager msCookieManager = new CookieManager(null, CookiePolicy.ACCEPT_ALL); //Gestore Cookie
+    private static ViewPager mPager;
+    private static Drawer Drawerresult;
     //Runnable
-    static Runnable m_handlerMedie;
-    static Runnable m_handlerTuttiVoti;
-    static Runnable m_handlerQ1;
-    static Runnable m_handlerQ2;
-    static Runnable m_handlerNote;
-    static Runnable m_handlerAgenda;
-    static Runnable m_handlerDidattica;
+    private static Runnable m_handlerMedie;
+    private static Runnable m_handlerTuttiVoti;
+    private static Runnable m_handlerQ1;
+    private static Runnable m_handlerQ2;
+    private static Runnable m_handlerNote;
+    private static Runnable m_handlerAgenda;
+    private static Runnable m_handlerDidattica;
     //Variabili per aggiornare i dati
-    static boolean datiOffline = true;
-    static boolean updateMedie = true;
-    static boolean updateTuttiVoti = true;
-    static boolean updateQ1 = true;
-    static boolean updateQ2 = true;
-    static boolean updateNote = true;
-    static boolean updateAgenda = true;
-    static boolean updateDidattica = true;
+    private static boolean datiOffline = true;
+    private static boolean updateMedie = true;
+    private static boolean updateTuttiVoti = true;
+    private static boolean updateQ1 = true;
+    private static boolean updateQ2 = true;
+    private static boolean updateNote = true;
+    private static boolean updateAgenda = true;
+    private static boolean updateDidattica = true;
     //Stringhe con i dati WEB
-    static String WP_Didattica = null;
+    private static String WP_Didattica = null;
     //Stringhe con i dati offline
-    static String Off_Didattica = null;
+    private static String Off_Didattica = null;
     //Medie dei vari periodi
-    static List<Medie> MedieVotiMG = new ArrayList<>();
-    static List<Medie> MedieVotiP1 = new ArrayList<>();
-    static List<Medie> MedieVotiP2 = new ArrayList<>();
+    private static final List<Medie> MedieVotiMG = new ArrayList<>();
+    private static final List<Medie> MedieVotiP1 = new ArrayList<>();
+    private static final List<Medie> MedieVotiP2 = new ArrayList<>();
     //Liste per dati
-    static List<FileDid> fileDids = new ArrayList<>();
-    static List<Compito> compitiDatas = new ArrayList<>();
-    static List<Materia> votis = new ArrayList<>();
-    static List<Nota> notes = new ArrayList<>();
-    static List<Compito> compitishow = new ArrayList<>();
-    static int currPage = 0;
-    static int currProf;
-    static DateTime primadata;
-    static DateTime secondadata;
-    static Context context;
-    static CoordinatorLayout coordinatorLayout;
-    static CompactCalendarView compactCalendarView;
-    static SwipeRefreshLayout swipeRefreshLayout;
-    static int[] didatticaPos = {0, 0, 0};//Posizione, Elemento, Click
-    static int nTentativiDownloadDidattica = 0; //Numero tentativi di download dei file della didattica
-    static boolean giaAperta = false; //L'app era già aperta?
+    private static final List<FileDid> fileDids = new ArrayList<>();
+    private static List<Compito> compitiDatas = new ArrayList<>();
+    private static final List<Materia> votis = new ArrayList<>();
+    private static List<Nota> notes = new ArrayList<>();
+    private static final List<Compito> compitishow = new ArrayList<>();
+    private static int currPage = 0;
+    private static DateTime primadata;
+    private static DateTime secondadata;
+    private static Context context;
+    private static CoordinatorLayout coordinatorLayout;
+    private static CompactCalendarView compactCalendarView;
+    private static SwipeRefreshLayout swipeRefreshLayout;
+    private static final int[] didatticaPos = {0, 0, 0};//Posizione, Elemento, Click
+    private static int nTentativiDownloadDidattica = 0; //Numero tentativi di download dei file della didattica
+    private static boolean giaAperta = false; //L'app era già aperta?
     static File DownloadFolder;
-    static DateTime CalMostra = new DateTime();
-    TabLayout mTabs;
+    private static DateTime CalMostra = new DateTime();
+    private TabLayout mTabs;
 
     public static void AggiornaFileOffline() {
         if (DownloadFolder != null) {
@@ -237,12 +234,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void AggiornaNCircolari(int n) {
+    private static void AggiornaNCircolari(int n) {
         if (n != 0)
             Drawerresult.updateBadge(3, new StringHolder(n + ""));
     }
 
-    public static void AggiornaFileScrutini(int n) {
+    private static void AggiornaFileScrutini(int n) {
         if (n != 0)
             Drawerresult.updateBadge(4, new StringHolder(n + ""));
     }
@@ -302,14 +299,12 @@ public class MainActivity extends AppCompatActivity {
     private static int tabColor(int position) {
         if (position >= 0 && position <= 3)
             return ContextCompat.getColor(context, R.color.bluematerial);
-        else if (position == 4)
-            return ContextCompat.getColor(context, R.color.colorAccent);
         else if (position == 5)
             return ContextCompat.getColor(context, R.color.redmaterial);
         else if (position == 6)
             return ContextCompat.getColor(context, R.color.greenmaterial);
         else
-            return 0;
+            return ContextCompat.getColor(context, R.color.colorAccent);
     }
 
     @Override
@@ -319,7 +314,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
         context = getApplicationContext();
-        application = (App) getApplication();
+        App application = (App) getApplication();
         mTracker = application.getDefaultTracker();
 
         mPager = (ViewPager) findViewById(R.id.pager);
@@ -477,7 +472,7 @@ public class MainActivity extends AppCompatActivity {
                     .withIcon(ContextCompat.getDrawable(this, R.drawable.iconaccplus))
                     .withIdentifier(100010), i);
 
-            currProf = sharedPref.getInt("CurrentProfile", 0);
+            int currProf = sharedPref.getInt("CurrentProfile", 0);
             headerResult.setActiveProfile(currProf - 1);
 
             Drawerresult = new DrawerBuilder()
@@ -675,6 +670,7 @@ public class MainActivity extends AppCompatActivity {
             //Cartella dei download, se non esiste la creo, se esiste aggiorno il numero dei file presenti
             DownloadFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator + "Registro Elettronico");
             if (!DownloadFolder.exists()) {
+                //noinspection ResultOfMethodCallIgnored
                 DownloadFolder.mkdir();
             } else {
                 AggiornaFileOffline();
@@ -913,11 +909,7 @@ public class MainActivity extends AppCompatActivity {
         String url = "";
         Snackbar DownloadProgressSnak;
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
+        @UiThread
         @Override
         protected void onProgressUpdate(Integer... progress) {
             super.onProgressUpdate(progress);
@@ -932,6 +924,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        @WorkerThread
         @Override
         protected String doInBackground(String... params) {
 
@@ -1224,6 +1217,7 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
+        @UiThread
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
@@ -1569,7 +1563,7 @@ public class MainActivity extends AppCompatActivity {
                                             String materia = m.getMateria();
                                             Medie medie = new Medie();
                                             for (Voto v : m.getVoti())
-                                                if (!v.isVotoblu())
+                                                if (v.isVotoblu())
                                                     medie.addVoto(v);
 
                                             if (medie.getMediaGenerale() > 0) {
@@ -1627,7 +1621,7 @@ public class MainActivity extends AppCompatActivity {
                                             Medie medie = new Medie();
 
                                             for (Voto v : m.getVoti())
-                                                if (!v.isVotoblu() && v.getPeriodo().equals(Voto.P1))
+                                                if (v.isVotoblu() && v.getPeriodo().equals(Voto.P1))
                                                     medie.addVoto(v);
 
                                             if (medie.getMediaGenerale() > 0) {
@@ -1687,7 +1681,7 @@ public class MainActivity extends AppCompatActivity {
 
                                             Medie medie = new Medie();
                                             for (Voto v : m.getVoti())
-                                                if (!v.isVotoblu() && v.getPeriodo().equals(Voto.P2))
+                                                if (v.isVotoblu() && v.getPeriodo().equals(Voto.P2))
                                                     medie.addVoto(v);
 
                                             if (medie.getMediaGenerale() > 0) {
@@ -1827,7 +1821,6 @@ public class MainActivity extends AppCompatActivity {
                         adapter = new RVAdapter(CVDataList);
                         rv.setAdapter(adapter);
                         updateAgenda = true;
-                        events = new ArrayList<>();
 
                         final Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);
                         boolean AggiungiGiornoSeSabato = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY;
@@ -2213,7 +2206,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                     break;
                 }
-
             }
             return layout;
         }
@@ -2238,7 +2230,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
-            List<CVData> CVDataList;
+            final List<CVData> CVDataList;
 
             RVAdapter(List<CVData> CVDataList) {
                 this.CVDataList = CVDataList;
@@ -2248,11 +2240,6 @@ public class MainActivity extends AppCompatActivity {
             public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_card, parent, false);
                 return new ViewHolder(v);
-            }
-
-            @Override
-            public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-                super.onAttachedToRecyclerView(recyclerView);
             }
 
             @Override
@@ -2289,11 +2276,9 @@ public class MainActivity extends AppCompatActivity {
                         SpannableString s;
                         if (days == 0) {
                             s = new SpannableString(getString(R.string.datainsogg, date));
-                        } else if (days == 1)
-                            s = new SpannableString(getString(R.string.datains, dtf.print(compito.getDataInserimento()), days, "o"));
-                        else
-                            s = new SpannableString(getString(R.string.datains, dtf.print(compito.getDataInserimento()), days, "i"));
-
+                        } else {
+                            s = new SpannableString(getResources().getQuantityString(R.plurals.datains, days, dtf.print(compito.getDataInserimento()), days, "i"));
+                        }
                         s.setSpan(new StyleSpan(Typeface.BOLD), 0, date.length(), 0);
                         ViewHolder.data.setText(s);
                         ViewHolder.Des.setText(CVDataList.get(i).des);
@@ -2351,14 +2336,14 @@ public class MainActivity extends AppCompatActivity {
             }
 
             class ViewHolder extends RecyclerView.ViewHolder {
-                CardView cv;
-                TextView Title;
-                TextView Des;
-                TextView Media;
-                CircularProgressView pv_circular;
-                LinearLayout LayoutData;
-                ClockView clockView;
-                TextView data;
+                final CardView cv;
+                final TextView Title;
+                final TextView Des;
+                final TextView Media;
+                final CircularProgressView pv_circular;
+                final LinearLayout LayoutData;
+                final ClockView clockView;
+                final TextView data;
 
                 ViewHolder(View itemView) {
                     super(itemView);
@@ -2449,7 +2434,7 @@ public class MainActivity extends AppCompatActivity {
                                         CustomTabActivityHelper.openCustomTab(getActivity(), customTabsIntent, uri,
                                                 new CustomTabActivityHelper.CustomTabFallback() {
                                                     @Override
-                                                    public void openUri(Activity activity, Uri uri) {
+                                                    public void openUri(Uri uri) {
                                                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                                                         startActivity(intent);
                                                     }
@@ -2655,7 +2640,7 @@ public class MainActivity extends AppCompatActivity {
 
                                             final Thread thread = new Thread() {
 
-                                                MainActivity mainActivity = new MainActivity();
+                                                final MainActivity mainActivity = new MainActivity();
 
                                                 @Override
                                                 public void run() {
@@ -2729,7 +2714,7 @@ public class MainActivity extends AppCompatActivity {
 
     class PagerAdapter extends FragmentPagerAdapter {
 
-        String[] tab = getResources().getStringArray(R.array.tab_title);
+        final String[] tab = getResources().getStringArray(R.array.tab_title);
 
         PagerAdapter(FragmentManager fm) {
             super(fm);

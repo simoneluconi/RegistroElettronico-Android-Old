@@ -19,7 +19,7 @@ import android.support.customtabs.CustomTabsClient;
 /**
  * Callback for events when connecting and disconnecting from Custom Tabs Service.
  */
-public interface ServiceConnectionCallback {
+interface ServiceConnectionCallback {
     /**
      * Called when the service is connected.
      * @param client a CustomTabsClient
