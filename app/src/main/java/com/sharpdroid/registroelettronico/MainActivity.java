@@ -27,10 +27,12 @@ import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -46,7 +48,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -97,8 +98,6 @@ import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Nota;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Voto;
 import com.sharpdroid.registroelettronico.SharpLibrary.ClockView;
 import com.sharpdroid.registroelettronico.SharpLibrary.VotiDettAdp;
-import com.sharpdroid.registroelettronico.Tabs.SlidingTabLayout;
-import com.sharpdroid.registroelettronico.Tabs.SwipeViewPager;
 import com.squareup.picasso.Picasso;
 
 import org.acra.ACRA;
@@ -181,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
     public static Tracker mTracker;
     public static String DataCal = null; //Data da aprire nel calendario dalla notifica
     static CookieManager msCookieManager = new CookieManager(null, CookiePolicy.ACCEPT_ALL); //Gestore Cookie
-    static SwipeViewPager mPager;
+    static ViewPager mPager;
     static Drawer Drawerresult;
     //Runnable
     static Runnable m_handlerMedie;
@@ -227,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
     static boolean giaAperta = false; //L'app era già aperta?
     static File DownloadFolder;
     static DateTime CalMostra = new DateTime();
-    SlidingTabLayout mTabs;
+    TabLayout mTabs;
 
     public static void AggiornaFileOffline() {
         if (DownloadFolder != null) {
@@ -309,42 +308,11 @@ public class MainActivity extends AppCompatActivity {
         application = (App) getApplication();
         mTracker = application.getDefaultTracker();
 
-        mPager = (SwipeViewPager) findViewById(R.id.pager);
+        mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
 
-        mTabs = (SlidingTabLayout) findViewById(R.id.tabs);
-        mTabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
-            @Override
-            public int getIndicatorColor(int position) {
-                if (position >= 0 && position <= 3)
-                    return ContextCompat.getColor(MainActivity.this, R.color.bluematerial);
-                else if (position == 4)
-                    return ContextCompat.getColor(MainActivity.this, R.color.colorAccent);
-                else if (position == 5)
-                    return ContextCompat.getColor(MainActivity.this, R.color.redmaterial);
-                else if (position == 6)
-                    return ContextCompat.getColor(MainActivity.this, R.color.greenmaterial);
-                else return 0;
-            }
-        });
-
-        mTabs.setViewPager(mPager);
-
-        mTabs.setOnPageChangeListener(new SwipeViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                currPage = position;
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                currPage = position;
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
+        mTabs = (TabLayout) findViewById(R.id.tabs);
+        mTabs.setupWithViewPager(mPager);
 
         //Recupero il tab da aprire se l'app è stata aperta da una notifica
         final SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
@@ -1921,23 +1889,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
 
-                        compactCalendarView.setOnTouchListener(new View.OnTouchListener() {
-                            @Override
-                            public boolean onTouch(View v, MotionEvent event) {
-                                v.performClick();
-                                switch (event.getAction()) {
-                                    case MotionEvent.ACTION_UP:
-                                        mPager.setPagingEnabled(true);
-                                        break;
-                                    default:
-                                        mPager.setPagingEnabled(false);
-                                        break;
-                                }
-                                return false;
-                            }
-                        });
-
-                        fab.setOnClickListener(null);
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -2231,19 +2182,14 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 }
                             }
-                        }
+                        };
 
-                        ;
                         m_handlerDidattica.run();
-
                     }
                     break;
-
-
                 }
 
             }
-
             return layout;
         }
 
