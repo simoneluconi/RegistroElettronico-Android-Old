@@ -35,7 +35,7 @@
                 android:id="@+id/FileName"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="filebellissimo.pdf"
+                android:text="@string/filebellissimo_pdf"
                 android:textColor="@color/textcolorgrey"
                 android:textSize="18sp" />
 
@@ -48,7 +48,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
-                    android:text="15/19/70 12:50:12"
+                    android:text="@string/_15_19_70_12_50_12"
                     android:textColor="#9E9E9E" />
 
                 <LinearLayout
@@ -61,7 +61,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
-                        android:text="15.78gb"
+                        android:text="@string/_15_78gb"
                         android:textColor="#9E9E9E" />
                 </LinearLayout>
 

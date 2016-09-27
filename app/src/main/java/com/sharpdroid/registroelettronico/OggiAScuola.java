@@ -321,7 +321,7 @@ public class OggiAScuola extends AppCompatActivity {
 
             TextView TxStato = (TextView) findViewById(R.id.StatoutenteEff);
             TextView statoUtente = (TextView) findViewById(R.id.Statoutente);
-            if (statoUtente.getText().equals("Caricamento dati in corso..."))
+            if (statoUtente.getText().equals("Caricamento dati in corso…"))
                 statoUtente.setText(getString(R.string.oggi));
             if (azione.equals(Azione.OGGI_SCUOLA)) {
                 swipeRefreshLayout.setRefreshing(false);
