@@ -21,7 +21,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.support.customtabs.CustomTabsIntent;
@@ -31,7 +30,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -1442,28 +1441,31 @@ public class MainActivity extends AppCompatActivity {
 
         ObservableRecyclerView rv;
         RVAdapter adapter;
-        Bundle bundle;
         List<CVData> CVDataList;
         Snackbar snackbarVotiT;
         CardView CardViewCal;
         FloatingActionButton fab;
+        private int position;
 
-
-        public MyFragment getInstance(int position) {
+        public static MyFragment getInstance(int position) {
             MyFragment myFragment = new MyFragment();
             Bundle args = new Bundle();
             args.putInt("position", position);
-            setRetainInstance(true);
             myFragment.setArguments(args);
             return myFragment;
         }
 
+        // Store instance variables based on arguments passed
         @Override
-        public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
-            final View layout = inflater.inflate(R.layout.fragment_principale, container, false);
-            bundle = getArguments();
-            Log.v("MainActivity", String.valueOf(bundle));
-            //setRetainInstance(true);
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            position = getArguments().getInt("position", 0);
+        }
+
+        @Override
+        public View onCreateView(final LayoutInflater inflater,
+                                 ViewGroup container, Bundle savedInstanceState) {
+            View layout = inflater.inflate(R.layout.fragment_principale, container, false);
             swipeRefreshLayout = null;
             swipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swiperefresh);
             coordinatorLayout = (CoordinatorLayout) layout.findViewById(R.id.coordinatorLayout);
@@ -1478,7 +1480,6 @@ public class MainActivity extends AppCompatActivity {
             rv.setHasFixedSize(true);
             final int colonne = getResources().getInteger(R.integer.columns);
             rv.setLayoutManager(new GridLayoutManager(context, 1));
-            Log.v("Colonne", String.valueOf(colonne));
             fab = (FloatingActionButton) layout.findViewById(R.id.fab);
             CVDataList = new ArrayList<>();
             adapter = new RVAdapter(CVDataList);
@@ -1516,696 +1517,685 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-            if (bundle != null) {
+            final SharedPreferences sharedPref = getContext().getSharedPreferences("Dati", Context.MODE_PRIVATE);
 
-                final int position = bundle.getInt("position");
-                final SharedPreferences sharedPref = getContext().getSharedPreferences("Dati", Context.MODE_PRIVATE);
+            if (position == 4) {
+                fab.setVisibility(View.VISIBLE);
 
-
-                if (position == 4) {
-                    fab.setVisibility(View.VISIBLE);
-                    fab.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.plus));
-
-                    if (CardViewCal != null) {
-                        CardViewCal.setVisibility(View.VISIBLE);
-                    }
-
-                } else if (position >= 0 && position <= 2) {
-                    fab.setVisibility(View.GONE);
-                    rv.setLayoutManager(new GridLayoutManager(context, colonne));
-
-                } else {
-                    if (CardViewCal != null) CardViewCal.setVisibility(View.GONE);
-                    fab.setVisibility(View.GONE);
+                if (CardViewCal != null) {
+                    CardViewCal.setVisibility(View.VISIBLE);
                 }
+            } else if (position >= 0 && position <= 2) {
+                fab.setVisibility(View.GONE);
+                rv.setLayoutManager(new GridLayoutManager(context, colonne));
+            } else {
+                if (CardViewCal != null) CardViewCal.setVisibility(View.GONE);
+                fab.setVisibility(View.GONE);
+            }
 
-                switch (position) {
+            switch (position) {
+                case 0: {
+                    CVDataList = new ArrayList<>();
+                    adapter = new RVAdapter(CVDataList);
+                    rv.setAdapter(adapter);
+                    updateMedie = true;
+                    m_handlerMedie = new Runnable() {
+                        @Override
+                        public void run() {
+                            if (updateMedie) {
+                                CVDataList.clear();
+                                if (!votis.isEmpty()) {
 
-                    case 0: {
-
-                        CVDataList = new ArrayList<>();
-                        adapter = new RVAdapter(CVDataList);
-                        rv.setAdapter(adapter);
-                        updateMedie = true;
-                        m_handlerMedie = new Runnable() {
-                            @Override
-                            public void run() {
-                                if (updateMedie) {
+                                    MedieVotiMG.clear();
                                     CVDataList.clear();
-                                    if (!votis.isEmpty()) {
+                                    double media = 0;
+                                    int nMaterie = 0;
+                                    for (Materia m : votis) {
 
-                                        MedieVotiMG.clear();
-                                        CVDataList.clear();
-                                        double media = 0;
-                                        int nMaterie = 0;
-                                        for (Materia m : votis) {
+                                        String materia = m.getMateria();
+                                        Medie medie = new Medie();
+                                        for (Voto v : m.getVoti())
+                                            if (v.isVotoblu())
+                                                medie.addVoto(v);
 
-                                            String materia = m.getMateria();
-                                            Medie medie = new Medie();
-                                            for (Voto v : m.getVoti())
-                                                if (v.isVotoblu())
-                                                    medie.addVoto(v);
-
-                                            if (medie.getMediaGenerale() > 0) {
-                                                medie.setMateria(materia);
-                                                MedieVotiMG.add(medie);
-                                                double Obb = Double.parseDouble(context.getResources().getStringArray(R.array.votis)[sharedPref.getInt("obiettivovoto", 20)]);
-                                                SpannableString mess = MessaggioVoto(Obb, medie.getMediaGenerale(), medie.getSommaGenerale(), medie.getnVotiGenerale());
-                                                media += medie.getMediaGenerale();
-                                                nMaterie++;
-                                                CVDataList.add(new CVData(materia, mess, String.format(Locale.ENGLISH, "%.2f", medie.getMediaGenerale()), ((float) medie.getMediaGenerale() * 10f)));
-                                            }
-                                        }
-
-                                        media = media / (double) nMaterie;
-
-                                        CVDataList.add(new CVData("Media Generale", "", String.format(Locale.ENGLISH, "%.2f", media), ((float) media * 10f)));
-                                        adapter.notifyDataSetChanged();
-
-                                        if (!datiOffline)
-                                            updateMedie = false;
-
-                                    } else {
-                                        CVDataList.clear();
-                                        CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                }
-                            }
-                        };
-                        m_handlerMedie.run();
-
-
-                    }
-                    break;
-
-
-                    case 1: {
-
-                        CVDataList = new ArrayList<>();
-                        adapter = new RVAdapter(CVDataList);
-                        rv.setAdapter(adapter);
-                        updateQ1 = true;
-                        m_handlerQ1 = new Runnable() {
-                            @Override
-                            public void run() {
-                                if (updateQ1) {
-                                    CVDataList.clear();
-                                    if (!votis.isEmpty()) {
-                                        MedieVotiP1.clear();
-                                        double media = 0;
-                                        int nMaterie = 0;
-
-                                        for (Materia m : votis) {
-                                            String materia = m.getMateria();
-                                            Medie medie = new Medie();
-
-                                            for (Voto v : m.getVoti())
-                                                if (v.isVotoblu() && v.getPeriodo().equals(Voto.P1))
-                                                    medie.addVoto(v);
-
-                                            if (medie.getMediaGenerale() > 0) {
-                                                medie.setMateria(materia);
-                                                MedieVotiP1.add(medie);
-                                                double Obb = Double.parseDouble(context.getResources().getStringArray(R.array.votis)[sharedPref.getInt("obiettivovoto", 20)]);
-                                                SpannableString mess = MessaggioVoto(Obb, medie.getMediaGenerale(), medie.getSommaGenerale(), medie.getnVotiGenerale());
-                                                media += medie.getMediaGenerale();
-                                                nMaterie++;
-                                                CVDataList.add(new CVData(materia, mess, String.format(Locale.ENGLISH, "%.2f", medie.getMediaGenerale()), ((float) medie.getMediaGenerale() * 10f)));
-                                            }
-                                        }
-
-                                        media = media / (double) nMaterie;
-                                        CVDataList.add(new CVData("Media Generale", "", String.format(Locale.ENGLISH, "%.2f", media), ((float) media * 10f)));
-
-                                        if (nMaterie == 0) {
-                                            CVDataList.clear();
-                                            CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
-                                        }
-
-                                        adapter.notifyDataSetChanged();
-
-                                        if (!datiOffline)
-                                            updateQ1 = false;
-
-                                    } else {
-                                        CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                }
-                            }
-                        };
-                        m_handlerQ1.run();
-
-                    }
-                    break;
-
-                    case 2: {
-
-                        CVDataList = new ArrayList<>();
-                        adapter = new RVAdapter(CVDataList);
-                        rv.setAdapter(adapter);
-                        updateQ2 = true;
-                        m_handlerQ2 = new Runnable() {
-                            @Override
-                            public void run() {
-                                if (updateQ2) {
-                                    CVDataList.clear();
-                                    if (!votis.isEmpty()) {
-                                        MedieVotiP2.clear();
-                                        double media = 0;
-                                        int nMaterie = 0;
-
-                                        for (Materia m : votis) {
-                                            String materia = m.getMateria();
-
-                                            Medie medie = new Medie();
-                                            for (Voto v : m.getVoti())
-                                                if (v.isVotoblu() && v.getPeriodo().equals(Voto.P2))
-                                                    medie.addVoto(v);
-
-                                            if (medie.getMediaGenerale() > 0) {
-                                                medie.setMateria(materia);
-                                                MedieVotiP2.add(medie);
-                                                double Obb = Double.parseDouble(context.getResources().getStringArray(R.array.votis)[sharedPref.getInt("obiettivovoto", 20)]);
-                                                SpannableString mess = MessaggioVoto(Obb, medie.getMediaGenerale(), medie.getSommaGenerale(), medie.getnVotiGenerale());
-                                                media += medie.getMediaGenerale();
-                                                nMaterie++;
-                                                CVDataList.add(new CVData(materia, mess, String.format(Locale.ENGLISH, "%.2f", medie.getMediaGenerale()), ((float) medie.getMediaGenerale() * 10f)));
-                                            }
-                                        }
-
-                                        media = media / (double) nMaterie;
-                                        CVDataList.add(new CVData("Media Generale", "", String.format(Locale.ENGLISH, "%.2f", media), ((float) media * 10f)));
-
-                                        if (nMaterie == 0) {
-                                            CVDataList.clear();
-                                            CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
-                                        }
-
-                                        adapter.notifyDataSetChanged();
-
-                                        if (!datiOffline)
-                                            updateQ2 = false;
-
-                                    } else {
-                                        CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                }
-                            }
-                        };
-                        m_handlerQ2.run();
-
-                    }
-                    break;
-
-                    case 3: {
-                        CVDataList = new ArrayList<>();
-                        adapter = new RVAdapter(CVDataList);
-                        rv.setAdapter(adapter);
-                        updateTuttiVoti = true;
-                        m_handlerTuttiVoti = new Runnable() {
-                            @Override
-                            public void run() {
-                                if (updateTuttiVoti) {
-                                    if (!votis.isEmpty()) {
-                                        final int[] nVotiT = {0};
-                                        CVDataList.clear();
-                                        final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy", Locale.ITALIAN);
-                                        for (Materia m : votis) {
-                                            final List<Voto> voti = m.getVoti();
-                                            Collections.sort(voti, new Comparator<Voto>() {
-                                                @Override
-                                                public int compare(Voto o1, Voto o2) {
-                                                    Date date1;
-                                                    Date date2;
-                                                    try {
-                                                        date1 = format.parse(o1.getData());
-                                                        date2 = format.parse(o2.getData());
-                                                    } catch (ParseException e) {
-                                                        throw new IllegalArgumentException("Impossibile convertire la data!", e);
-                                                    }
-
-                                                    return date1.compareTo(date2);
-                                                }
-                                            });
-
-                                            StringBuilder sb = new StringBuilder();
-                                            boolean separato = false;
-                                            for (Voto v : voti) {
-                                                if (v.getPeriodo().equals(Voto.P2) && !separato) {
-                                                    sb.append("\n");
-                                                    separato = true;
-                                                }
-
-                                                String spazi = SpaziVoti(v.getVoto());
-
-                                                sb.append("\n   ");
-                                                sb.append(v.getData().substring(0, 5));
-
-                                                //Metodo molto rudimentale per allineare le stringhe
-                                                if (v.getTipo().contains("Orale")) {
-                                                    sb.append("           ");
-                                                    sb.append(v.getVoto());
-                                                    sb.append(spazi);
-                                                    sb.append(v.getTipo());
-                                                } else if (v.getTipo().contains("Scritto")) {
-                                                    sb.append("           ");
-                                                    sb.append(v.getVoto());
-                                                    sb.append(spazi);
-                                                    sb.append(v.getTipo());
-                                                } else if (v.getTipo().contains("Pratico")) {
-                                                    sb.append("           ");
-                                                    sb.append(v.getVoto());
-                                                    sb.append(spazi);
-                                                    sb.append(v.getTipo());
-                                                } else {
-                                                    sb.append("           ");
-                                                    sb.append(v.getVoto());
-                                                    sb.append(spazi);
-                                                    sb.append(v.getTipo());
-                                                }
-
-                                            }
-
-                                            int nVoti = m.getVoti().size();
-                                            nVotiT[0] += nVoti;
-                                            CVDataList.add(new CVData(m.getMateria(), sb.toString(), nVoti + " voti", 0f));
-
-                                        }
-
-                                        snackbarVotiT = Snackbar.make(coordinatorLayout, "Voti totali: " + String.valueOf(nVotiT[0]), Snackbar.LENGTH_SHORT);
-                                        snackbarVotiT.show();
-                                        adapter.notifyDataSetChanged();
-
-                                        if (!datiOffline)
-                                            updateTuttiVoti = false;
-
-                                    } else {
-                                        CVDataList.clear();
-                                        CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                }
-                            }
-
-                        };
-                        m_handlerTuttiVoti.run();
-
-                    }
-                    break;
-
-                    case 4: {
-                        CVDataList = new ArrayList<>();
-                        adapter = new RVAdapter(CVDataList);
-                        rv.setAdapter(adapter);
-                        updateAgenda = true;
-
-                        final Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);
-                        boolean AggiungiGiornoSeSabato = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY;
-                        boolean isDomenica = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
-                        boolean OrarioScolastico = cal.get(Calendar.HOUR_OF_DAY) < 14;
-                        if (AggiungiGiornoSeSabato && !OrarioScolastico)
-                            CalMostra = CalMostra.plusDays(2);
-                        else if (!OrarioScolastico || isDomenica)
-                            CalMostra = CalMostra.plusDays(1);
-
-                        if (DataCal != null)
-                            CalMostra = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(DataCal);
-
-                        compactCalendarView.setCurrentDate(CalMostra.toDate());
-                        String mese = new SimpleDateFormat("MMMM yyyy", Locale.ITALIAN).format(CalMostra.toDate());
-                        mese = InizialeMaiuscola(mese);
-                        txMese.setText(mese);
-                        m_handlerAgenda = new Runnable() {
-                            @Override
-                            public void run() {
-                                if (updateAgenda) {
-                                    compitishow.clear();
-                                    List<Compito> myCompiti = ReadMyAgenda(context);
-                                    compitiDatas.removeAll(myCompiti);
-                                    compitiDatas.addAll(myCompiti);
-
-                                    CVDataList.clear();
-                                    compactCalendarView.removeAllEvents();
-
-                                    for (Compito c : compitiDatas) {
-                                        String autore;
-                                        List<Event> events = compactCalendarView.getEvents(c.getDataInizio().toDate());
-                                        Event newEvent;
-                                        if (c.isVerifica()) {
-                                            autore = getEmojiByUnicode(0x1F4DD) + " " + c.getAutore();
-                                            newEvent = new Event(Color.RED, c.getDataInizio().getMillis());
-                                        } else {
-                                            newEvent = new Event(Color.YELLOW, c.getDataInizio().getMillis());
-                                            autore = c.getAutore();
-                                        }
-                                        events.add(newEvent);
-
-                                        compactCalendarView.removeEvents(c.getDataInizio().getMillis());
-                                        compactCalendarView.addEvents(events);
-
-                                        if (CalMostra.toLocalDate().isEqual(c.getDataInizio().withZone(CalMostra.getZone()).toLocalDate())) {
-                                            compitishow.add(c);
-                                            CVDataList.add(new CVData(autore, "<Agenda>" + c.getContenuto(), "", 0f));
+                                        if (medie.getMediaGenerale() > 0) {
+                                            medie.setMateria(materia);
+                                            MedieVotiMG.add(medie);
+                                            double Obb = Double.parseDouble(context.getResources().getStringArray(R.array.votis)[sharedPref.getInt("obiettivovoto", 20)]);
+                                            SpannableString mess = MessaggioVoto(Obb, medie.getMediaGenerale(), medie.getSommaGenerale(), medie.getnVotiGenerale());
+                                            media += medie.getMediaGenerale();
+                                            nMaterie++;
+                                            CVDataList.add(new CVData(materia, mess, String.format(Locale.ENGLISH, "%.2f", medie.getMediaGenerale()), ((float) medie.getMediaGenerale() * 10f)));
                                         }
                                     }
 
-                                    compactCalendarView.invalidate();
-                                    if (CVDataList.isEmpty())
-                                        CVDataList.add(new CVData("Nessun Evento", "Nessun evento per il giorno corrente.", "", 0f));
+                                    media = media / (double) nMaterie;
 
-                                    if (!datiOffline) {
-                                        updateAgenda = false;
-                                    }
+                                    CVDataList.add(new CVData("Media Generale", "", String.format(Locale.ENGLISH, "%.2f", media), ((float) media * 10f)));
                                     adapter.notifyDataSetChanged();
 
+                                    if (!datiOffline)
+                                        updateMedie = false;
+
+                                } else {
+                                    CVDataList.clear();
+                                    CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
+                                    adapter.notifyDataSetChanged();
                                 }
                             }
-                        };
-                        m_handlerAgenda.run();
+                        }
+                    };
+                    m_handlerMedie.run();
 
 
-                        compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
-                            @Override
-                            public void onDayClick(Date dateClicked) {
-                                CalMostra = new DateTime(dateClicked);
-                                updateAgenda = true;
-                                m_handlerAgenda.run();
-                                Log.v("NewDate", String.valueOf(dateClicked));
+                }
+                break;
+
+
+                case 1: {
+
+                    CVDataList = new ArrayList<>();
+                    adapter = new RVAdapter(CVDataList);
+                    rv.setAdapter(adapter);
+                    updateQ1 = true;
+                    m_handlerQ1 = new Runnable() {
+                        @Override
+                        public void run() {
+                            if (updateQ1) {
+                                CVDataList.clear();
+                                if (!votis.isEmpty()) {
+                                    MedieVotiP1.clear();
+                                    double media = 0;
+                                    int nMaterie = 0;
+
+                                    for (Materia m : votis) {
+                                        String materia = m.getMateria();
+                                        Medie medie = new Medie();
+
+                                        for (Voto v : m.getVoti())
+                                            if (v.isVotoblu() && v.getPeriodo().equals(Voto.P1))
+                                                medie.addVoto(v);
+
+                                        if (medie.getMediaGenerale() > 0) {
+                                            medie.setMateria(materia);
+                                            MedieVotiP1.add(medie);
+                                            double Obb = Double.parseDouble(context.getResources().getStringArray(R.array.votis)[sharedPref.getInt("obiettivovoto", 20)]);
+                                            SpannableString mess = MessaggioVoto(Obb, medie.getMediaGenerale(), medie.getSommaGenerale(), medie.getnVotiGenerale());
+                                            media += medie.getMediaGenerale();
+                                            nMaterie++;
+                                            CVDataList.add(new CVData(materia, mess, String.format(Locale.ENGLISH, "%.2f", medie.getMediaGenerale()), ((float) medie.getMediaGenerale() * 10f)));
+                                        }
+                                    }
+
+                                    media = media / (double) nMaterie;
+                                    CVDataList.add(new CVData("Media Generale", "", String.format(Locale.ENGLISH, "%.2f", media), ((float) media * 10f)));
+
+                                    if (nMaterie == 0) {
+                                        CVDataList.clear();
+                                        CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
+                                    }
+
+                                    adapter.notifyDataSetChanged();
+
+                                    if (!datiOffline)
+                                        updateQ1 = false;
+
+                                } else {
+                                    CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
+                                    adapter.notifyDataSetChanged();
+                                }
                             }
+                        }
+                    };
+                    m_handlerQ1.run();
 
-                            @Override
-                            public void onMonthScroll(Date firstDayOfNewMonth) {
-                                String mese = new SimpleDateFormat("MMMM yyyy", Locale.ITALIAN).format(firstDayOfNewMonth.getTime());
-                                mese = InizialeMaiuscola(mese);
-                                txMese.setText(mese);
-                                CalMostra = new DateTime(firstDayOfNewMonth);
-                                updateAgenda = true;
-                                m_handlerAgenda.run();
+                }
+                break;
+
+                case 2: {
+
+                    CVDataList = new ArrayList<>();
+                    adapter = new RVAdapter(CVDataList);
+                    rv.setAdapter(adapter);
+                    updateQ2 = true;
+                    m_handlerQ2 = new Runnable() {
+                        @Override
+                        public void run() {
+                            if (updateQ2) {
+                                CVDataList.clear();
+                                if (!votis.isEmpty()) {
+                                    MedieVotiP2.clear();
+                                    double media = 0;
+                                    int nMaterie = 0;
+
+                                    for (Materia m : votis) {
+                                        String materia = m.getMateria();
+
+                                        Medie medie = new Medie();
+                                        for (Voto v : m.getVoti())
+                                            if (v.isVotoblu() && v.getPeriodo().equals(Voto.P2))
+                                                medie.addVoto(v);
+
+                                        if (medie.getMediaGenerale() > 0) {
+                                            medie.setMateria(materia);
+                                            MedieVotiP2.add(medie);
+                                            double Obb = Double.parseDouble(context.getResources().getStringArray(R.array.votis)[sharedPref.getInt("obiettivovoto", 20)]);
+                                            SpannableString mess = MessaggioVoto(Obb, medie.getMediaGenerale(), medie.getSommaGenerale(), medie.getnVotiGenerale());
+                                            media += medie.getMediaGenerale();
+                                            nMaterie++;
+                                            CVDataList.add(new CVData(materia, mess, String.format(Locale.ENGLISH, "%.2f", medie.getMediaGenerale()), ((float) medie.getMediaGenerale() * 10f)));
+                                        }
+                                    }
+
+                                    media = media / (double) nMaterie;
+                                    CVDataList.add(new CVData("Media Generale", "", String.format(Locale.ENGLISH, "%.2f", media), ((float) media * 10f)));
+
+                                    if (nMaterie == 0) {
+                                        CVDataList.clear();
+                                        CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
+                                    }
+
+                                    adapter.notifyDataSetChanged();
+
+                                    if (!datiOffline)
+                                        updateQ2 = false;
+
+                                } else {
+                                    CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
+                                    adapter.notifyDataSetChanged();
+                                }
                             }
-                        });
+                        }
+                    };
+                    m_handlerQ2.run();
 
-                        fab.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                final String data = DateTimeFormat.forPattern("dd/MM/yyyy").print(CalMostra);
-                                final String dataCal = DateTimeFormat.forPattern("yyyy-MM-dd").print(CalMostra);
-                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ITALIAN);
-                                final String dataInserimento = sdf.format(Calendar.getInstance().getTime());
-                                final MaterialDialog dialog = new MaterialDialog.Builder(getContext())
-                                        .title(getResources().getString(R.string.aggcal))
-                                        .theme(Theme.LIGHT)
-                                        .iconRes(R.drawable.calendartoday)
-                                        .customView(R.layout.adapter_cust_comp, true)
-                                        .positiveText("Aggiungi")
-                                        .negativeText(android.R.string.cancel)
-                                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                }
+                break;
+
+                case 3: {
+                    CVDataList = new ArrayList<>();
+                    adapter = new RVAdapter(CVDataList);
+                    rv.setAdapter(adapter);
+                    updateTuttiVoti = true;
+                    m_handlerTuttiVoti = new Runnable() {
+                        @Override
+                        public void run() {
+                            if (updateTuttiVoti) {
+                                if (!votis.isEmpty()) {
+                                    final int[] nVotiT = {0};
+                                    CVDataList.clear();
+                                    final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy", Locale.ITALIAN);
+                                    for (Materia m : votis) {
+                                        final List<Voto> voti = m.getVoti();
+                                        Collections.sort(voti, new Comparator<Voto>() {
                                             @Override
-                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                //Autore, DataInizio, DataInserimento, Commento
-                                                EditText Autore = (EditText) dialog.findViewById(R.id.Tit);
-                                                EditText Cont = (EditText) dialog.findViewById(R.id.Cont);
-                                                ContentValues dati = new ContentValues();
-                                                dati.put(MyDB.MyCompitoEntry.COLUMN_NAME_AUTORE, Autore.getText().toString().trim());
-                                                dati.put(MyDB.MyCompitoEntry.COLUMN_NAME_DATA, dataCal);
-                                                dati.put(MyDB.MyCompitoEntry.COLUMN_NAME_DATAINSERIMENTO, dataInserimento);
-                                                dati.put(MyDB.MyCompitoEntry.COLUMN_NAME_CONTENUTO, Cont.getText().toString().trim());
-                                                SaveMyCompito(getContext(), dati);
-                                                updateAgenda = true;
-                                                m_handlerAgenda.run();
+                                            public int compare(Voto o1, Voto o2) {
+                                                Date date1;
+                                                Date date2;
+                                                try {
+                                                    date1 = format.parse(o1.getData());
+                                                    date2 = format.parse(o2.getData());
+                                                } catch (ParseException e) {
+                                                    throw new IllegalArgumentException("Impossibile convertire la data!", e);
+                                                }
+
+                                                return date1.compareTo(date2);
                                             }
-                                        }).build();
-                                dialog.getActionButton(DialogAction.POSITIVE).setEnabled(false);
-                                TextView CurrDate = (TextView) dialog.findViewById(R.id.CurrTime);
-                                CurrDate.setText(getString(R.string.eventoperil, data));
-                                final EditText Autore = (EditText) dialog.findViewById(R.id.Tit);
-                                final EditText Cont = (EditText) dialog.findViewById(R.id.Cont);
-                                Autore.addTextChangedListener(new TextWatcher() {
-                                    @Override
-                                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                        });
 
-                                    }
+                                        StringBuilder sb = new StringBuilder();
+                                        boolean separato = false;
+                                        for (Voto v : voti) {
+                                            if (v.getPeriodo().equals(Voto.P2) && !separato) {
+                                                sb.append("\n");
+                                                separato = true;
+                                            }
 
-                                    @Override
-                                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                        dialog.getActionButton(DialogAction.POSITIVE).setEnabled(charSequence.length() > 0 && Cont.length() > 0);
-                                    }
+                                            String spazi = SpaziVoti(v.getVoto());
 
-                                    @Override
-                                    public void afterTextChanged(Editable editable) {
+                                            sb.append("\n   ");
+                                            sb.append(v.getData().substring(0, 5));
 
-                                    }
-                                });
+                                            //Metodo molto rudimentale per allineare le stringhe
+                                            if (v.getTipo().contains("Orale")) {
+                                                sb.append("           ");
+                                                sb.append(v.getVoto());
+                                                sb.append(spazi);
+                                                sb.append(v.getTipo());
+                                            } else if (v.getTipo().contains("Scritto")) {
+                                                sb.append("           ");
+                                                sb.append(v.getVoto());
+                                                sb.append(spazi);
+                                                sb.append(v.getTipo());
+                                            } else if (v.getTipo().contains("Pratico")) {
+                                                sb.append("           ");
+                                                sb.append(v.getVoto());
+                                                sb.append(spazi);
+                                                sb.append(v.getTipo());
+                                            } else {
+                                                sb.append("           ");
+                                                sb.append(v.getVoto());
+                                                sb.append(spazi);
+                                                sb.append(v.getTipo());
+                                            }
 
-                                Cont.addTextChangedListener(new TextWatcher() {
-                                    @Override
-                                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                    }
-
-                                    @Override
-                                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                        dialog.getActionButton(DialogAction.POSITIVE).setEnabled(charSequence.length() > 0 && Autore.length() > 0);
-                                    }
-
-                                    @Override
-                                    public void afterTextChanged(Editable editable) {
-                                    }
-                                });
-
-
-                                dialog.show();
-                            }
-                        });
-
-                    }
-                    break;
-
-                    case 5: {
-                        CVDataList = new ArrayList<>();
-                        adapter = new RVAdapter(CVDataList);
-                        rv.setAdapter(adapter);
-                        updateNote = true;
-                        m_handlerNote = new Runnable() {
-                            @Override
-                            public void run() {
-                                if (updateNote) {
-                                    if (!notes.isEmpty()) {
-                                        CVDataList.clear();
-
-                                        List<Nota> notas = ReadNote(context);
-                                        for (Nota nota : notas)
-                                            CVDataList.add(new CVData(nota.getProf() + "(" + nota.getTipo() + ") - " + nota.getData(), nota.getContenuto(), "", 0f));
-
-                                        adapter.notifyDataSetChanged();
-
-                                        if (!datiOffline) {
-                                            updateNote = false;
                                         }
-                                    } else {
-                                        CVDataList.clear();
-                                        CVDataList.add(new CVData("Nessuna nota", "Ancora nessuna nota presente.", "", 0f));
-                                        adapter.notifyDataSetChanged();
+
+                                        int nVoti = m.getVoti().size();
+                                        nVotiT[0] += nVoti;
+                                        CVDataList.add(new CVData(m.getMateria(), sb.toString(), nVoti + " voti", 0f));
+
                                     }
+
+                                    snackbarVotiT = Snackbar.make(coordinatorLayout, "Voti totali: " + String.valueOf(nVotiT[0]), Snackbar.LENGTH_SHORT);
+                                    snackbarVotiT.show();
+                                    adapter.notifyDataSetChanged();
+
+                                    if (!datiOffline)
+                                        updateTuttiVoti = false;
+
+                                } else {
+                                    CVDataList.clear();
+                                    CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
+                                    adapter.notifyDataSetChanged();
                                 }
                             }
-                        };
-                        m_handlerNote.run();
+                        }
 
-                    }
-                    break;
+                    };
+                    m_handlerTuttiVoti.run();
 
-                    case 6: {
-                        didatticaPos[0] = 0;
-                        CVDataList = new ArrayList<>();
-                        adapter = new RVAdapter(CVDataList);
-                        rv.setAdapter(adapter);
-                        updateDidattica = true;
-                        m_handlerDidattica = new Runnable() {
-                            @Override
-                            public void run() {
-                                if (updateDidattica) {
-                                    if (Off_Didattica != null) {
-                                        CVDataList.clear();
-                                        fileDids.clear();
-                                        Elements metaElemsDidattica;
-                                        if (WP_Didattica != null) {
-                                            metaElemsDidattica = Jsoup.parse(WP_Didattica).select("tr");
-                                        } else {
-                                            metaElemsDidattica = Jsoup.parse(Off_Didattica).select("tr");
+                }
+                break;
+
+                case 4: {
+                    CVDataList = new ArrayList<>();
+                    adapter = new RVAdapter(CVDataList);
+                    rv.setAdapter(adapter);
+                    updateAgenda = true;
+
+                    final Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);
+                    boolean AggiungiGiornoSeSabato = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY;
+                    boolean isDomenica = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
+                    boolean OrarioScolastico = cal.get(Calendar.HOUR_OF_DAY) < 14;
+                    if (AggiungiGiornoSeSabato && !OrarioScolastico)
+                        CalMostra = CalMostra.plusDays(2);
+                    else if (!OrarioScolastico || isDomenica)
+                        CalMostra = CalMostra.plusDays(1);
+
+                    if (DataCal != null)
+                        CalMostra = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(DataCal);
+
+                    compactCalendarView.setCurrentDate(CalMostra.toDate());
+                    String mese = new SimpleDateFormat("MMMM yyyy", Locale.ITALIAN).format(CalMostra.toDate());
+                    mese = InizialeMaiuscola(mese);
+                    txMese.setText(mese);
+                    m_handlerAgenda = new Runnable() {
+                        @Override
+                        public void run() {
+                            if (updateAgenda) {
+                                compitishow.clear();
+                                List<Compito> myCompiti = ReadMyAgenda(context);
+                                compitiDatas.removeAll(myCompiti);
+                                compitiDatas.addAll(myCompiti);
+
+                                CVDataList.clear();
+                                compactCalendarView.removeAllEvents();
+
+                                for (Compito c : compitiDatas) {
+                                    String autore;
+                                    List<Event> events = compactCalendarView.getEvents(c.getDataInizio().toDate());
+                                    Event newEvent;
+                                    if (c.isVerifica()) {
+                                        autore = getEmojiByUnicode(0x1F4DD) + " " + c.getAutore();
+                                        newEvent = new Event(Color.RED, c.getDataInizio().getMillis());
+                                    } else {
+                                        newEvent = new Event(Color.YELLOW, c.getDataInizio().getMillis());
+                                        autore = c.getAutore();
+                                    }
+                                    events.add(newEvent);
+
+                                    compactCalendarView.removeEvents(c.getDataInizio().getMillis());
+                                    compactCalendarView.addEvents(events);
+
+                                    if (CalMostra.toLocalDate().isEqual(c.getDataInizio().withZone(CalMostra.getZone()).toLocalDate())) {
+                                        compitishow.add(c);
+                                        CVDataList.add(new CVData(autore, "<Agenda>" + c.getContenuto(), "", 0f));
+                                    }
+                                }
+
+                                compactCalendarView.invalidate();
+                                if (CVDataList.isEmpty())
+                                    CVDataList.add(new CVData("Nessun Evento", "Nessun evento per il giorno corrente.", "", 0f));
+
+                                if (!datiOffline) {
+                                    updateAgenda = false;
+                                }
+                                adapter.notifyDataSetChanged();
+
+                            }
+                        }
+                    };
+                    m_handlerAgenda.run();
+
+                    compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
+                        @Override
+                        public void onDayClick(Date dateClicked) {
+                            CalMostra = new DateTime(dateClicked);
+                            updateAgenda = true;
+                            m_handlerAgenda.run();
+                            Log.v("NewDate", String.valueOf(dateClicked));
+                        }
+
+                        @Override
+                        public void onMonthScroll(Date firstDayOfNewMonth) {
+                            String mese = new SimpleDateFormat("MMMM yyyy", Locale.ITALIAN).format(firstDayOfNewMonth.getTime());
+                            mese = InizialeMaiuscola(mese);
+                            txMese.setText(mese);
+                            CalMostra = new DateTime(firstDayOfNewMonth);
+                            updateAgenda = true;
+                            m_handlerAgenda.run();
+                        }
+                    });
+
+                    fab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            final String data = DateTimeFormat.forPattern("dd/MM/yyyy").print(CalMostra);
+                            final String dataCal = DateTimeFormat.forPattern("yyyy-MM-dd").print(CalMostra);
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ITALIAN);
+                            final String dataInserimento = sdf.format(Calendar.getInstance().getTime());
+                            final MaterialDialog dialog = new MaterialDialog.Builder(getContext())
+                                    .title(getResources().getString(R.string.aggcal))
+                                    .theme(Theme.LIGHT)
+                                    .iconRes(R.drawable.calendartoday)
+                                    .customView(R.layout.adapter_cust_comp, true)
+                                    .positiveText("Aggiungi")
+                                    .negativeText(android.R.string.cancel)
+                                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                        @Override
+                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                            //Autore, DataInizio, DataInserimento, Commento
+                                            EditText Autore = (EditText) dialog.findViewById(R.id.Tit);
+                                            EditText Cont = (EditText) dialog.findViewById(R.id.Cont);
+                                            ContentValues dati = new ContentValues();
+                                            dati.put(MyDB.MyCompitoEntry.COLUMN_NAME_AUTORE, Autore.getText().toString().trim());
+                                            dati.put(MyDB.MyCompitoEntry.COLUMN_NAME_DATA, dataCal);
+                                            dati.put(MyDB.MyCompitoEntry.COLUMN_NAME_DATAINSERIMENTO, dataInserimento);
+                                            dati.put(MyDB.MyCompitoEntry.COLUMN_NAME_CONTENUTO, Cont.getText().toString().trim());
+                                            SaveMyCompito(getContext(), dati);
+                                            updateAgenda = true;
+                                            m_handlerAgenda.run();
                                         }
+                                    }).build();
+                            dialog.getActionButton(DialogAction.POSITIVE).setEnabled(false);
+                            TextView CurrDate = (TextView) dialog.findViewById(R.id.CurrTime);
+                            CurrDate.setText(getString(R.string.eventoperil, data));
+                            final EditText Autore = (EditText) dialog.findViewById(R.id.Tit);
+                            final EditText Cont = (EditText) dialog.findViewById(R.id.Cont);
+                            Autore.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                                        switch (didatticaPos[0]) {
-                                            case 0: {
-                                                for (int i = 0; i < metaElemsDidattica.size(); i++) {
+                                }
 
-                                                    int nCart = 0, nFile = 0, nLink = 0;
-                                                    if (metaElemsDidattica.get(i).text().contains("Condivisi da")) {
-                                                        Elements tmp = metaElemsDidattica.get(i).select("td");
-                                                        String prof = tmp.get(2).text();
-                                                        i++;
-                                                        boolean stop = false;
+                                @Override
+                                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                    dialog.getActionButton(DialogAction.POSITIVE).setEnabled(charSequence.length() > 0 && Cont.length() > 0);
+                                }
 
+                                @Override
+                                public void afterTextChanged(Editable editable) {
+
+                                }
+                            });
+
+                            Cont.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                }
+
+                                @Override
+                                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                    dialog.getActionButton(DialogAction.POSITIVE).setEnabled(charSequence.length() > 0 && Autore.length() > 0);
+                                }
+
+                                @Override
+                                public void afterTextChanged(Editable editable) {
+                                }
+                            });
+
+
+                            dialog.show();
+                        }
+                    });
+
+                }
+                break;
+
+                case 5: {
+                    CVDataList = new ArrayList<>();
+                    adapter = new RVAdapter(CVDataList);
+                    rv.setAdapter(adapter);
+                    updateNote = true;
+                    m_handlerNote = new Runnable() {
+                        @Override
+                        public void run() {
+                            if (updateNote) {
+                                if (!notes.isEmpty()) {
+                                    CVDataList.clear();
+
+                                    List<Nota> notas = ReadNote(context);
+                                    for (Nota nota : notas)
+                                        CVDataList.add(new CVData(nota.getProf() + "(" + nota.getTipo() + ") - " + nota.getData(), nota.getContenuto(), "", 0f));
+
+                                    adapter.notifyDataSetChanged();
+
+                                    if (!datiOffline) {
+                                        updateNote = false;
+                                    }
+                                } else {
+                                    CVDataList.clear();
+                                    CVDataList.add(new CVData("Nessuna nota", "Ancora nessuna nota presente.", "", 0f));
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }
+                        }
+                    };
+                    m_handlerNote.run();
+
+                }
+                break;
+
+                case 6: {
+                    didatticaPos[0] = 0;
+                    CVDataList = new ArrayList<>();
+                    adapter = new RVAdapter(CVDataList);
+                    rv.setAdapter(adapter);
+                    updateDidattica = true;
+                    m_handlerDidattica = new Runnable() {
+                        @Override
+                        public void run() {
+                            if (updateDidattica) {
+                                if (Off_Didattica != null) {
+                                    CVDataList.clear();
+                                    fileDids.clear();
+                                    Elements metaElemsDidattica;
+                                    if (WP_Didattica != null) {
+                                        metaElemsDidattica = Jsoup.parse(WP_Didattica).select("tr");
+                                    } else {
+                                        metaElemsDidattica = Jsoup.parse(Off_Didattica).select("tr");
+                                    }
+
+                                    switch (didatticaPos[0]) {
+                                        case 0: {
+                                            for (int i = 0; i < metaElemsDidattica.size(); i++) {
+
+                                                int nCart = 0, nFile = 0, nLink = 0;
+                                                if (metaElemsDidattica.get(i).text().contains("Condivisi da")) {
+                                                    Elements tmp = metaElemsDidattica.get(i).select("td");
+                                                    String prof = tmp.get(2).text();
+                                                    i++;
+                                                    boolean stop = false;
+
+                                                    while (i < metaElemsDidattica.size() && !stop) {
+                                                        if (metaElemsDidattica.get(i).text().contains("Condivisi da"))
+                                                            stop = true;
+                                                        else {
+                                                            if (metaElemsDidattica.get(i).className().equals("row row_parent"))  //Cartella
+                                                            {
+                                                                nCart++;
+                                                                // metaElemsDidattica.get(i).text(); //Nome della cartella
+                                                            } else { //File
+                                                                Elements tmp2 = metaElemsDidattica.get(i).select("span");
+                                                                if (tmp2.get(1).text().equals("file")) {
+                                                                    nFile++;
+                                                                } else if (tmp2.get(1).text().equals("link")) {
+                                                                    nLink++;
+                                                                }
+                                                            }
+                                                            i++;
+                                                        }
+                                                    }
+                                                    i--;
+                                                    String mess = getEmojiByUnicode(0x1F4C1) + ": " + nCart + " / " + getEmojiByUnicode(0x1F4C4) + ": " + nFile + " / " +
+                                                            getEmojiByUnicode(0x1F4CE) + ": " + nLink;
+                                                    if (prof.length() > 0) {
+                                                        prof = ProfDecente(prof);
+                                                        CVDataList.add(new CVData(prof, mess, "", 0f));
+                                                    }
+                                                }
+
+                                            }
+                                        }
+                                        break;
+
+                                        case 1: {
+                                            String cartella;
+                                            int nProf = -1;
+                                            boolean stop = false;
+                                            for (int i = 0; i < metaElemsDidattica.size(); i++) {
+                                                int nFile, nLink;
+                                                if (metaElemsDidattica.get(i).text().contains("Condivisi da")) {
+                                                    i++;
+                                                    nProf++;
+
+                                                    if (nProf == didatticaPos[1]) {
                                                         while (i < metaElemsDidattica.size() && !stop) {
                                                             if (metaElemsDidattica.get(i).text().contains("Condivisi da"))
                                                                 stop = true;
-                                                            else {
-                                                                if (metaElemsDidattica.get(i).className().equals("row row_parent"))  //Cartella
-                                                                {
-                                                                    nCart++;
-                                                                    // metaElemsDidattica.get(i).text(); //Nome della cartella
-                                                                } else { //File
+                                                            else if (metaElemsDidattica.get(i).className().equals("row row_parent"))  //Cartella
+                                                            {
+                                                                Elements data = metaElemsDidattica.get(i).select("td");
+                                                                cartella = data.get(1).text();
+                                                                String condivisione = data.select("span").text();
+                                                                cartella = cartella.replace(condivisione, "").trim();
+                                                                condivisione = condivisione.replace("ultima condivisione:", "").trim();
+                                                                nFile = 0;
+                                                                nLink = 0;
+                                                                if (i + 1 != metaElemsDidattica.size())
+                                                                    i++;
+                                                                else stop = true;
+                                                                while (metaElemsDidattica.get(i).className().contains("row contenuto") && !stop) {
                                                                     Elements tmp2 = metaElemsDidattica.get(i).select("span");
-                                                                    if (tmp2.get(1).text().equals("file")) {
+                                                                    if (tmp2.get(1).text().equals("file"))
                                                                         nFile++;
-                                                                    } else if (tmp2.get(1).text().equals("link")) {
+                                                                    else if (tmp2.get(1).text().equals("link"))
                                                                         nLink++;
-                                                                    }
-                                                                }
-                                                                i++;
-                                                            }
-                                                        }
-                                                        i--;
-                                                        String mess = getEmojiByUnicode(0x1F4C1) + ": " + nCart + " / " + getEmojiByUnicode(0x1F4C4) + ": " + nFile + " / " +
-                                                                getEmojiByUnicode(0x1F4CE) + ": " + nLink;
-                                                        if (prof.length() > 0) {
-                                                            prof = ProfDecente(prof);
-                                                            CVDataList.add(new CVData(prof, mess, "", 0f));
-                                                        }
-                                                    }
 
-                                                }
-                                            }
-                                            break;
-
-                                            case 1: {
-                                                String cartella;
-                                                int nProf = -1;
-                                                boolean stop = false;
-                                                for (int i = 0; i < metaElemsDidattica.size(); i++) {
-                                                    int nFile, nLink;
-                                                    if (metaElemsDidattica.get(i).text().contains("Condivisi da")) {
-                                                        i++;
-                                                        nProf++;
-
-                                                        if (nProf == didatticaPos[1]) {
-                                                            while (i < metaElemsDidattica.size() && !stop) {
-                                                                if (metaElemsDidattica.get(i).text().contains("Condivisi da"))
-                                                                    stop = true;
-                                                                else if (metaElemsDidattica.get(i).className().equals("row row_parent"))  //Cartella
-                                                                {
-                                                                    Elements data = metaElemsDidattica.get(i).select("td");
-                                                                    cartella = data.get(1).text();
-                                                                    String condivisione = data.select("span").text();
-                                                                    cartella = cartella.replace(condivisione, "").trim();
-                                                                    condivisione = condivisione.replace("ultima condivisione:", "").trim();
-                                                                    nFile = 0;
-                                                                    nLink = 0;
                                                                     if (i + 1 != metaElemsDidattica.size())
                                                                         i++;
-                                                                    else stop = true;
+                                                                    else
+                                                                        stop = true;
+                                                                }
+                                                                String mess = getEmojiByUnicode(0x1F4C4) + ": " + nFile + " / " +
+                                                                        getEmojiByUnicode(0x1F4CE) + ": " + nLink + " / " + getEmojiByUnicode(0x1F550) + " " + condivisione;
+                                                                CVDataList.add(new CVData(getEmojiByUnicode(0x1F4C1) + " " + cartella, mess, "", 0f));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        break;
+
+
+                                        case 2: {
+                                            int nProf = -1, nCart = -1, nFile = 0;
+                                            boolean stop = false;
+                                            for (int i = 0; i < metaElemsDidattica.size(); i++) {
+                                                if (metaElemsDidattica.get(i).text().contains("Condivisi da")) {
+                                                    i++;
+                                                    nProf++;
+
+                                                    if (nProf == didatticaPos[1] && !stop) {
+                                                        while (!metaElemsDidattica.get(i).text().contains("Condivisi da") && !stop) {
+                                                            if (metaElemsDidattica.get(i).className().equals("row row_parent"))  //Cartella
+                                                            {
+                                                                nCart++;
+                                                                if (i + 1 != metaElemsDidattica.size())
+                                                                    i++;
+                                                                else stop = true;
+                                                                if (nCart == didatticaPos[2]) {
+
                                                                     while (metaElemsDidattica.get(i).className().contains("row contenuto") && !stop) {
                                                                         Elements tmp2 = metaElemsDidattica.get(i).select("span");
-                                                                        if (tmp2.get(1).text().equals("file"))
-                                                                            nFile++;
-                                                                        else if (tmp2.get(1).text().equals("link"))
-                                                                            nLink++;
-
+                                                                        FileDid fileDid = new FileDid();
+                                                                        fileDid.setType(tmp2.get(1).text());
+                                                                        fileDid.setDataInserimento(tmp2.get(2).text().replace("condiviso il:", "").trim());
+                                                                        fileDid.setName(tmp2.get(0).text());
+                                                                        String tipo = "";
+                                                                        if (fileDid.isFile()) {
+                                                                            tipo = getEmojiByUnicode(0x1F4C4);
+                                                                            Elements fileattr = metaElemsDidattica.get(i).select("div");
+                                                                            fileDid.setId(fileattr.attr("contenuto_id"));
+                                                                            fileDid.setCksum(fileattr.attr("cksum"));
+                                                                        } else if (fileDid.isLink()) {
+                                                                            tipo = getEmojiByUnicode(0x1F4CE);
+                                                                            Elements link = metaElemsDidattica.get(i).select("div");
+                                                                            fileDid.setId(link.get(1).attr("ref"));
+                                                                        }
+                                                                        fileDid.setPos(nFile);
+                                                                        fileDids.add(fileDid);
+                                                                        CVDataList.add(new CVData(tipo + " " + fileDid.getName(), getEmojiByUnicode(0x1F550) + " " + fileDid.getDataInserimentoString(), "", 0f));
+                                                                        nFile++;
                                                                         if (i + 1 != metaElemsDidattica.size())
                                                                             i++;
                                                                         else
                                                                             stop = true;
                                                                     }
-                                                                    String mess = getEmojiByUnicode(0x1F4C4) + ": " + nFile + " / " +
-                                                                            getEmojiByUnicode(0x1F4CE) + ": " + nLink + " / " + getEmojiByUnicode(0x1F550) + " " + condivisione;
-                                                                    CVDataList.add(new CVData(getEmojiByUnicode(0x1F4C1) + " " + cartella, mess, "", 0f));
+
                                                                 }
                                                             }
+                                                            if (i + 1 != metaElemsDidattica.size())
+                                                                i++;
+                                                            else stop = true;
                                                         }
                                                     }
                                                 }
                                             }
-                                            break;
-
-
-                                            case 2: {
-                                                int nProf = -1, nCart = -1, nFile = 0;
-                                                boolean stop = false;
-                                                for (int i = 0; i < metaElemsDidattica.size(); i++) {
-                                                    if (metaElemsDidattica.get(i).text().contains("Condivisi da")) {
-                                                        i++;
-                                                        nProf++;
-
-                                                        if (nProf == didatticaPos[1] && !stop) {
-                                                            while (!metaElemsDidattica.get(i).text().contains("Condivisi da") && !stop) {
-                                                                if (metaElemsDidattica.get(i).className().equals("row row_parent"))  //Cartella
-                                                                {
-                                                                    nCart++;
-                                                                    if (i + 1 != metaElemsDidattica.size())
-                                                                        i++;
-                                                                    else stop = true;
-                                                                    if (nCart == didatticaPos[2]) {
-
-                                                                        while (metaElemsDidattica.get(i).className().contains("row contenuto") && !stop) {
-                                                                            Elements tmp2 = metaElemsDidattica.get(i).select("span");
-                                                                            FileDid fileDid = new FileDid();
-                                                                            fileDid.setType(tmp2.get(1).text());
-                                                                            fileDid.setDataInserimento(tmp2.get(2).text().replace("condiviso il:", "").trim());
-                                                                            fileDid.setName(tmp2.get(0).text());
-                                                                            String tipo = "";
-                                                                            if (fileDid.isFile()) {
-                                                                                tipo = getEmojiByUnicode(0x1F4C4);
-                                                                                Elements fileattr = metaElemsDidattica.get(i).select("div");
-                                                                                fileDid.setId(fileattr.attr("contenuto_id"));
-                                                                                fileDid.setCksum(fileattr.attr("cksum"));
-                                                                            } else if (fileDid.isLink()) {
-                                                                                tipo = getEmojiByUnicode(0x1F4CE);
-                                                                                Elements link = metaElemsDidattica.get(i).select("div");
-                                                                                fileDid.setId(link.get(1).attr("ref"));
-                                                                            }
-                                                                            fileDid.setPos(nFile);
-                                                                            fileDids.add(fileDid);
-                                                                            CVDataList.add(new CVData(tipo + " " + fileDid.getName(), getEmojiByUnicode(0x1F550) + " " + fileDid.getDataInserimentoString(), "", 0f));
-                                                                            nFile++;
-                                                                            if (i + 1 != metaElemsDidattica.size())
-                                                                                i++;
-                                                                            else
-                                                                                stop = true;
-                                                                        }
-
-                                                                    }
-                                                                }
-                                                                if (i + 1 != metaElemsDidattica.size())
-                                                                    i++;
-                                                                else stop = true;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            break;
-
                                         }
+                                        break;
 
-                                        if (WP_Didattica != null) {
-                                            updateDidattica = false;
-                                        }
-                                        adapter.notifyDataSetChanged();
-
-                                    } else {
-                                        CVDataList.clear();
-                                        CVDataList.add(new CVData("Nessun Elemento", "Nessun elemento presente nella sezione didattica.", "", 0f));
-                                        adapter.notifyDataSetChanged();
                                     }
+
+                                    if (WP_Didattica != null) {
+                                        updateDidattica = false;
+                                    }
+                                    adapter.notifyDataSetChanged();
+
+                                } else {
+                                    CVDataList.clear();
+                                    CVDataList.add(new CVData("Nessun Elemento", "Nessun elemento presente nella sezione didattica.", "", 0f));
+                                    adapter.notifyDataSetChanged();
                                 }
                             }
-                        };
+                        }
+                    };
 
-                        m_handlerDidattica.run();
-                    }
-                    break;
+                    m_handlerDidattica.run();
                 }
+                break;
             }
             return layout;
         }
@@ -2712,7 +2702,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    class PagerAdapter extends FragmentPagerAdapter {
+    class PagerAdapter extends FragmentStatePagerAdapter {
 
         final String[] tab = getResources().getStringArray(R.array.tab_title);
 
@@ -2722,11 +2712,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            MyFragment myFragment = new MyFragment();
-            myFragment = myFragment.getInstance(position);
-
-            //MyFragment myFragment = MyFragment.getInstance(position);
-            return myFragment;
+            return MyFragment.getInstance(position);
         }
 
         @Override
