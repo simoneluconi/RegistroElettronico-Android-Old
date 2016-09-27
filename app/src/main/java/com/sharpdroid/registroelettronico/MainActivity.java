@@ -48,6 +48,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -298,6 +299,19 @@ public class MainActivity extends AppCompatActivity {
         new GetStringFromUrl().execute(BASE_URL + "/sol/app/default/documenti_sol.php");
     }
 
+    private static int tabColor(int position) {
+        if (position >= 0 && position <= 3)
+            return ContextCompat.getColor(context, R.color.bluematerial);
+        else if (position == 4)
+            return ContextCompat.getColor(context, R.color.colorAccent);
+        else if (position == 5)
+            return ContextCompat.getColor(context, R.color.redmaterial);
+        else if (position == 6)
+            return ContextCompat.getColor(context, R.color.greenmaterial);
+        else
+            return 0;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -311,13 +325,23 @@ public class MainActivity extends AppCompatActivity {
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
 
-        mTabs = (TabLayout) findViewById(R.id.tabs);
-        mTabs.setupWithViewPager(mPager);
-
-        //Recupero il tab da aprire se l'app è stata aperta da una notifica
+        // Recupero il tab da aprire
         final SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
         int tabDaAprire = sharedPref.getInt("tabiniziale", 0);
 
+        mTabs = (TabLayout) findViewById(R.id.tabs);
+        mTabs.setupWithViewPager(mPager);
+        mTabs.setSelectedTabIndicatorColor(tabColor(tabDaAprire));
+        mTabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mPager) {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                super.onTabSelected(tab);
+                int position = tab.getPosition();
+                mTabs.setSelectedTabIndicatorColor(tabColor(position));
+            }
+        });
+
+        // Controllo se l'app è stata aperta da una notifica
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
@@ -2579,7 +2603,6 @@ public class MainActivity extends AppCompatActivity {
                         public boolean onLongClick(View v) {
 
                             if (currPage == 4 && compitishow.size() >= 0) {
-
                                 int el = getAdapterPosition();
                                 Compito compito = compitishow.get(el);
                                 Intent calIntent = new Intent(Intent.ACTION_INSERT);
