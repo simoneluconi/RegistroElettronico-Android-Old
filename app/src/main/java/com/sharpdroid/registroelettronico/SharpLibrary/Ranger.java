@@ -19,6 +19,8 @@ import com.sharpdroid.registroelettronico.R;
 
 import org.joda.time.LocalDateTime;
 
+import java.util.Locale;
+
 public class Ranger extends HorizontalScrollView implements View.OnClickListener {
 
     public final static String TAG = Ranger.class.getSimpleName();
@@ -30,12 +32,6 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
     //Delay
     public static final int DELAY_SELECTION = 300;
     public static final int NO_DELAY_SELECTION = 0;
-    /**
-     * Constants
-     */
-    //Layouts
-    private final int WIDGET_LAYOUT_RES_ID = R.layout.ranger_layout;
-    private final int DAY_VIEW_LAYOUT_RES_ID = R.layout.day_layout;
     /**
      * Variables
      */
@@ -99,6 +95,7 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
         setEndDateWithParts(currentDateTime.getYear(), currentDateTime.getMonthOfYear(), currentDateTime.dayOfMonth().withMaximumValue().getDayOfMonth());
 
         //Inflate view
+        int WIDGET_LAYOUT_RES_ID = R.layout.ranger_layout;
         View view = LayoutInflater.from(mContext).inflate(WIDGET_LAYOUT_RES_ID, this, true);
 
         //Get controls
@@ -205,6 +202,7 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
         while (startDate.isBefore(endDate.plusDays(1))) {
 
             //Inflate view
+            int DAY_VIEW_LAYOUT_RES_ID = R.layout.day_layout;
             LinearLayout view = (LinearLayout) inflater.inflate(DAY_VIEW_LAYOUT_RES_ID, mDaysContainer, false);
 
             //new DayView
@@ -352,11 +350,11 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
         String mStartDateString;
         String mEndDateString;
 
-        public SavedState(Parcelable superState) {
+        SavedState(Parcelable superState) {
             super(superState);
         }
 
-        public SavedState(Parcel in) {
+        SavedState(Parcel in) {
             super(in);
             mSelectedDay = in.readInt();
             mStartDateString = in.readString();
@@ -371,27 +369,27 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
             out.writeString(mEndDateString);
         }
 
-        public void setEndDateString(String endDateString) {
+        void setEndDateString(String endDateString) {
             mEndDateString = endDateString;
         }
 
-        public int getSelectedDay() {
+        int getSelectedDay() {
             return mSelectedDay;
         }
 
-        public void setSelectedDay(int selectedDay) {
+        void setSelectedDay(int selectedDay) {
             mSelectedDay = selectedDay;
         }
 
-        public String getStartDateString() {
+        String getStartDateString() {
             return mStartDateString;
         }
 
-        public void setStartDateString(String startDateString) {
+        void setStartDateString(String startDateString) {
             mStartDateString = startDateString;
         }
 
-        public String getEndDateDateString() {
+        String getEndDateDateString() {
             return mEndDateString;
         }
     }
@@ -409,7 +407,7 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
         TextView mDayNumber;
         TextView mMonthShortName;
 
-        public DayView(View view) {
+        DayView(View view) {
             mView = (LinearLayout) view;
 
             mDayOfWeek = (TextView) mView.findViewById(DAY_OF_WEEK_RES_ID);
@@ -417,28 +415,28 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
             mMonthShortName = (TextView) mView.findViewById(MONTH_NAME_RES_ID);
         }
 
-        public int getDay() {
+        int getDay() {
             return Integer.parseInt(mDayNumber.getText().toString());
         }
 
-        public void setDay(int day) {
+        void setDay(int day) {
             mDay = day;
-            setDayNumber(String.format("%02d", day));
+            setDayNumber(String.format(Locale.getDefault(), "%02d", day));
         }
 
-        public void setDayOfWeek(String dayOfWeek) {
+        void setDayOfWeek(String dayOfWeek) {
             mDayOfWeek.setText(dayOfWeek);
         }
 
-        public void setDayNumber(String dayNumber) {
+        void setDayNumber(String dayNumber) {
             mDayNumber.setText(dayNumber);
         }
 
-        public void setMonthShortName(String monthShortName) {
+        void setMonthShortName(String monthShortName) {
             mMonthShortName.setText(monthShortName);
         }
 
-        public void setBackgroundColor(int color) {
+        void setBackgroundColor(int color) {
             mView.setBackgroundColor(color);
         }
 
@@ -448,7 +446,7 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
             mMonthShortName.setTextColor(color);
         }
 
-        public void setOnClickListener(OnClickListener listener) {
+        void setOnClickListener(OnClickListener listener) {
             mView.setOnClickListener(listener);
         }
 
@@ -456,11 +454,11 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
             return mView;
         }
 
-        public void hideDayOfWeek() {
+        void hideDayOfWeek() {
             mDayOfWeek.setVisibility(View.GONE);
         }
 
-        public void hideMonthShortName() {
+        void hideMonthShortName() {
             mMonthShortName.setVisibility(View.GONE);
         }
 
