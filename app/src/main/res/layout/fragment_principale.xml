@@ -82,10 +82,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:src="@drawable/plus"
-        app:backgroundTint="@color/colorAccent"
-        app:borderWidth="0dp"
-        app:elevation="6dp"
-        app:fabSize="normal" />
+        android:src="@drawable/plus" />
 
 </android.support.design.widget.CoordinatorLayout>
