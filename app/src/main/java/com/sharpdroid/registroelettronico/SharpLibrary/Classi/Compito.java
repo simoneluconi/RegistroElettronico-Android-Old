@@ -5,14 +5,14 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 public class Compito {
-    DateTime DataInizio;
-    DateTime DataFine;
-    String autore;
-    String contenuto;
-    DateTime DataInserimento;
-    boolean TuttoIlGiorno = true;
-    DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-    DateTimeFormatter dtfInserimento = DateTimeFormat.forPattern("dd-MM-yyyy HH:mm:ss");
+    private DateTime DataInizio;
+    private DateTime DataFine;
+    private String autore;
+    private String contenuto;
+    private DateTime DataInserimento;
+    private boolean TuttoIlGiorno = true;
+    private final DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    private final DateTimeFormatter dtfInserimento = DateTimeFormat.forPattern("dd-MM-yyyy HH:mm:ss");
 
     public Compito() {
         this.DataInizio = new DateTime();

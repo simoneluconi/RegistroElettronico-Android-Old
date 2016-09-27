@@ -58,12 +58,12 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAv
 
 public class Lezioni extends AppCompatActivity {
 
-    static RVAdapter adapter;
-    static ViewPager mPager;
-    static Context context;
-    static List<LezioneM> lezioniMateries = new ArrayList<>();
-    static List<Lezione> lezioni = new ArrayList<>();
-    TabLayout mTabs;
+    private static RVAdapter adapter;
+    private static ViewPager mPager;
+    private static Context context;
+    private static final List<LezioneM> lezioniMateries = new ArrayList<>();
+    private static List<Lezione> lezioni = new ArrayList<>();
+    private TabLayout mTabs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,7 +154,7 @@ public class Lezioni extends AppCompatActivity {
     }
 
     public static class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
-        List<Lezione> leziones;
+        final List<Lezione> leziones;
 
         RVAdapter(List<Lezione> leziones) {
             this.leziones = leziones;
@@ -164,11 +164,6 @@ public class Lezioni extends AppCompatActivity {
         public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_lezioni, parent, false);
             return new PersonViewHolder(v);
-        }
-
-        @Override
-        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-            super.onAttachedToRecyclerView(recyclerView);
         }
 
         @Override
@@ -184,10 +179,10 @@ public class Lezioni extends AppCompatActivity {
         }
 
         class PersonViewHolder extends RecyclerView.ViewHolder {
-            CardView cv;
-            TextView Prof;
-            TextView Data;
-            TextView Desc;
+            final CardView cv;
+            final TextView Prof;
+            final TextView Data;
+            final TextView Desc;
 
             PersonViewHolder(View itemView) {
                 super(itemView);
@@ -227,11 +222,6 @@ public class Lezioni extends AppCompatActivity {
     public class GetStringFromUrl extends AsyncTask<String, Void, String> {
         String azione = "";
         String url;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
 
         @Override
         protected String doInBackground(String... params) {

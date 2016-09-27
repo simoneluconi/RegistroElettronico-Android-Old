@@ -25,42 +25,42 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
 
     public final static String TAG = Ranger.class.getSimpleName();
     //Resource ids
-    public static final int DAYS_CONTAINER_RES_ID = R.id.days_container;
-    public static final int DAY_OF_WEEK_RES_ID = R.id.day_of_week;
-    public static final int DAY_NUMBER_RES_ID = R.id.day_number;
-    public static final int MONTH_NAME_RES_ID = R.id.month_short_name;
+    private static final int DAYS_CONTAINER_RES_ID = R.id.days_container;
+    private static final int DAY_OF_WEEK_RES_ID = R.id.day_of_week;
+    private static final int DAY_NUMBER_RES_ID = R.id.day_number;
+    private static final int MONTH_NAME_RES_ID = R.id.month_short_name;
     //Delay
-    public static final int DELAY_SELECTION = 300;
-    public static final int NO_DELAY_SELECTION = 0;
+    private static final int DELAY_SELECTION = 300;
+    private static final int NO_DELAY_SELECTION = 0;
     /**
      * Variables
      */
     //State
-    Context mContext;
-    LocalDateTime mStartDate;
-    LocalDateTime mEndDate;
-    int mSelectedDay;
+    private Context mContext;
+    private LocalDateTime mStartDate;
+    private LocalDateTime mEndDate;
+    private int mSelectedDay;
 
     //Colors
-    int mDayTextColor;
-    int mSelectedDayTextColor;
-    int mDaysContainerBackgroundColor;
-    int mSelectedDayBackgroundColor;
+    private int mDayTextColor;
+    private int mSelectedDayTextColor;
+    private int mDaysContainerBackgroundColor;
+    private int mSelectedDayBackgroundColor;
 
     //Titles
-    boolean mAlwaysDisplayMonth;
-    boolean mDisplayDayOfWeek;
+    private boolean mAlwaysDisplayMonth;
+    private boolean mDisplayDayOfWeek;
 
     //Listener
-    DayViewOnClickListener mListener;
+    private DayViewOnClickListener mListener;
     //Day View
-    DayView mSelectedDayView;
+    private DayView mSelectedDayView;
     /**
      * Controls
      */
-    Space mLeftSpace;
-    LinearLayout mDaysContainer;
-    Space mRightSpace;
+    private Space mLeftSpace;
+    private LinearLayout mDaysContainer;
+    private Space mRightSpace;
     /**
      * Constructors
      */
@@ -86,7 +86,7 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
     /**
      * Initialization
      */
-    public void init(Context context, AttributeSet attributeSet) {
+    private void init(Context context, AttributeSet attributeSet) {
         mContext = context;
 
         //Init Start and End date with current month
@@ -153,7 +153,7 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
         mEndDate = new LocalDateTime(year, month, day, 0, 0, 0);
     }
 
-    public void setSelectedDay(final int day, final boolean notifyListeners, long delay) {
+    private void setSelectedDay(final int day, final boolean notifyListeners, long delay) {
         //Post delayed 300 ms at most because of redraw
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -264,7 +264,7 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
         }
     }
 
-    public void scrollToDayView(DayView dayView) {
+    private void scrollToDayView(DayView dayView) {
         int x = dayView.getView().getLeft();
         int y = dayView.getView().getTop();
         smoothScrollTo(x - mLeftSpace.getLayoutParams().width, y);
@@ -402,10 +402,10 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
 
         int mDay;
 
-        LinearLayout mView;
-        TextView mDayOfWeek;
-        TextView mDayNumber;
-        TextView mMonthShortName;
+        final LinearLayout mView;
+        final TextView mDayOfWeek;
+        final TextView mDayNumber;
+        final TextView mMonthShortName;
 
         DayView(View view) {
             mView = (LinearLayout) view;

@@ -5,9 +5,9 @@ import java.util.List;
 
 public class LezioneM {
 
-    String id;
-    String materia;
-    List<Lezione> lezioni = new ArrayList<>();
+    private String id;
+    private String materia;
+    private final List<Lezione> lezioni = new ArrayList<>();
 
     public LezioneM()
     {

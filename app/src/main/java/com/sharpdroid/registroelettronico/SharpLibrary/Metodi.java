@@ -46,7 +46,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class Metodi {
-    public static boolean VotoValido(String voto) {
+    private static boolean VotoValido(String voto) {
 
         try {
             double v = Double.parseDouble(voto.trim());

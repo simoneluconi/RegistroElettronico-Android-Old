@@ -21,8 +21,8 @@ public class MyUsers extends SQLiteOpenHelper {
     private static final String SQL_DELETE_UTENTI =
             "DROP TABLE IF EXISTS " +  UserEntry.TABLE_NAME;
     
-    public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "MyUsers.db";
+    private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "MyUsers.db";
 
     public MyUsers(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

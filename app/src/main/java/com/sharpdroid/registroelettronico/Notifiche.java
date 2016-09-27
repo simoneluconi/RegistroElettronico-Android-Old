@@ -54,8 +54,8 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAv
 public class Notifiche extends BroadcastReceiver {
 
 
-    Context ct;
-    int nNotif = 0;
+    private Context ct;
+    private int nNotif = 0;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -102,12 +102,6 @@ public class Notifiche extends BroadcastReceiver {
     public class GetStringFromUrl extends AsyncTask<String, Void, String> {
 
         String azione = "";
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
 
         @Override
         protected String doInBackground(String... params) {

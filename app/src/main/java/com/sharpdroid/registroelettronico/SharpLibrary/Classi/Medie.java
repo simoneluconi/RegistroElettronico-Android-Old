@@ -3,15 +3,15 @@ package com.sharpdroid.registroelettronico.SharpLibrary.Classi;
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.MateriaDecente;
 
 public class Medie {
-    int nVotiGenerale = 0;
-    int nVotiScritto = 0;
-    int nVotiOrale = 0;
-    int nVotiPratico = 0;
-    String Materia;
-    double SommaOrale = 0;
-    double SommaScritto = 0;
-    double SommaPratico = 0;
-    double SommaGenerale;
+    private int nVotiGenerale = 0;
+    private int nVotiScritto = 0;
+    private int nVotiOrale = 0;
+    private int nVotiPratico = 0;
+    private String Materia;
+    private double SommaOrale = 0;
+    private double SommaScritto = 0;
+    private double SommaPratico = 0;
+    private double SommaGenerale;
 
     public Medie() {
 
