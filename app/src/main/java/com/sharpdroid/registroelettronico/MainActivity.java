@@ -1650,13 +1650,13 @@ public class MainActivity extends AppCompatActivity {
 
                                         media = media / (double) nMaterie;
                                         CVDataList.add(new CVData("Media Generale", "", String.format(Locale.ENGLISH, "%.2f", media), ((float) media * 10f)));
-                                        adapter.notifyDataSetChanged();
 
                                         if (nMaterie == 0) {
                                             CVDataList.clear();
                                             CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
-                                            adapter.notifyDataSetChanged();
                                         }
+
+                                        adapter.notifyDataSetChanged();
 
                                         if (!datiOffline)
                                             updateQ1 = false;
@@ -1710,13 +1710,13 @@ public class MainActivity extends AppCompatActivity {
 
                                         media = media / (double) nMaterie;
                                         CVDataList.add(new CVData("Media Generale", "", String.format(Locale.ENGLISH, "%.2f", media), ((float) media * 10f)));
-                                        adapter.notifyDataSetChanged();
 
                                         if (nMaterie == 0) {
                                             CVDataList.clear();
                                             CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
-                                            adapter.notifyDataSetChanged();
                                         }
+
+                                        adapter.notifyDataSetChanged();
 
                                         if (!datiOffline)
                                             updateQ2 = false;
