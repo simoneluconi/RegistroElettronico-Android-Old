@@ -12,7 +12,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -73,7 +72,9 @@ public class Lezioni extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.setTitle(getString(R.string.lezioni));
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -182,7 +183,7 @@ public class Lezioni extends AppCompatActivity {
             return leziones.size();
         }
 
-        public class PersonViewHolder extends RecyclerView.ViewHolder {
+        class PersonViewHolder extends RecyclerView.ViewHolder {
             CardView cv;
             TextView Prof;
             TextView Data;
@@ -234,8 +235,6 @@ public class Lezioni extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-
-            final String COOKIES_HEADER = "Set-Cookie";
             Log.v("Scarico", params[0]);
 
             URL url;

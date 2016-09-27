@@ -73,7 +73,9 @@ public class OggiAScuola extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.setTitle(getString(R.string.oggiscuola));
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,10 +114,10 @@ public class OggiAScuola extends AppCompatActivity {
 
                 int gg = cl.get(Calendar.DAY_OF_MONTH);
                 if (gg > day)
-                    statoUtente.setText("Ero:");
+                    statoUtente.setText(getString(R.string.ero));
                 else if (gg == day)
-                    statoUtente.setText("Oggi:");
-                else statoUtente.setText("Sarò?");
+                    statoUtente.setText(getString(R.string.oggi));
+                else statoUtente.setText(getString(R.string.saro));
             }
         });
         if (isNetworkAvailable(OggiAScuola.this)) {
@@ -188,7 +190,7 @@ public class OggiAScuola extends AppCompatActivity {
             return oggiScuolas.size();
         }
 
-        public class PersonViewHolder extends RecyclerView.ViewHolder {
+        class PersonViewHolder extends RecyclerView.ViewHolder {
             CardView cv;
             TextView Ora;
             TextView Prof;
@@ -224,9 +226,6 @@ public class OggiAScuola extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-
-
-            final String COOKIES_HEADER = "Set-Cookie";
             Log.v("Scarico", params[0]);
 
             URL url;
@@ -320,11 +319,10 @@ public class OggiAScuola extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-
             TextView TxStato = (TextView) findViewById(R.id.StatoutenteEff);
             TextView statoUtente = (TextView) findViewById(R.id.Statoutente);
             if (statoUtente.getText().equals("Caricamento dati in corso..."))
-                statoUtente.setText("Oggi:");
+                statoUtente.setText(getString(R.string.oggi));
             if (azione.equals(Azione.OGGI_SCUOLA)) {
                 swipeRefreshLayout.setRefreshing(false);
                 if (result != null && result.length() > 0) {

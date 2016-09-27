@@ -33,7 +33,6 @@ import org.acra.sender.HttpSender;
 
 public class App extends Application {
 
-
     private Tracker mTracker;
 
     @Override
