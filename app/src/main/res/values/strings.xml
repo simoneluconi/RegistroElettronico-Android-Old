@@ -58,6 +58,10 @@
     <string name="titolo">Titolo</string>
     <string name="contenuto">Contenuto</string>
     <string name="caricamento_dati_in_corso">Caricamento dati in corso…</string>
+    <string name="intro_app_desc">Verrai introdotto ad alcune funzionalità dell\'app.</string>
+    <string name="dettagli_medie_titolo">Dettaglio medie</string>
+    <string name="dettaglio_media_desc">Nei primi tre tab premi sulla scheda di una materia per visualizzare il dettaglio delle medie</string>
+    <string name="media_ipotetica_titolo">Media ipotetica</string>
 
     <string-array name="tab_title">
         <item>Medie</item>
@@ -87,5 +91,14 @@
     <string name="devi_prendere_almeno_5">Devi prendere almeno 5</string>
     <string name="freddembre_2025">Freddembre 2025</string>
     <string name="_12_11_2015_12_25_54">12–11–2015 12:25:54</string>
+    <string name="media_ipotetica_desc">oppure tieni premuto per visualizzare la media ipotetica</string>
+    <string name="dettaglio_voti_titolo">Dettaglio voti</string>
+    <string name="dettaglio_voti_desc">Nel tab voti clicca su una scheda per visualizzare i commenti dei voti</string>
+    <string name="agenda_titolo">Agenda</string>
+    <string name="agenda_desc">Nell\'agenda le verifiche vengono indicate con dei pallini rossi, mentre i compiti con dei pallini gialli</string>
+    <string name="ultima_cosa_titolo">Un ultima cosa</string>
+    <string name="ultima_cosa_desc">Abbiamo bisogno dei permessi di archiviazione per scaricare le circolari e i file dalla didattica</string>
+    <string name="sei_pronto_titolo">Sei pronto!</string>
+    <string name="sei_pronto_desc">Ora sei pronto per utilizzare al meglio quest app. Ricorda, per qualsiasi problema contattaci a sharpdroidmail@gmail.com</string>
     <!-- Fine stringhe di test -->
 </resources>
