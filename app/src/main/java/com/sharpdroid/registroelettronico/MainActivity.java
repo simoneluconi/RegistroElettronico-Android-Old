@@ -337,6 +337,7 @@ public class MainActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 super.onTabSelected(tab);
                 int position = tab.getPosition();
+                currPage = position;
                 mTabs.setSelectedTabIndicatorColor(tabColor(position));
             }
         });
