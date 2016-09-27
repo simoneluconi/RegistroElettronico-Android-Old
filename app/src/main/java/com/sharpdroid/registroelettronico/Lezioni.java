@@ -8,10 +8,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
@@ -30,8 +32,6 @@ import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Azione;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Lezione;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.LezioneM;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
-import com.sharpdroid.registroelettronico.Tabs.SlidingTabLayout;
-import com.sharpdroid.registroelettronico.Tabs.SwipeViewPager;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -60,11 +60,11 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAv
 public class Lezioni extends AppCompatActivity {
 
     static RVAdapter adapter;
-    static SwipeViewPager mPager;
+    static ViewPager mPager;
     static Context context;
     static List<LezioneM> lezioniMateries = new ArrayList<>();
     static List<Lezione> lezioni = new ArrayList<>();
-    SlidingTabLayout mTabs;
+    TabLayout mTabs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,16 +81,9 @@ public class Lezioni extends AppCompatActivity {
             }
         });
 
-        mPager = (SwipeViewPager) findViewById(R.id.pagerLezioni);
-        //mPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
+        mPager = (ViewPager) findViewById(R.id.pagerLezioni);
 
-        mTabs = (SlidingTabLayout) findViewById(R.id.tabsLezioni);
-        mTabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
-            @Override
-            public int getIndicatorColor(int position) {
-                return ContextCompat.getColor(Lezioni.this, R.color.bluematerial);
-            }
-        });
+        mTabs = (TabLayout) findViewById(R.id.tabsLezioni);
 
         // mTabs.setViewPager(mPager);
         context = Lezioni.this;
@@ -348,7 +341,7 @@ public class Lezioni extends AppCompatActivity {
                             i++;
                         }
                         mPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
-                        mTabs.setViewPager(mPager);
+                        mTabs.setupWithViewPager(mPager);
 
                         for (LezioneM l : lezioniMateries)
                             new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/regclasse_lezioni_xstudenti.php?materia=" + l.getId());
@@ -371,7 +364,7 @@ public class Lezioni extends AppCompatActivity {
                                 }
                                 if (lezioni.isEmpty()) {
                                     mPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
-                                    mTabs.setViewPager(mPager);
+                                    mTabs.setupWithViewPager(mPager);
                                 }
                             }
                         }
