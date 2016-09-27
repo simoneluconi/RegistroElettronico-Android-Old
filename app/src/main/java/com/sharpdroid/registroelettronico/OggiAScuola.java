@@ -59,12 +59,11 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAv
 
 public class OggiAScuola extends AppCompatActivity {
 
-    public static RVAdapter adapter;
-    static int SelectedDay;
-    static CoordinatorLayout coordinatorLayout;
-    List<Firma> oggiScuola = new ArrayList<>();
-    SwipeRefreshLayout swipeRefreshLayout;
-    Context context;
+    private static RVAdapter adapter;
+    private static int SelectedDay;
+    private final List<Firma> oggiScuola = new ArrayList<>();
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +83,6 @@ public class OggiAScuola extends AppCompatActivity {
         });
 
         context = this;
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayoutOggiScuola);
         adapter = new RVAdapter(oggiScuola);
         ObservableRecyclerView rv = (ObservableRecyclerView) findViewById(R.id.OggiScuolCardList);
         rv.setHasFixedSize(true);
@@ -144,7 +142,7 @@ public class OggiAScuola extends AppCompatActivity {
     }
 
     public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
-        List<Firma> oggiScuolas;
+        final List<Firma> oggiScuolas;
 
         RVAdapter(List<Firma> oggiScuolas) {
             this.oggiScuolas = oggiScuolas;
@@ -154,11 +152,6 @@ public class OggiAScuola extends AppCompatActivity {
         public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_oggiascuola, parent, false);
             return new PersonViewHolder(v);
-        }
-
-        @Override
-        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-            super.onAttachedToRecyclerView(recyclerView);
         }
 
         @Override
@@ -191,11 +184,11 @@ public class OggiAScuola extends AppCompatActivity {
         }
 
         class PersonViewHolder extends RecyclerView.ViewHolder {
-            CardView cv;
-            TextView Ora;
-            TextView Prof;
-            TextView Materia;
-            TextView Des;
+            final CardView cv;
+            final TextView Ora;
+            final TextView Prof;
+            final TextView Materia;
+            final TextView Des;
 
             PersonViewHolder(View itemView) {
                 super(itemView);

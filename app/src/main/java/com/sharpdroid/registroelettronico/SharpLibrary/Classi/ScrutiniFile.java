@@ -1,10 +1,10 @@
 package com.sharpdroid.registroelettronico.SharpLibrary.Classi;
 
 public class ScrutiniFile {
-    String nome;
-    String link;
-    String azione;
-    String ImgLink;
+    private String nome;
+    private String link;
+    private String azione;
+    private String ImgLink;
 
     public ScrutiniFile() {
     }

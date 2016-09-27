@@ -2,11 +2,11 @@ package com.sharpdroid.registroelettronico.SharpLibrary.Classi;
 
 public class Firma {
 
-    String prof;
-    String ora;
-    String materia;
-    String attivita;
-    String descrizione;
+    private String prof;
+    private String ora;
+    private String materia;
+    private String attivita;
+    private String descrizione;
 
     public Firma() {
     }

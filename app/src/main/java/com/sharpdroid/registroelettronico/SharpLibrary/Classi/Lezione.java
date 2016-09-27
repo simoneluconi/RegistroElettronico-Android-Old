@@ -1,13 +1,10 @@
 package com.sharpdroid.registroelettronico.SharpLibrary.Classi;
 
-/**
- * Created by PC-Simone on 31/07/2016.
- */
 public class Lezione {
 
-    String prof;
-    String data;
-    String descrizione;
+    private String prof;
+    private String data;
+    private String descrizione;
 
     public Lezione()
     {

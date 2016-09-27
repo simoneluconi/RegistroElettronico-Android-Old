@@ -7,13 +7,13 @@ import org.joda.time.format.DateTimeFormatter;
 
 public class FileDid {
 
-    int pos;
-    DateTime DataInserimento;
-    String name;
-    String id;
-    String cksum;
-    String type;
-    DateTimeFormatter dtf = DateTimeFormat.forPattern("dd-MM-yyyy HH:mm:ss");
+    private int pos;
+    private DateTime DataInserimento;
+    private String name;
+    private String id;
+    private String cksum;
+    private String type;
+    private final DateTimeFormatter dtf = DateTimeFormat.forPattern("dd-MM-yyyy HH:mm:ss");
 
     public FileDid() {
 

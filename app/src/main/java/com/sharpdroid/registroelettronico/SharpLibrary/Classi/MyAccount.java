@@ -1,9 +1,9 @@
 package com.sharpdroid.registroelettronico.SharpLibrary.Classi;
 
 public class MyAccount {
-    String username;
-    String name;
-    String codicescuola;
+    private String username;
+    private String name;
+    private String codicescuola;
 
     public MyAccount() {
 

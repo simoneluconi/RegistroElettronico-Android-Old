@@ -16,7 +16,7 @@ import java.util.List;
 
 import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.ConvertiInVoto;
 
-public class VotiDettAdp extends BaseAdapter implements View.OnClickListener {
+public class VotiDettAdp extends BaseAdapter {
 
     private final Context mContext;
     private List<Voto> votiDetts = new ArrayList<>();
@@ -68,10 +68,5 @@ public class VotiDettAdp extends BaseAdapter implements View.OnClickListener {
         ((TextView) convertView.findViewById(R.id.datatipo)).setText(String.format("%1$s - %2$s", votot.getData(), votot.getTipo()));
         ((TextView) convertView.findViewById(R.id.commento)).setText(votiDetts.get(position).getCommento());
         return convertView;
-    }
-
-    @Override
-    public void onClick(View v) {
-        Integer index = (Integer) v.getTag();
     }
 }

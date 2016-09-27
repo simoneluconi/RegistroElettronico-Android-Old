@@ -60,11 +60,11 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAv
 
 public class Circolari extends AppCompatActivity {
 
-    public static RVAdapter adapter;
-    static List<Circolare> Circolaris = new ArrayList<>();
-    static SwipeRefreshLayout swipeRefreshLayout;
-    static CoordinatorLayout coordinatorLayout;
-    static Context context;
+    private static RVAdapter adapter;
+    private static final List<Circolare> Circolaris = new ArrayList<>();
+    private static SwipeRefreshLayout swipeRefreshLayout;
+    private static CoordinatorLayout coordinatorLayout;
+    private static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +86,7 @@ public class Circolari extends AppCompatActivity {
         });
 
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayoutCirc);
-        adapter = new RVAdapter(Circolaris);
+        adapter = new RVAdapter();
         ObservableRecyclerView rv = (ObservableRecyclerView) findViewById(R.id.CircolariCardList);
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(Circolari.this);
@@ -120,21 +120,16 @@ public class Circolari extends AppCompatActivity {
 
 
     public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
-        List<Circolare> Circolaris;
+        final List<Circolare> Circolaris;
 
-        RVAdapter(List<Circolare> Circolaris) {
-            this.Circolaris = Circolaris;
+        RVAdapter() {
+            this.Circolaris = Circolari.Circolaris;
         }
 
         @Override
         public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_oggiascuola, parent, false);
             return new PersonViewHolder(v);
-        }
-
-        @Override
-        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-            super.onAttachedToRecyclerView(recyclerView);
         }
 
         @Override
@@ -152,11 +147,11 @@ public class Circolari extends AppCompatActivity {
         }
 
         class PersonViewHolder extends RecyclerView.ViewHolder {
-            CardView cv;
-            TextView NCircolare;
-            TextView Titolo;
-            TextView Data;
-            TextView Tipo;
+            final CardView cv;
+            final TextView NCircolare;
+            final TextView Titolo;
+            final TextView Data;
+            final TextView Tipo;
 
             PersonViewHolder(View itemView) {
                 super(itemView);

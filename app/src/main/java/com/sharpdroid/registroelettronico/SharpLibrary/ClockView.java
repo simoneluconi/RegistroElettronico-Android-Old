@@ -27,8 +27,10 @@ import android.view.View;
 import com.sharpdroid.registroelettronico.R;
 
 public class ClockView extends View {
-    int c, h, m;
-    private Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private int c;
+    private int h;
+    private int m;
+    private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     public ClockView(Context context) {
         super(context);
@@ -88,7 +90,7 @@ public class ClockView extends View {
     }
 
     private float getMinuteX(int l) {
-        int c = 0;
+        int c;
         if (m < 15) {
             c = m + 45;
         } else {

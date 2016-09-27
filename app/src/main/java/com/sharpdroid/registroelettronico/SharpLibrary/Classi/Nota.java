@@ -1,10 +1,10 @@
 package com.sharpdroid.registroelettronico.SharpLibrary.Classi;
 
 public class Nota {
-    String prof;
-    String tipo;
-    String data;
-    String contenuto;
+    private String prof;
+    private String tipo;
+    private String data;
+    private String contenuto;
 
     public Nota() {
     }
