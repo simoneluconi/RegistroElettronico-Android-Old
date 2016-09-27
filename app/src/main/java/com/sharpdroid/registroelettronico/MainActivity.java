@@ -2291,11 +2291,9 @@ public class MainActivity extends AppCompatActivity {
                         SpannableString s;
                         if (days == 0) {
                             s = new SpannableString(getString(R.string.datainsogg, date));
-                        } else if (days == 1)
-                            s = new SpannableString(getString(R.string.datains, dtf.print(compito.getDataInserimento()), days, "o"));
-                        else
-                            s = new SpannableString(getString(R.string.datains, dtf.print(compito.getDataInserimento()), days, "i"));
-
+                        } else {
+                            s = new SpannableString(getResources().getQuantityString(R.plurals.datains, days, dtf.print(compito.getDataInserimento()), days, "i"));
+                        }
                         s.setSpan(new StyleSpan(Typeface.BOLD), 0, date.length(), 0);
                         ViewHolder.data.setText(s);
                         ViewHolder.Des.setText(CVDataList.get(i).des);

@@ -26,7 +26,10 @@
     <string name="modifica">Modifica</string>
     <string name="elimina">Elimina</string>
     <string name="eventodel">Evento del %1$s-%2$s-%3$s</string>
-    <string name="datains"> %1$s (%2$d giorn%3$s prima)</string>
+    <plurals name="datains">
+        <item quantity="one">%1$s (%2$d giorno prima)</item>
+        <item quantity="other">%1$s (%2$d giorni prima)</item>
+    </plurals>
     <string name="datainsogg"> %1$s (Il giorno stesso)</string>
     <string name="impostaobb">Imposta obiettivo</string>
     <string name="ultimaversione">Non hai l\'ultima versione dell\'app. Aggiornala dal play store!</string>
