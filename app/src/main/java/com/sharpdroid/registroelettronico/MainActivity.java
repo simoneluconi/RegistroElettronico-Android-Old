@@ -674,6 +674,7 @@ public class MainActivity extends AppCompatActivity {
             //Cartella dei download, se non esiste la creo, se esiste aggiorno il numero dei file presenti
             DownloadFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator + "Registro Elettronico");
             if (!DownloadFolder.exists()) {
+                //noinspection ResultOfMethodCallIgnored
                 DownloadFolder.mkdir();
             } else {
                 AggiornaFileOffline();

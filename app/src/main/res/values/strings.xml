@@ -49,6 +49,10 @@
     <string name="versioneweb">Versione Web [ALPHA]</string>
     <string name="tabpartenza">Tab di partenza</string>
     <string name="seltabpartenza">Selezione tab di partenza</string>
+    <string name="ero">Ero:</string>
+    <string name="oggi">Oggi:</string>
+    <string name="saro">Sarò?</string>
+
     <string-array name="tab_title">
         <item>Medie</item>
         <item>P1</item>
