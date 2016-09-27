@@ -1625,16 +1625,14 @@ public class MainActivity extends AppCompatActivity {
                                 if (updateQ1) {
                                     CVDataList.clear();
                                     if (!votis.isEmpty()) {
-
                                         MedieVotiP1.clear();
-                                        CVDataList.clear();
                                         double media = 0;
                                         int nMaterie = 0;
 
                                         for (Materia m : votis) {
-
                                             String materia = m.getMateria();
                                             Medie medie = new Medie();
+
                                             for (Voto v : m.getVoti())
                                                 if (!v.isVotoblu() && v.getPeriodo().equals(Voto.P1))
                                                     medie.addVoto(v);
@@ -1648,18 +1646,22 @@ public class MainActivity extends AppCompatActivity {
                                                 nMaterie++;
                                                 CVDataList.add(new CVData(materia, mess, String.format(Locale.ENGLISH, "%.2f", medie.getMediaGenerale()), ((float) medie.getMediaGenerale() * 10f)));
                                             }
-
                                         }
 
                                         media = media / (double) nMaterie;
                                         CVDataList.add(new CVData("Media Generale", "", String.format(Locale.ENGLISH, "%.2f", media), ((float) media * 10f)));
                                         adapter.notifyDataSetChanged();
 
+                                        if (nMaterie == 0) {
+                                            CVDataList.clear();
+                                            CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
+                                            adapter.notifyDataSetChanged();
+                                        }
+
                                         if (!datiOffline)
                                             updateQ1 = false;
 
                                     } else {
-                                        CVDataList.clear();
                                         CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
                                         adapter.notifyDataSetChanged();
                                     }
@@ -1681,17 +1683,13 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 if (updateQ2) {
-
                                     CVDataList.clear();
                                     if (!votis.isEmpty()) {
-
                                         MedieVotiP2.clear();
-                                        CVDataList.clear();
                                         double media = 0;
                                         int nMaterie = 0;
 
                                         for (Materia m : votis) {
-
                                             String materia = m.getMateria();
 
                                             Medie medie = new Medie();
@@ -1711,15 +1709,19 @@ public class MainActivity extends AppCompatActivity {
                                         }
 
                                         media = media / (double) nMaterie;
-
                                         CVDataList.add(new CVData("Media Generale", "", String.format(Locale.ENGLISH, "%.2f", media), ((float) media * 10f)));
                                         adapter.notifyDataSetChanged();
+
+                                        if (nMaterie == 0) {
+                                            CVDataList.clear();
+                                            CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
+                                            adapter.notifyDataSetChanged();
+                                        }
 
                                         if (!datiOffline)
                                             updateQ2 = false;
 
                                     } else {
-                                        CVDataList.clear();
                                         CVDataList.add(new CVData("Nessun Voto", "Non hai ancora nessun voto.", "", 0f));
                                         adapter.notifyDataSetChanged();
                                     }
