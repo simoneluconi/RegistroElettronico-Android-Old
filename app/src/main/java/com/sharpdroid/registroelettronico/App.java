@@ -30,7 +30,8 @@ import org.acra.sender.HttpSender;
         mode = ReportingInteractionMode.TOAST,
         resToastText = R.string.toast_crash
 )
-class App extends Application {
+
+public class App extends Application {
 
     private Tracker mTracker;
 
