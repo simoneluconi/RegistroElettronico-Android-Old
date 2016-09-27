@@ -302,14 +302,12 @@ public class MainActivity extends AppCompatActivity {
     private static int tabColor(int position) {
         if (position >= 0 && position <= 3)
             return ContextCompat.getColor(context, R.color.bluematerial);
-        else if (position == 4)
-            return ContextCompat.getColor(context, R.color.colorAccent);
         else if (position == 5)
             return ContextCompat.getColor(context, R.color.redmaterial);
         else if (position == 6)
             return ContextCompat.getColor(context, R.color.greenmaterial);
         else
-            return 0;
+            return ContextCompat.getColor(context, R.color.colorAccent);
     }
 
     @Override
