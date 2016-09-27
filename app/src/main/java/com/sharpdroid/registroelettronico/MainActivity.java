@@ -23,6 +23,8 @@ import android.os.Environment;
 import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
+import android.support.annotation.WorkerThread;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -916,6 +918,7 @@ public class MainActivity extends AppCompatActivity {
             super.onPreExecute();
         }
 
+        @UiThread
         @Override
         protected void onProgressUpdate(Integer... progress) {
             super.onProgressUpdate(progress);
@@ -930,6 +933,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        @WorkerThread
         @Override
         protected String doInBackground(String... params) {
 
@@ -1222,6 +1226,7 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
+        @UiThread
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
