@@ -1447,19 +1447,15 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton fab;
         private int position;
 
-        public static MyFragment getInstance(int position) {
-            MyFragment myFragment = new MyFragment();
-            Bundle args = new Bundle();
-            args.putInt("position", position);
-            myFragment.setArguments(args);
-            return myFragment;
+        public MyFragment() {
         }
 
         // Store instance variables based on arguments passed
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            position = getArguments().getInt("position", 0);
+            Bundle bundle = getArguments();
+            position = bundle.getInt("position", 0);
         }
 
         @Override
@@ -2712,7 +2708,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return MyFragment.getInstance(position);
+            MyFragment myFragment = new MyFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt("position", position);
+            myFragment.setArguments(bundle);
+            return myFragment;
         }
 
         @Override
