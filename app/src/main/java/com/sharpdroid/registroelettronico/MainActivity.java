@@ -30,7 +30,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -314,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
         mTracker = application.getDefaultTracker();
 
         mPager = (ViewPager) findViewById(R.id.pager);
+        mPager.setOffscreenPageLimit(6);
         mPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
 
         // Recupero il tab da aprire
@@ -2671,7 +2672,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    class PagerAdapter extends FragmentStatePagerAdapter {
+    class PagerAdapter extends FragmentPagerAdapter {
 
         final String[] tab = getResources().getStringArray(R.array.tab_title);
 
@@ -2682,6 +2683,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             MyFragment myFragment = new MyFragment();
+            //Log.d("TAG", String.valueOf(position));
             Bundle bundle = new Bundle();
             bundle.putInt("position", position);
             myFragment.setArguments(bundle);
