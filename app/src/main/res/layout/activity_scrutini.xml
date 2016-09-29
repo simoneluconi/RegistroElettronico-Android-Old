@@ -30,14 +30,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
+                <android.support.v7.widget.RecyclerView
                     android:id="@+id/ScrutiniCardList"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="10dp"
                     android:scrollbars="vertical">
 
-                </com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView>
+                </android.support.v7.widget.RecyclerView>
             </android.support.v4.widget.SwipeRefreshLayout>
 
         </RelativeLayout>

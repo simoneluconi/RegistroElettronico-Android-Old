@@ -24,9 +24,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
-import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Azione;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Lezione;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.LezioneM;
@@ -96,9 +93,9 @@ public class Lezioni extends AppCompatActivity {
     }
 
     @SuppressLint("ValidFragment")
-    public static class MyFragment extends Fragment implements ObservableScrollViewCallbacks {
+    public static class MyFragment extends Fragment {
 
-        ObservableRecyclerView rv;
+        RecyclerView rv;
         Bundle bundle;
 
         public MyFragment getInstance(int position) {
@@ -114,8 +111,7 @@ public class Lezioni extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
             final View layout = inflater.inflate(R.layout.fragment_lezioni, container, false);
             bundle = getArguments();
-            rv = (ObservableRecyclerView) layout.findViewById(R.id.cardListLezioni);
-            rv.setScrollViewCallbacks(this);
+            rv = (RecyclerView) layout.findViewById(R.id.cardListLezioni);
             rv.setHasFixedSize(true);
             rv.setLayoutManager(new GridLayoutManager(context, 1));
 
@@ -135,21 +131,6 @@ public class Lezioni extends AppCompatActivity {
             }
 
             return layout;
-        }
-
-        @Override
-        public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
-
-        }
-
-        @Override
-        public void onDownMotionEvent() {
-
-        }
-
-        @Override
-        public void onUpOrCancelMotionEvent(ScrollState scrollState) {
-
         }
     }
 

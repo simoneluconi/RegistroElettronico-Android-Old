@@ -61,9 +61,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
-import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
@@ -1437,9 +1434,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @SuppressLint("ValidFragment")
-    public static class MyFragment extends Fragment implements ObservableScrollViewCallbacks {
+    public static class MyFragment extends Fragment {
 
-        ObservableRecyclerView rv;
+        RecyclerView rv;
         RVAdapter adapter;
         List<CVData> CVDataList;
         Snackbar snackbarVotiT;
@@ -1471,10 +1468,8 @@ public class MainActivity extends AppCompatActivity {
                     R.color.greenmaterial,
                     R.color.orangematerial);
             swipeRefreshLayout.setEnabled(true);
-            rv = (ObservableRecyclerView) layout.findViewById(R.id.cardList);
-            rv.setScrollViewCallbacks(this);
+            rv = (RecyclerView) layout.findViewById(R.id.cardList);
             rv.setHasFixedSize(true);
-            final int colonne = getResources().getInteger(R.integer.columns);
             rv.setLayoutManager(new GridLayoutManager(context, 1));
             fab = (FloatingActionButton) layout.findViewById(R.id.fab);
             CVDataList = new ArrayList<>();
@@ -1521,9 +1516,6 @@ public class MainActivity extends AppCompatActivity {
                 if (CardViewCal != null) {
                     CardViewCal.setVisibility(View.VISIBLE);
                 }
-            } else if (position >= 0 && position <= 2) {
-                fab.setVisibility(View.GONE);
-                rv.setLayoutManager(new GridLayoutManager(context, colonne));
             } else {
                 if (CardViewCal != null) CardViewCal.setVisibility(View.GONE);
                 fab.setVisibility(View.GONE);
@@ -2194,25 +2186,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
             return layout;
-        }
-
-        @Override
-        public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
-
-        }
-
-        @Override
-        public void onDownMotionEvent() {
-        }
-
-        @Override
-        public void onUpOrCancelMotionEvent(ScrollState scrollState) {
-            if (scrollState == ScrollState.UP) {
-                if (snackbarVotiT != null && currPage == 3) snackbarVotiT.show();
-
-            } else if (scrollState == ScrollState.DOWN) {
-                if (snackbarVotiT != null && currPage == 3) snackbarVotiT.dismiss();
-            }
         }
 
         public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {

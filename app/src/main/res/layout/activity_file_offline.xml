@@ -22,14 +22,14 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             tools:context="com.sharpdroid.registroelettronico.FileOffline">
 
-            <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
+            <android.support.v7.widget.RecyclerView
                 android:id="@+id/OfflineFileList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:scrollbars="vertical">
 
-            </com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView>
+            </android.support.v7.widget.RecyclerView>
 
         </RelativeLayout>
 
