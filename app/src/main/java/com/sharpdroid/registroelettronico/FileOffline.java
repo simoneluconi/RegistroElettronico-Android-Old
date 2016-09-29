@@ -16,8 +16,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
-
 import java.io.File;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
@@ -53,7 +51,7 @@ public class FileOffline extends AppCompatActivity {
 
         File[] files = MainActivity.DownloadFolder.listFiles();
         RVAdapter adapter = new RVAdapter(files);
-        ObservableRecyclerView rv = (ObservableRecyclerView) findViewById(R.id.OfflineFileList);
+        RecyclerView rv = (RecyclerView) findViewById(R.id.OfflineFileList);
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(FileOffline.this);
         rv.setLayoutManager(llm);

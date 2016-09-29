@@ -24,7 +24,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Azione;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Circolare;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
@@ -87,7 +86,7 @@ public class Circolari extends AppCompatActivity {
 
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayoutCirc);
         adapter = new RVAdapter();
-        ObservableRecyclerView rv = (ObservableRecyclerView) findViewById(R.id.CircolariCardList);
+        RecyclerView rv = (RecyclerView) findViewById(R.id.CircolariCardList);
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(Circolari.this);
         rv.setLayoutManager(llm);

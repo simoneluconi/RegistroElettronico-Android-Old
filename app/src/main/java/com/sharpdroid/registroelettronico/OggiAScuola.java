@@ -26,7 +26,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Azione;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Firma;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
@@ -83,7 +82,7 @@ public class OggiAScuola extends AppCompatActivity {
 
         context = this;
         adapter = new RVAdapter(oggiScuola);
-        ObservableRecyclerView rv = (ObservableRecyclerView) findViewById(R.id.OggiScuolCardList);
+        RecyclerView rv = (RecyclerView) findViewById(R.id.OggiScuolCardList);
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(OggiAScuola.this);
         rv.setLayoutManager(llm);

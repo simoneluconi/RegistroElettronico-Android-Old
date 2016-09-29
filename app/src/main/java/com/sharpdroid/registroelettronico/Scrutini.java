@@ -28,7 +28,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Azione;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.ScrutiniFile;
@@ -95,7 +94,7 @@ public class Scrutini extends AppCompatActivity {
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefreshScrutini);
 
         adapter = new RVAdapter();
-        ObservableRecyclerView rv = (ObservableRecyclerView) findViewById(R.id.ScrutiniCardList);
+        RecyclerView rv = (RecyclerView) findViewById(R.id.ScrutiniCardList);
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(Scrutini.this);
         rv.setLayoutManager(llm);
