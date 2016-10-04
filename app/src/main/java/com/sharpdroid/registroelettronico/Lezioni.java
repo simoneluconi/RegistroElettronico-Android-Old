@@ -88,7 +88,7 @@ public class Lezioni extends AppCompatActivity {
         if (isNetworkAvailable(context)) {
             if (msCookieManager.getCookieStore().getCookies().isEmpty())
                 new GetStringFromUrl().execute(MainActivity.BASE_URL + "/auth/app/default/AuthApi2.php?a=aLoginPwd");
-            new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/regclasse_lezioni_xstudenti.php");
+            new GetStringFromUrl().execute(MainActivity.BASE_URL + "/fml/app/default/regclasse_lezioni_xstudenti.php");
         }
     }
 
@@ -314,7 +314,7 @@ public class Lezioni extends AppCompatActivity {
                         mTabs.setupWithViewPager(mPager);
 
                         for (LezioneM l : lezioniMateries)
-                            new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/regclasse_lezioni_xstudenti.php?materia=" + l.getId());
+                            new GetStringFromUrl().execute(MainActivity.BASE_URL + "/fml/app/default/regclasse_lezioni_xstudenti.php?materia=" + l.getId());
 
                     } else {
                         String materia = url.substring(url.lastIndexOf("=") + 1);
