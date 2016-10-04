@@ -286,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
         new GetStringFromUrl().execute(BASE_URL + "/auth/app/default/AuthApi2.php?a=aLoginPwd");
         new GetStringFromUrl().execute(BASE_URL + "/cvv/app/default/genitori_note.php");
         new GetStringFromUrl().execute(BASE_URL + "/cvv/app/default/gioprof_note_studente.php");
-        new GetStringFromUrl().execute(BASE_URL + "/cvv/app/default/agenda_studenti.php?ope=get_events&start=" + primadata.getMillis() / 1000 + "&end=" + secondadata.getMillis() / 1000);
+        new GetStringFromUrl().execute(BASE_URL + "/fml/app/default/agenda_studenti.php?ope=get_events&start=" + primadata.getMillis() / 1000 + "&end=" + secondadata.getMillis() / 1000);
         new GetStringFromUrl().execute(BASE_URL + "/cvv/app/default/didattica_genitori.php");
         new GetStringFromUrl().execute(BASE_URL + "/sif/app/default/bacheca_utente.php");
         new GetStringFromUrl().execute(BASE_URL + "/sol/app/default/documenti_sol.php");
@@ -981,7 +981,7 @@ public class MainActivity extends AppCompatActivity {
                     azione = Azione.VOTI;
                 } else if (params[0].equals(BASE_URL + "/cvv/app/default/gioprof_note_studente.php")) {
                     azione = Azione.NOTE;
-                } else if (params[0].contains(BASE_URL + "/cvv/app/default/agenda_studenti.php")) {
+                } else if (params[0].contains(BASE_URL + "/fml/app/default/agenda_studenti.php")) {
                     azione = Azione.AGENDA;
                 } else if (params[0].equals(BASE_URL + "/cvv/app/default/didattica_genitori.php")) {
                     azione = Azione.DIDATTICA;
@@ -1017,6 +1017,7 @@ public class MainActivity extends AppCompatActivity {
                         BufferedReader in = new BufferedReader(new InputStreamReader(
                                 conn.getInputStream()));
                         String inputLine;
+
                         StringBuilder sb = new StringBuilder();
                         while ((inputLine = in.readLine()) != null) {
                             sb.append(inputLine);
