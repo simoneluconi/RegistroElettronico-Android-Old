@@ -90,7 +90,7 @@ public class Notifiche extends BroadcastReceiver {
                 new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/genitori_note.php");
 
             if (sharePref.getBoolean("notificheagenda", true))
-                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/agenda_studenti.php?ope=get_events&start=" + primadata.getMillis() / 1000 + "&end=" + secondadata.getMillis() / 1000);
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/fml/app/default/agenda_studenti.php?ope=get_events&start=" + primadata.getMillis() / 1000 + "&end=" + secondadata.getMillis() / 1000);
 
             if (sharePref.getBoolean("notifichescrutini", true))
                 new GetStringFromUrl().execute(MainActivity.BASE_URL + "/sol/app/default/documenti_sol.php");
@@ -158,7 +158,7 @@ public class Notifiche extends BroadcastReceiver {
 
                 if (params[0].equals(MainActivity.BASE_URL + "/cvv/app/default/genitori_note.php"))
                     azione = Azione.VOTI;
-                else if (params[0].contains("xml_export.php"))
+                else if (params[0].contains(MainActivity.BASE_URL + "/fml/app/default/agenda_studenti.php"))
                     azione = Azione.AGENDA;
                 else if (params[0].equals(MainActivity.BASE_URL + "/sol/app/default/documenti_sol.php"))
                     azione = Azione.SCRUTINI;
