@@ -358,24 +358,26 @@ public class Notifiche extends BroadcastReceiver {
                                         dati.put(MyDB.CompitoEntry.COLUMN_NAME_TUTTOILGIORNO, fakstring);
                                         db.insert(MyDB.CompitoEntry.TABLE_NAME, MyDB.CompitoEntry.COLUMN_NAME_NULLABLE, dati);
 
+                                        DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy");
+
+
                                         if (notifica) {
-                                            String[] dataDecente = compito.getDataInserimentoString().split("-");
-                                            String dataSeria = dataDecente[2] + "/" + dataDecente[1] + "/" + dataDecente[0];
+                                            String dataDecente = dtf.print(compito.getDataInizio());
                                             Intent intent = new Intent(ct, MainActivity.class);
                                             intent.putExtra("com.sharpdroid.registroelettronico.notifiche.TAB", 4);
-                                            intent.putExtra("com.sharpdroid.registroelettronico.notifiche.DATACAL", compito.getDataInserimentoString().split("\\s+")[0]);
+                                            intent.putExtra("com.sharpdroid.registroelettronico.notifiche.DATACAL", compito.getDataInizioString().split("\\s+")[0]);
                                             PendingIntent pIntent = PendingIntent.getActivity(ct, 0, intent, 0);
                                             Log.v("NuovoCompito", "Nuovo compito trovato");
                                             mBuilder = new NotificationCompat.Builder(ct)
                                                     .setSmallIcon(R.drawable.notification)
                                                     .setContentTitle("Nuovo compito di " + compito.getAutore())
-                                                    .setContentText("Per il " + dataSeria)
+                                                    .setContentText("Per il " + dataDecente)
                                                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                                                     .setLights(Color.BLUE, 3000, 3000)
                                                     .setVibrate(new long[]{250, 250, 250, 250, 250, 250})
                                                     .setContentIntent(pIntent)
                                                     .setStyle(new NotificationCompat.BigTextStyle()
-                                                            .bigText(compito.getContenuto() + " (" + dataSeria + ")"))
+                                                            .bigText(compito.getContenuto() + " (" + dataDecente + ")"))
                                                     .setAutoCancel(true);
 
 
