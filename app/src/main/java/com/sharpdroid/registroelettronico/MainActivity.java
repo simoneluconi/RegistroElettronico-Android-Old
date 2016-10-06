@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Looper;
 import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
@@ -1038,14 +1039,54 @@ public class MainActivity extends AppCompatActivity {
                                     db.execSQL("DELETE FROM " + MyDB.NotaEntry.TABLE_NAME);
                                     db.beginTransaction();
                                     for (Element e : metaElems) {
-                                        Nota nota = new Nota();
+                                        final Nota nota = new Nota();
                                         Elements el = e.select("td");
                                         String prof = el.get(0).text().trim();
                                         if (prof.length() > 0) {
                                             nota.setProf(ProfDecente(prof));
                                             nota.setTipo(el.get(3).text().trim());
                                             nota.setData(el.get(1).text().trim().replaceAll("-", "/"));
-                                            nota.setContenuto(el.get(2).text().trim());
+
+
+                                            Elements cont = el.get(2).select("div");
+
+                                            if (cont.size() > 0) {
+                                                postDataParams = new HashMap<>();
+                                                postDataParams.put("nota_id", cont.attr("nota_id"));
+                                                postDataParams.put("ope", "inserisci_lettura");
+                                                postDataParams.put("evento_codice", "NP");
+
+
+                                                url = new URL(BASE_URL + "/fml/app/default/gioprof_note_studente.php");
+
+                                                CookieHandler.setDefault(msCookieManager);
+                                                conn = (HttpURLConnection) url.openConnection();
+                                                conn.setReadTimeout(5000);
+                                                conn.setConnectTimeout(5000);
+                                                conn.setRequestMethod("POST");
+                                                conn.setDoInput(true);
+                                                conn.setDoOutput(true);
+
+                                                OutputStream os = conn.getOutputStream();
+                                                BufferedWriter writer = new BufferedWriter(
+                                                        new OutputStreamWriter(os, "UTF-8"));
+                                                writer.write(getPostDataString(postDataParams));
+
+                                                writer.flush();
+                                                writer.close();
+                                                os.close();
+
+                                                String line;
+                                                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                                                sb = new StringBuilder();
+                                                while ((line = br.readLine()) != null) {
+                                                    sb.append(line);
+                                                }
+
+                                                nota.setContenuto(sb.toString());
+                                            } else
+                                                nota.setContenuto(el.get(2).text().trim());
+
                                             notes.add(nota);
 
                                             ContentValues dati = new ContentValues();
