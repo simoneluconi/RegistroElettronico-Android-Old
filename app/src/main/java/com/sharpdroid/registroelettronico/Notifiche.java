@@ -358,7 +358,7 @@ public class Notifiche extends BroadcastReceiver {
                                         dati.put(MyDB.CompitoEntry.COLUMN_NAME_TUTTOILGIORNO, fakstring);
                                         db.insert(MyDB.CompitoEntry.TABLE_NAME, MyDB.CompitoEntry.COLUMN_NAME_NULLABLE, dati);
 
-                                        DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy");
+                                        DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yyyy");
 
 
                                         if (notifica) {
