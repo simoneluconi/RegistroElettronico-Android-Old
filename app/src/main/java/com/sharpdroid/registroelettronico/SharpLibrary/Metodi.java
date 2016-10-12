@@ -66,7 +66,6 @@ public class Metodi {
         } else {
             return R.color.greenmaterial;
         }
-
     }
 
     public static int ColorByMedia(double media) {
