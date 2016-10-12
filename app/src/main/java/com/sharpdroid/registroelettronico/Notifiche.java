@@ -382,7 +382,11 @@ public class Notifiche extends BroadcastReceiver {
 
 
                                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                                mBuilder.setColor(ContextCompat.getColor(ct, R.color.bluematerial));
+                                                if (compito.isVerifica())
+                                                    mBuilder.setColor(ContextCompat.getColor(ct, R.color.redmaterial));
+                                                else
+
+                                                    mBuilder.setColor(ContextCompat.getColor(ct, R.color.bluematerial));
                                             }
 
                                             notificationManager = NotificationManagerCompat.from(ct);
