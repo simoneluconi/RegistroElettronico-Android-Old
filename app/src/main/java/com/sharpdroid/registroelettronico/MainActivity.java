@@ -171,6 +171,7 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAv
 public class MainActivity extends AppCompatActivity {
 
     public static final String BASE_URL = "https://web.spaggiari.eu";
+    private static final int FILE_SELECT_CODE = 0;
     public static final int CONTROLLO_VOTI_ID = 111101;
     static final String FILE_PROVIDER_STRING = "com.sharpdroid.fileprovider";
     public static final String SEPARATORE_MATERIE = "grautext open_sans_condensed_bold font_size_14";
@@ -292,6 +293,53 @@ public class MainActivity extends AppCompatActivity {
         new GetStringFromUrl().execute(BASE_URL + "/fml/app/default/didattica_genitori.php");
         new GetStringFromUrl().execute(BASE_URL + "/sif/app/default/bacheca_utente.php");
         new GetStringFromUrl().execute(BASE_URL + "/sol/app/default/documenti_sol.php");
+    }
+
+    public static File ExportDatabase(Context context) {
+        File backupDB = new File(context.getExternalCacheDir(), "MyData.db");
+        try {
+            PackageManager m = context.getPackageManager();
+            PackageInfo p = m.getPackageInfo(context.getPackageName(), 0);
+            File currentDB = new File(p.applicationInfo.dataDir + "//databases//MyData.db");
+
+            FileChannel src = new FileInputStream(currentDB).getChannel();
+            FileChannel dst = new FileOutputStream(backupDB).getChannel();
+            dst.transferFrom(src, 0, src.size());
+            src.close();
+            dst.close();
+        } catch (Exception e) {
+            Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
+            return null;
+        }
+
+        return backupDB;
+    }
+
+    public static void ImportDatabase(Context context, Uri ImportDB) {
+
+        File importDB = new File(ImportDB.getPath());
+        String ext = importDB.getName().substring(importDB.getName().lastIndexOf("."));
+        if (ext.equals(".db")) {
+            try {
+                PackageManager m = context.getPackageManager();
+                PackageInfo p = m.getPackageInfo(context.getPackageName(), 0);
+                File currentDB = new File(p.applicationInfo.dataDir + "//databases//MyData.db");
+
+                FileChannel src = new FileInputStream(importDB).getChannel();
+                FileChannel dst = new FileOutputStream(currentDB).getChannel();
+                dst.transferFrom(src, 0, src.size());
+                src.close();
+                dst.close();
+
+                Toast.makeText(context, R.string.dati_ok, Toast.LENGTH_LONG).show();
+                Intent i = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(i);
+
+            } catch (Exception e) {
+                Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
+            }
+        } else Toast.makeText(context, R.string.file_non_valido, Toast.LENGTH_LONG).show();
     }
 
     private static int tabColor(int position) {
@@ -521,6 +569,10 @@ public class MainActivity extends AppCompatActivity {
                                     .withSelectable(false),
                             new DividerDrawerItem(),
                             new SecondaryDrawerItem()
+                                    .withName(R.string.importa_esporta)
+                                    .withIcon(ContextCompat.getDrawable(this, R.drawable.ic_import_export_black_24px))
+                                    .withSelectable(false),
+                            new SecondaryDrawerItem()
                                     .withName(R.string.segnalaproblema)
                                     .withIcon(ContextCompat.getDrawable(this, R.drawable.email))
                                     .withSelectable(false)
@@ -578,21 +630,45 @@ public class MainActivity extends AppCompatActivity {
                                     case 8:
                                         AvviaNotifiche(MainActivity.this);
                                         break;
-                                    case 10:
-                                        File backupDB = new File(getExternalCacheDir(), "MyData.db");
-                                        try {
-                                            PackageManager m = getPackageManager();
-                                            PackageInfo p = m.getPackageInfo(getPackageName(), 0);
-                                            File currentDB = new File(p.applicationInfo.dataDir + "//databases//MyData.db");
 
-                                            FileChannel src = new FileInputStream(currentDB).getChannel();
-                                            FileChannel dst = new FileOutputStream(backupDB).getChannel();
-                                            dst.transferFrom(src, 0, src.size());
-                                            src.close();
-                                            dst.close();
-                                        } catch (Exception e) {
-                                            Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
-                                        }
+
+                                    case 10:
+
+
+                                        String[] azioni = new String[]{getString(R.string.esporta), getString(R.string.importa)};
+
+                                        new MaterialDialog.Builder(MainActivity.this)
+                                                .title(R.string.scegli_azione)
+                                                .items(azioni)
+                                                .theme(Theme.LIGHT)
+                                                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+                                                    @Override
+                                                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                                        if (which == 0) {
+                                                            final File backupDB = ExportDatabase(context);
+                                                            Intent intent = new Intent(Intent.ACTION_SEND);
+                                                            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(backupDB));
+                                                            intent.setType("text/plain");
+                                                            startActivity(Intent.createChooser(intent, getString(R.string.seleziona_percorso)));
+                                                        } else if (which == 1) {
+                                                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                                                            intent.setType("*/*");
+                                                            intent.addCategory(Intent.CATEGORY_OPENABLE);
+                                                            startActivityForResult(Intent.createChooser(intent, getString(R.string.seleziona_percorso)), FILE_SELECT_CODE);
+                                                        }
+
+                                                        return true;
+                                                    }
+                                                })
+                                                .positiveText(R.string.prosegui)
+                                                .show();
+
+
+                                        break;
+
+                                    case 11:
+
+                                        File backupDB = ExportDatabase(context);
 
                                         ArrayList<Uri> uris = new ArrayList<>();
                                         uris.add(Uri.fromFile(backupDB));
@@ -605,6 +681,8 @@ public class MainActivity extends AppCompatActivity {
                                         intent_mail.setType("text/plain");
                                         startActivity(Intent.createChooser(intent_mail, "Seleziona un client email:"));
                                         break;
+
+
                                 }
                                 if (intent != null) {
                                     startActivity(intent);
@@ -2713,6 +2791,20 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case FILE_SELECT_CODE:
+                if (resultCode == RESULT_OK) {
+                    // Get the Uri of the selected file
+                    Uri uri = data.getData();
+                    ImportDatabase(this, uri);
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     class PagerAdapter extends FragmentPagerAdapter {

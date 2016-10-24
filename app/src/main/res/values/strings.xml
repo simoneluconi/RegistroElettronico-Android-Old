@@ -25,6 +25,7 @@
     <string name="salva">Salva</string>
     <string name="modifica">Modifica</string>
     <string name="elimina">Elimina</string>
+    <string name="importa_esporta">Importa/Esporta Dati</string>
     <string name="eventodel">Evento del %1$s-%2$s-%3$s</string>
     <plurals name="datains">
         <item quantity="one">%1$s (%2$d giorno prima)</item>
@@ -70,7 +71,17 @@
     <string name="ultima_cosa_titolo">Un ultima cosa</string>
     <string name="ultima_cosa_desc">Abbiamo bisogno dei permessi di archiviazione per scaricare le circolari e i file dalla didattica</string>
     <string name="sei_pronto_titolo">Sei pronto!</string>
-    <string name="sei_pronto_desc">Ora sei pronto per utilizzare al meglio quest app. Ricorda, per qualsiasi problema contattaci a sharpdroidmail@gmail.com</string>
+    <string name="sei_pronto_desc">Ora sei pronto per utilizzare al meglio quest app. Ricorda, per qualsiasi problema contattaci a luconi.simone@gmail.com</string>
+
+    <string name="prosegui">Prosegui</string>
+    <string name="seleziona_percorso">Seleziona un percorso</string>
+    <string name="importa">Importa</string>
+    <string name="esporta">Esporta</string>
+    <string name="scegli_azione">Scegli un azione</string>
+    <string name="dati_ok">Dati importati correttamente</string>
+    <string name="file_non_valido">File non valido</string>
+
+
 
     <string-array name="tab_title">
         <item>Medie</item>
