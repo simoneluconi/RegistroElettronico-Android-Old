@@ -20,10 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/background"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
             tools:context="com.sharpdroid.registroelettronico.Circolari">
-
 
             <android.support.v4.widget.SwipeRefreshLayout
                 android:id="@+id/swiperefreshScrutini"
