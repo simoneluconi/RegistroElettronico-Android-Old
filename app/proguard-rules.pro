@@ -15,3 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-dontwarn com.google.gson.*
+-dontwarn com.squareup.picasso.*
+-dontwarn org.joda.convert.*
