@@ -625,15 +625,12 @@ public class MainActivity extends AppCompatActivity {
                                         break;
                                     case 7:
                                         intent = new Intent(MainActivity.this, FileOffline.class);
-                                        MainActivity.this.startActivity(intent);
                                         break;
                                     case 8:
                                         AvviaNotifiche(MainActivity.this);
                                         break;
 
-
                                     case 10:
-
 
                                         String[] azioni = new String[]{getString(R.string.esporta), getString(R.string.importa)};
 
