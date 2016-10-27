@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '24.0.2'
+    buildToolsVersion '24.0.3'
 
     defaultConfig {
         applicationId 'com.sharpdroid.registroelettronico'
@@ -35,7 +35,7 @@ dependencies {
     compile 'com.github.ganfra:material-spinner:1.1.1'
     compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
     compile 'com.github.sundeepk:compact-calendar-view:1.9.1'
-    compile 'com.google.android.gms:play-services-analytics:9.8.00'
+    compile 'com.google.android.gms:play-services-analytics:9.8.0'
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.heinrichreimersoftware:material-intro:1.6'
     compile('com.mikepenz:materialdrawer:5.6.0@aar') {
