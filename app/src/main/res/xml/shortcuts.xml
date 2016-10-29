@@ -1,7 +1,7 @@
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/calendartoday"
+        android:icon="@drawable/calendartoday_oval"
         android:shortcutDisabledMessage="@string/agenda_titolo"
         android:shortcutId="agenda"
         android:shortcutLongLabel="@string/agenda_titolo"
@@ -17,7 +17,7 @@
     </shortcut>
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/book"
+        android:icon="@drawable/book_oval"
         android:shortcutDisabledMessage="@string/dettaglio_voti_titolo"
         android:shortcutId="voti_dettaglio"
         android:shortcutLongLabel="@string/dettaglio_voti_titolo"
@@ -33,7 +33,7 @@
     </shortcut>
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/document"
+        android:icon="@drawable/document_oval"
         android:shortcutDisabledMessage="@string/circolari"
         android:shortcutId="circolari"
         android:shortcutLongLabel="@string/circolari"
@@ -45,7 +45,7 @@
     </shortcut>
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/school"
+        android:icon="@drawable/school_oval"
         android:shortcutDisabledMessage="@string/oggiscuola"
         android:shortcutId="oggiscuola"
         android:shortcutLongLabel="@string/oggiscuola"
