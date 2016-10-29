@@ -22,4 +22,5 @@
     <color name="default_day_text_color">#ffffff</color>
     <color name="default_selected_day_text_color">#111111</color>
 
+    <color name="shortbut_background">#F5F5F5</color>
 </resources>
