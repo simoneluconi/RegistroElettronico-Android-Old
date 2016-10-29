@@ -17,6 +17,22 @@
     </shortcut>
     <shortcut
         android:enabled="true"
+        android:icon="@drawable/book"
+        android:shortcutDisabledMessage="@string/dettaglio_voti_titolo"
+        android:shortcutId="voti_dettaglio"
+        android:shortcutLongLabel="@string/dettaglio_voti_titolo"
+        android:shortcutShortLabel="@string/dettaglio_voti_titolo">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.sharpdroid.registroelettronico.MainActivity"
+            android:targetPackage="com.sharpdroid.registroelettronico">
+            <extra
+                android:name="com.sharpdroid.registroelettronico.notifiche.TAB"
+                android:value="3" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:enabled="true"
         android:icon="@drawable/document"
         android:shortcutDisabledMessage="@string/circolari"
         android:shortcutId="circolari"
