@@ -1,0 +1,26 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/document"
+        android:shortcutDisabledMessage="@string/circolari"
+        android:shortcutId="circolari"
+        android:shortcutLongLabel="@string/circolari"
+        android:shortcutShortLabel="@string/circolari">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.sharpdroid.registroelettronico.Circolari"
+            android:targetPackage="com.sharpdroid.registroelettronico" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/calendartoday"
+        android:shortcutDisabledMessage="@string/oggiscuola"
+        android:shortcutId="oggiscuola"
+        android:shortcutLongLabel="@string/oggiscuola"
+        android:shortcutShortLabel="@string/oggiscuola">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.sharpdroid.registroelettronico.OggiAScuola"
+            android:targetPackage="com.sharpdroid.registroelettronico" />
+    </shortcut>
+</shortcuts>
