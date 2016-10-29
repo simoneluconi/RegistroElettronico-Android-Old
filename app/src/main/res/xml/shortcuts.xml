@@ -1,6 +1,22 @@
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
     <shortcut
         android:enabled="true"
+        android:icon="@drawable/calendartoday"
+        android:shortcutDisabledMessage="@string/agenda_titolo"
+        android:shortcutId="agenda"
+        android:shortcutLongLabel="@string/agenda_titolo"
+        android:shortcutShortLabel="@string/agenda_titolo">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.sharpdroid.registroelettronico.MainActivity"
+            android:targetPackage="com.sharpdroid.registroelettronico">
+            <extra
+                android:name="com.sharpdroid.registroelettronico.notifiche.TAB"
+                android:value="4" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:enabled="true"
         android:icon="@drawable/document"
         android:shortcutDisabledMessage="@string/circolari"
         android:shortcutId="circolari"
@@ -13,7 +29,7 @@
     </shortcut>
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/calendartoday"
+        android:icon="@drawable/school"
         android:shortcutDisabledMessage="@string/oggiscuola"
         android:shortcutId="oggiscuola"
         android:shortcutLongLabel="@string/oggiscuola"
