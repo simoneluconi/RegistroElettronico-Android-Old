@@ -27,6 +27,7 @@ import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyAccount;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyDB;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Nota;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Voto;
 
 import org.acra.ACRA;
 import org.joda.time.format.DateTimeFormat;
@@ -467,6 +468,9 @@ public class Metodi {
                         VotoEff = Double.parseDouble(tmp) - 0.25;
                     }
                 }
+            } else if (voto.length() == 4) {
+                if (VotoValido(voto))
+                    VotoEff = Double.parseDouble(voto);
             } else if (voto.length() == 5) {
                 if (voto.contains("1/2")) {
                     tmp = voto.replace(" 1/2", ".5");
