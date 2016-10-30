@@ -2,22 +2,19 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.0'
+    buildToolsVersion "25.0.0"
 
     defaultConfig {
         applicationId 'com.sharpdroid.registroelettronico'
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 277
-        versionName '277'
+        versionCode 281
+        versionName '281'
     }
 
     buildTypes {
         release {
-            zipAlignEnabled true
-            shrinkResources false
-            minifyEnabled true
-            useProguard true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -46,6 +43,6 @@ dependencies {
     }
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'joda-time:joda-time:2.9.4'
-    compile 'org.jsoup:jsoup:1.9.2'
+    compile 'org.jsoup:jsoup:1.10.1'
     testCompile 'junit:junit:4.12'
 }

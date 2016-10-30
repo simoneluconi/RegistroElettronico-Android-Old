@@ -203,263 +203,267 @@ public class Notifiche extends BroadcastReceiver {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            if (result != null && result.length() > 0) {
-                switch (azione) {
-                    case Azione.VOTI:
+            if (result != null) {
 
-                        Document doc = Jsoup.parse(result);
-                        Elements metaElems = doc.select("tr");
-                        NotificationManagerCompat notificationManager;
-                        NotificationCompat.Builder mBuilder;
+                if (result.length() > 0) {
 
-                        SQLiteDatabase db = new MyDB(ct).getWritableDatabase();
-                        boolean notifica = true;
+                    switch (azione) {
+                        case Azione.VOTI:
 
-                        Cursor c = db.rawQuery("SELECT count(*) FROM " + MyDB.VotoEntry.TABLE_NAME, null);
-                        c.moveToFirst();
-                        int icount = c.getInt(0);
-                        if (icount <= 0)
-                            notifica = false;
-                        c.close();
-                        db.beginTransaction();
-                        for (int i = 0; i < metaElems.size(); i++) {
+                            Document doc = Jsoup.parse(result);
+                            Elements metaElems = doc.select("tr");
+                            NotificationManagerCompat notificationManager;
+                            NotificationCompat.Builder mBuilder;
 
-                            if (metaElems.get(i).select("td").get(0).className().contains(MainActivity.SEPARATORE_MATERIE)) {
-                                String materia = MateriaDecente(metaElems.get(i).text().trim());
-                                i++;
-                                boolean esci = false;
-                                if (i < metaElems.size()) {
-                                    while (!metaElems.get(i).select("td").get(0).className().contains(MainActivity.SEPARATORE_MATERIE) && !esci) {
+                            SQLiteDatabase db = new MyDB(ct).getWritableDatabase();
+                            boolean notifica = true;
 
-                                        Elements elT = metaElems.get(i).select("span"); //Tipo - data
-                                        Elements elV = metaElems.get(i).select("p"); // Voto
-                                        String tmp[] = elT.get(0).text().trim().split("-");
-                                        boolean VotoBlu = metaElems.get(i).select("div").attr("class").contains("f_reg_voto_dettaglio");
+                            Cursor c = db.rawQuery("SELECT count(*) FROM " + MyDB.VotoEntry.TABLE_NAME, null);
+                            c.moveToFirst();
+                            int icount = c.getInt(0);
+                            if (icount <= 0)
+                                notifica = false;
+                            c.close();
+                            db.beginTransaction();
+                            for (int i = 0; i < metaElems.size(); i++) {
 
-                                        String[] periodotmp = metaElems.get(i).select("td").get(1).className().split("\\s+");
-                                        String periodo = periodotmp[periodotmp.length - 1];
-                                        String data = tmp[1].trim();
-                                        String voto = elV.get(1).text().trim();
-                                        String tipo = tmp[0].trim();
-                                        String commento = elT.get(1).text();
+                                if (metaElems.get(i).select("td").get(0).className().contains(MainActivity.SEPARATORE_MATERIE)) {
+                                    String materia = MateriaDecente(metaElems.get(i).text().trim());
+                                    i++;
+                                    boolean esci = false;
+                                    if (i < metaElems.size()) {
+                                        while (!metaElems.get(i).select("td").get(0).className().contains(MainActivity.SEPARATORE_MATERIE) && !esci) {
 
-                                        String fakebool = VotoBlu ? "1" : "0";
-                                        String[] datas = new String[]{materia, voto, fakebool, data, periodo, tipo};
-                                        String command = MyDB.VotoEntry.COLUMN_NAME_MATERIA + "= ? AND "
-                                                + MyDB.VotoEntry.COLUMN_NAME_VOTO + "= ? AND "
-                                                + MyDB.VotoEntry.COLUMN_NAME_VOTOBLU + "= ? AND "
-                                                + MyDB.VotoEntry.COLUMN_NAME_DATA + "= ? AND "
-                                                + MyDB.VotoEntry.COLUMN_NAME_PERIODO + "= ? AND "
-                                                + MyDB.VotoEntry.COLUMN_NAME_TIPO + "= ?";
+                                            Elements elT = metaElems.get(i).select("span"); //Tipo - data
+                                            Elements elV = metaElems.get(i).select("p"); // Voto
+                                            String tmp[] = elT.get(0).text().trim().split("-");
+                                            boolean VotoBlu = metaElems.get(i).select("div").attr("class").contains("f_reg_voto_dettaglio");
 
-                                        c = db.rawQuery("select * from " + MyDB.VotoEntry.TABLE_NAME + " where " + command, datas);
+                                            String[] periodotmp = metaElems.get(i).select("td").get(1).className().split("\\s+");
+                                            String periodo = periodotmp[periodotmp.length - 1];
+                                            String data = tmp[1].trim();
+                                            String voto = elV.get(1).text().trim();
+                                            String tipo = tmp[0].trim();
+                                            String commento = elT.get(1).text();
+
+                                            String fakebool = VotoBlu ? "1" : "0";
+                                            String[] datas = new String[]{materia, voto, fakebool, data, periodo, tipo};
+                                            String command = MyDB.VotoEntry.COLUMN_NAME_MATERIA + "= ? AND "
+                                                    + MyDB.VotoEntry.COLUMN_NAME_VOTO + "= ? AND "
+                                                    + MyDB.VotoEntry.COLUMN_NAME_VOTOBLU + "= ? AND "
+                                                    + MyDB.VotoEntry.COLUMN_NAME_DATA + "= ? AND "
+                                                    + MyDB.VotoEntry.COLUMN_NAME_PERIODO + "= ? AND "
+                                                    + MyDB.VotoEntry.COLUMN_NAME_TIPO + "= ?";
+
+                                            c = db.rawQuery("select * from " + MyDB.VotoEntry.TABLE_NAME + " where " + command, datas);
+
+                                            if (c.getCount() <= 0) {
+                                                ContentValues dati = new ContentValues();
+                                                dati.put(MyDB.VotoEntry.COLUMN_NAME_MATERIA, materia);
+                                                dati.put(MyDB.VotoEntry.COLUMN_NAME_DATA, data);
+                                                dati.put(MyDB.VotoEntry.COLUMN_NAME_TIPO, tipo);
+                                                dati.put(MyDB.VotoEntry.COLUMN_NAME_VOTOBLU, VotoBlu);
+                                                dati.put(MyDB.VotoEntry.COLUMN_NAME_VOTO, voto);
+                                                dati.put(MyDB.VotoEntry.COLUMN_NAME_PERIODO, periodo);
+                                                dati.put(MyDB.VotoEntry.COLUMN_NAME_COMMENTO, commento);
+                                                db.insert(MyDB.VotoEntry.TABLE_NAME, MyDB.VotoEntry.COLUMN_NAME_NULLABLE, dati);
+
+                                                if (notifica) {
+                                                    Intent intent = new Intent(ct, MainActivity.class);
+                                                    intent.putExtra("com.sharpdroid.registroelettronico.notifiche.TAB", 3);
+                                                    PendingIntent pIntent = PendingIntent.getActivity(ct, 0, intent, 0);
+                                                    Log.v("NuovoVoto", "Nuovo voto trovato");
+                                                    mBuilder = new NotificationCompat.Builder(ct)
+                                                            .setSmallIcon(R.drawable.notification)
+                                                            .setContentTitle(voto + " in " + materia)
+                                                            .setContentText("Il " + data + " (" + tipo + ")")
+                                                            .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                                                            .setLights(Color.BLUE, 3000, 3000)
+                                                            .setVibrate(new long[]{250, 250, 250, 250, 250, 250})
+                                                            .setContentIntent(pIntent)
+                                                            .setAutoCancel(true);
+
+                                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                                        double votod = ConvertiInVoto(voto);
+
+                                                        if (votod >= 6)
+                                                            mBuilder.setColor(ContextCompat.getColor(ct, R.color.greenmaterial));
+                                                        else if (votod < 6 && votod >= 5.5)
+                                                            mBuilder.setColor(ContextCompat.getColor(ct, R.color.orangematerial));
+                                                        else if (votod != -1)
+                                                            mBuilder.setColor(ContextCompat.getColor(ct, R.color.redmaterial));
+                                                        else
+                                                            mBuilder.setColor(ContextCompat.getColor(ct, R.color.bluematerial));
+
+
+                                                        notificationManager = NotificationManagerCompat.from(ct);
+                                                        notificationManager.notify(nNotif, mBuilder.build());
+                                                        nNotif++;
+                                                    }
+                                                }
+                                            }
+
+                                            c.close();
+
+                                            if (i + 1 != metaElems.size())
+                                                i++;
+                                            else esci = true;
+
+                                        }
+                                    }
+                                    i--;
+                                }
+                            }
+                            db.setTransactionSuccessful();
+                            db.endTransaction();
+                            db.close();
+
+                            break;
+
+
+                        case Azione.AGENDA: {
+
+                            try {
+                                JSONArray jsonCompiti = new JSONArray(result);
+                                db = new MyDB(ct).getWritableDatabase();
+
+                                notifica = true;
+                                c = db.rawQuery("SELECT count(*) FROM " + MyDB.CompitoEntry.TABLE_NAME, null);
+                                c.moveToFirst();
+                                icount = c.getInt(0);
+                                if (icount <= 0)
+                                    notifica = false;
+                                c.close();
+
+                                db.beginTransaction();
+                                for (int i = 0; i < jsonCompiti.length(); i++) {
+                                    Compito compito = ConvertiCompito(jsonCompiti.getJSONObject(i));
+
+                                    if (compito != null) {
+                                        String fakstring = compito.isTuttoIlGiorno() ? "1" : "0";
+                                        String[] datas = new String[]{compito.getAutore(), compito.getContenuto(), compito.getDataInizioString(), compito.getDataFineString(), fakstring, compito.getDataInserimentoString()};
+                                        String command = MyDB.CompitoEntry.COLUMN_NAME_AUTORE + "= ? AND "
+                                                + MyDB.CompitoEntry.COLUMN_NAME_CONTENUTO + "= ? AND "
+                                                + MyDB.CompitoEntry.COLUMN_NAME_DATAINIZIO + "= ? AND "
+                                                + MyDB.CompitoEntry.COLUMN_NAME_DATAFINE + "= ? AND "
+                                                + MyDB.CompitoEntry.COLUMN_NAME_TUTTOILGIORNO + "= ? AND "
+                                                + MyDB.CompitoEntry.COLUMN_NAME_DATAINSERIMENTO + "= ?";
+
+                                        c = db.rawQuery("select * from " + MyDB.CompitoEntry.TABLE_NAME + " where " + command, datas);
 
                                         if (c.getCount() <= 0) {
                                             ContentValues dati = new ContentValues();
-                                            dati.put(MyDB.VotoEntry.COLUMN_NAME_MATERIA, materia);
-                                            dati.put(MyDB.VotoEntry.COLUMN_NAME_DATA, data);
-                                            dati.put(MyDB.VotoEntry.COLUMN_NAME_TIPO, tipo);
-                                            dati.put(MyDB.VotoEntry.COLUMN_NAME_VOTOBLU, VotoBlu);
-                                            dati.put(MyDB.VotoEntry.COLUMN_NAME_VOTO, voto);
-                                            dati.put(MyDB.VotoEntry.COLUMN_NAME_PERIODO, periodo);
-                                            dati.put(MyDB.VotoEntry.COLUMN_NAME_COMMENTO, commento);
-                                            db.insert(MyDB.VotoEntry.TABLE_NAME, MyDB.VotoEntry.COLUMN_NAME_NULLABLE, dati);
+                                            dati.put(MyDB.CompitoEntry.COLUMN_NAME_AUTORE, compito.getAutore());
+                                            dati.put(MyDB.CompitoEntry.COLUMN_NAME_DATAINIZIO, compito.getDataInizioString());
+                                            dati.put(MyDB.CompitoEntry.COLUMN_NAME_DATAFINE, compito.getDataFineString());
+                                            dati.put(MyDB.CompitoEntry.COLUMN_NAME_DATAINSERIMENTO, compito.getDataInserimentoString());
+                                            dati.put(MyDB.CompitoEntry.COLUMN_NAME_CONTENUTO, compito.getContenuto());
+                                            dati.put(MyDB.CompitoEntry.COLUMN_NAME_TUTTOILGIORNO, fakstring);
+                                            db.insert(MyDB.CompitoEntry.TABLE_NAME, MyDB.CompitoEntry.COLUMN_NAME_NULLABLE, dati);
+
+                                            DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yyyy");
+
 
                                             if (notifica) {
+                                                String dataDecente = dtf.print(compito.getDataInizio());
                                                 Intent intent = new Intent(ct, MainActivity.class);
-                                                intent.putExtra("com.sharpdroid.registroelettronico.notifiche.TAB", 3);
+                                                intent.putExtra("com.sharpdroid.registroelettronico.notifiche.TAB", 4);
+                                                intent.putExtra("com.sharpdroid.registroelettronico.notifiche.DATACAL", compito.getDataInizioString().split("\\s+")[0]);
                                                 PendingIntent pIntent = PendingIntent.getActivity(ct, 0, intent, 0);
-                                                Log.v("NuovoVoto", "Nuovo voto trovato");
+                                                Log.v("NuovoCompito", "Nuovo compito trovato");
                                                 mBuilder = new NotificationCompat.Builder(ct)
                                                         .setSmallIcon(R.drawable.notification)
-                                                        .setContentTitle(voto + " in " + materia)
-                                                        .setContentText("Il " + data + " (" + tipo + ")")
+                                                        .setContentTitle("Nuovo compito di " + compito.getAutore())
+                                                        .setContentText("Per il " + dataDecente)
                                                         .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                                                         .setLights(Color.BLUE, 3000, 3000)
                                                         .setVibrate(new long[]{250, 250, 250, 250, 250, 250})
                                                         .setContentIntent(pIntent)
+                                                        .setStyle(new NotificationCompat.BigTextStyle()
+                                                                .bigText(compito.getContenuto() + " (" + dataDecente + ")"))
                                                         .setAutoCancel(true);
 
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                                    double votod = ConvertiInVoto(voto);
 
-                                                    if (votod >= 6)
-                                                        mBuilder.setColor(ContextCompat.getColor(ct, R.color.greenmaterial));
-                                                    else if (votod < 6 && votod >= 5.5)
-                                                        mBuilder.setColor(ContextCompat.getColor(ct, R.color.orangematerial));
-                                                    else if (votod != -1)
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                                    if (compito.isVerifica())
                                                         mBuilder.setColor(ContextCompat.getColor(ct, R.color.redmaterial));
                                                     else
+
                                                         mBuilder.setColor(ContextCompat.getColor(ct, R.color.bluematerial));
-
-
-                                                    notificationManager = NotificationManagerCompat.from(ct);
-                                                    notificationManager.notify(nNotif, mBuilder.build());
-                                                    nNotif++;
                                                 }
+
+                                                notificationManager = NotificationManagerCompat.from(ct);
+                                                notificationManager.notify(nNotif, mBuilder.build());
+                                                nNotif++;
                                             }
                                         }
-
-                                        c.close();
-
-                                        if (i + 1 != metaElems.size())
-                                            i++;
-                                        else esci = true;
-
                                     }
+                                    c.close();
                                 }
-                                i--;
-                            }
-                        }
-                        db.setTransactionSuccessful();
-                        db.endTransaction();
-                        db.close();
 
-                        break;
-
-
-                    case Azione.AGENDA: {
-
-                        try {
-                            JSONArray jsonCompiti = new JSONArray(result);
-                            db = new MyDB(ct).getWritableDatabase();
-
-                            notifica = true;
-                            c = db.rawQuery("SELECT count(*) FROM " + MyDB.CompitoEntry.TABLE_NAME, null);
-                            c.moveToFirst();
-                            icount = c.getInt(0);
-                            if (icount <= 0)
-                                notifica = false;
-                            c.close();
-
-                            db.beginTransaction();
-                            for (int i = 0; i < jsonCompiti.length(); i++) {
-                                Compito compito = ConvertiCompito(jsonCompiti.getJSONObject(i));
-
-                                if (compito != null) {
-                                    String fakstring = compito.isTuttoIlGiorno() ? "1" : "0";
-                                    String[] datas = new String[]{compito.getAutore(), compito.getContenuto(), compito.getDataInizioString(), compito.getDataFineString(), fakstring, compito.getDataInserimentoString()};
-                                    String command = MyDB.CompitoEntry.COLUMN_NAME_AUTORE + "= ? AND "
-                                            + MyDB.CompitoEntry.COLUMN_NAME_CONTENUTO + "= ? AND "
-                                            + MyDB.CompitoEntry.COLUMN_NAME_DATAINIZIO + "= ? AND "
-                                            + MyDB.CompitoEntry.COLUMN_NAME_DATAFINE + "= ? AND "
-                                            + MyDB.CompitoEntry.COLUMN_NAME_TUTTOILGIORNO + "= ? AND "
-                                            + MyDB.CompitoEntry.COLUMN_NAME_DATAINSERIMENTO + "= ?";
-
-                                    c = db.rawQuery("select * from " + MyDB.CompitoEntry.TABLE_NAME + " where " + command, datas);
-
-                                    if (c.getCount() <= 0) {
-                                        ContentValues dati = new ContentValues();
-                                        dati.put(MyDB.CompitoEntry.COLUMN_NAME_AUTORE, compito.getAutore());
-                                        dati.put(MyDB.CompitoEntry.COLUMN_NAME_DATAINIZIO, compito.getDataInizioString());
-                                        dati.put(MyDB.CompitoEntry.COLUMN_NAME_DATAFINE, compito.getDataFineString());
-                                        dati.put(MyDB.CompitoEntry.COLUMN_NAME_DATAINSERIMENTO, compito.getDataInserimentoString());
-                                        dati.put(MyDB.CompitoEntry.COLUMN_NAME_CONTENUTO, compito.getContenuto());
-                                        dati.put(MyDB.CompitoEntry.COLUMN_NAME_TUTTOILGIORNO, fakstring);
-                                        db.insert(MyDB.CompitoEntry.TABLE_NAME, MyDB.CompitoEntry.COLUMN_NAME_NULLABLE, dati);
-
-                                        DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yyyy");
-
-
-                                        if (notifica) {
-                                            String dataDecente = dtf.print(compito.getDataInizio());
-                                            Intent intent = new Intent(ct, MainActivity.class);
-                                            intent.putExtra("com.sharpdroid.registroelettronico.notifiche.TAB", 4);
-                                            intent.putExtra("com.sharpdroid.registroelettronico.notifiche.DATACAL", compito.getDataInizioString().split("\\s+")[0]);
-                                            PendingIntent pIntent = PendingIntent.getActivity(ct, 0, intent, 0);
-                                            Log.v("NuovoCompito", "Nuovo compito trovato");
-                                            mBuilder = new NotificationCompat.Builder(ct)
-                                                    .setSmallIcon(R.drawable.notification)
-                                                    .setContentTitle("Nuovo compito di " + compito.getAutore())
-                                                    .setContentText("Per il " + dataDecente)
-                                                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                                                    .setLights(Color.BLUE, 3000, 3000)
-                                                    .setVibrate(new long[]{250, 250, 250, 250, 250, 250})
-                                                    .setContentIntent(pIntent)
-                                                    .setStyle(new NotificationCompat.BigTextStyle()
-                                                            .bigText(compito.getContenuto() + " (" + dataDecente + ")"))
-                                                    .setAutoCancel(true);
-
-
-                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                                if (compito.isVerifica())
-                                                    mBuilder.setColor(ContextCompat.getColor(ct, R.color.redmaterial));
-                                                else
-
-                                                    mBuilder.setColor(ContextCompat.getColor(ct, R.color.bluematerial));
-                                            }
-
-                                            notificationManager = NotificationManagerCompat.from(ct);
-                                            notificationManager.notify(nNotif, mBuilder.build());
-                                            nNotif++;
-                                        }
-                                    }
-                                }
-                                c.close();
-                            }
-
-                            db.setTransactionSuccessful();
-                            db.endTransaction();
-                            db.close();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    break;
-
-                    case Azione.SCRUTINI: {
-
-                        Elements scrutini = Jsoup.parse(result).select("table#table_documenti");
-                        if (scrutini.size() != 0) {
-
-                            int nFile = scrutini.get(0).select("tr").size();
-                            if (nFile != 0)
-                                nFile--;
-                            try {
-                                String documenti = result.substring(result.indexOf("var documenti=") + 14);
-                                documenti = documenti.substring(0, documenti.indexOf("];") + 2);
-                                JSONArray jsonarray = new JSONArray(documenti);
-                                nFile += jsonarray.length();
+                                db.setTransactionSuccessful();
+                                db.endTransaction();
+                                db.close();
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                ACRA.getErrorReporter().handleException(e, false);
-                            }
-
-                            SharedPreferences sharePref = ct.getSharedPreferences("Dati", Context.MODE_PRIVATE);
-                            int OldNFileScrutini = sharePref.getInt("NFileScrutini", -1);
-                            SharedPreferences.Editor sharededitor = sharePref.edit();
-                            sharededitor.putInt("NFileScrutini", nFile);
-                            sharededitor.apply();
-                            if (OldNFileScrutini != -1) {
-                                if (OldNFileScrutini != nFile) {
-
-                                    Intent intent = new Intent(ct, Scrutini.class);
-                                    PendingIntent pIntent = PendingIntent.getActivity(ct, 0, intent, 0);
-                                    Log.v("NuovoFileScrutini", "Nuovo file scrutini");
-                                    mBuilder = new NotificationCompat.Builder(ct)
-                                            .setSmallIcon(R.drawable.notification)
-                                            .setContentTitle("Scrutini")
-                                            .setContentText("Ci sono nuovi file nella sezione scrutini")
-                                            .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                                            .setLights(Color.BLUE, 3000, 3000)
-                                            .setVibrate(new long[]{250, 250, 250, 250, 250, 250})
-                                            .setContentIntent(pIntent)
-                                            .setAutoCancel(true);
-
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                        mBuilder.setColor(ContextCompat.getColor(ct, R.color.bluematerial));
-                                    }
-
-                                    notificationManager = NotificationManagerCompat.from(ct);
-                                    notificationManager.notify(nNotif, mBuilder.build());
-                                    nNotif++;
-                                }
-
                             }
                         }
+                        break;
 
+                        case Azione.SCRUTINI: {
+
+                            Elements scrutini = Jsoup.parse(result).select("table#table_documenti");
+                            if (scrutini.size() != 0) {
+
+                                int nFile = scrutini.get(0).select("tr").size();
+                                if (nFile != 0)
+                                    nFile--;
+                                try {
+                                    String documenti = result.substring(result.indexOf("var documenti=") + 14);
+                                    documenti = documenti.substring(0, documenti.indexOf("];") + 2);
+                                    JSONArray jsonarray = new JSONArray(documenti);
+                                    nFile += jsonarray.length();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    ACRA.getErrorReporter().handleException(e, false);
+                                }
+
+                                SharedPreferences sharePref = ct.getSharedPreferences("Dati", Context.MODE_PRIVATE);
+                                int OldNFileScrutini = sharePref.getInt("NFileScrutini", -1);
+                                SharedPreferences.Editor sharededitor = sharePref.edit();
+                                sharededitor.putInt("NFileScrutini", nFile);
+                                sharededitor.apply();
+                                if (OldNFileScrutini != -1) {
+                                    if (OldNFileScrutini != nFile) {
+
+                                        Intent intent = new Intent(ct, Scrutini.class);
+                                        PendingIntent pIntent = PendingIntent.getActivity(ct, 0, intent, 0);
+                                        Log.v("NuovoFileScrutini", "Nuovo file scrutini");
+                                        mBuilder = new NotificationCompat.Builder(ct)
+                                                .setSmallIcon(R.drawable.notification)
+                                                .setContentTitle("Scrutini")
+                                                .setContentText("Ci sono nuovi file nella sezione scrutini")
+                                                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                                                .setLights(Color.BLUE, 3000, 3000)
+                                                .setVibrate(new long[]{250, 250, 250, 250, 250, 250})
+                                                .setContentIntent(pIntent)
+                                                .setAutoCancel(true);
+
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                            mBuilder.setColor(ContextCompat.getColor(ct, R.color.bluematerial));
+                                        }
+
+                                        notificationManager = NotificationManagerCompat.from(ct);
+                                        notificationManager.notify(nNotif, mBuilder.build());
+                                        nNotif++;
+                                    }
+
+                                }
+                            }
+
+                        }
+                        break;
                     }
-                    break;
                 }
             }
 
