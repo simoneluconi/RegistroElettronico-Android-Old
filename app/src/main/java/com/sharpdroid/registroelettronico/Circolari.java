@@ -220,6 +220,13 @@ public class Circolari extends AppCompatActivity {
             int ActiveUsers = sharedPref.getInt("CurrentProfile", 0);
             SQLiteDatabase db = new MyUsers(context).getWritableDatabase();
             Cursor c = db.rawQuery("SELECT * FROM " + MyUsers.UserEntry.TABLE_NAME, null);
+
+            int count = c.getCount();
+            if (count <= 0) {
+                finish();
+                return null;
+            }
+
             c.move(ActiveUsers);
             String username = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_USERNAME));
             String password = c.getString(c.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_PASSWORD));

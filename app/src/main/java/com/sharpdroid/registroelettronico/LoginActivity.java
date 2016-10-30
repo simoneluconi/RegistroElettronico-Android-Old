@@ -413,6 +413,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     return false;
 
                 }
+            } catch (org.json.JSONException e) {
+                e.printStackTrace();
+                ACRA.getErrorReporter().handleException(e, false);
+                ErrMsg = getString(R.string.errore_più_account);
             } catch (Exception e) {
                 e.printStackTrace();
                 ACRA.getErrorReporter().handleException(e, false);

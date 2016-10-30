@@ -81,6 +81,7 @@
     <string name="dati_ok">Dati importati correttamente</string>
     <string name="file_non_valido">File non valido</string>
 
+    <string name="errore_più_account">Errore: Più account collegati non sono supportati, accedi con un singolo account</string>
 
 
     <string-array name="tab_title">
