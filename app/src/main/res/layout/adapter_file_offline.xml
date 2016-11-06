@@ -2,75 +2,67 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/FileOfflineCv"
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="10dp"
-    card_view:cardBackgroundColor="#fff">
+    android:layout_marginTop="10.0dip"
+    card_view:cardBackgroundColor="#ffffffff">
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp">
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="10.0dip"
+        android:layout_marginLeft="10.0dip"
+        android:layout_marginRight="10.0dip"
+        android:layout_marginTop="10.0dip">
 
         <ImageView
             android:id="@+id/FileIcon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="40.0dip"
+            android:layout_height="40.0dip"
             android:layout_gravity="center_vertical"
             android:src="@drawable/home" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="50dp"
-            android:layout_marginStart="50dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="50.0dip"
             android:gravity="center_vertical"
             android:orientation="vertical">
-
 
             <TextView
                 android:id="@+id/FileName"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="fill_parent"
                 android:text="@string/filebellissimo_pdf"
                 android:textColor="@color/textcolorgrey"
-                android:textSize="18sp" />
+                android:textSize="18.0sp" />
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
 
                 <TextView
                     android:id="@+id/FileLastModified"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="3.0dip"
                     android:text="@string/_15_19_70_12_50_12"
-                    android:textColor="#9E9E9E" />
+                    android:textColor="#ff9e9e9e" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
                     android:gravity="end">
 
                     <TextView
                         android:id="@+id/FileSize"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
+                        android:layout_marginTop="3.0dip"
                         android:text="@string/_15_78gb"
-                        android:textColor="#9E9E9E" />
+                        android:textColor="#ff9e9e9e" />
                 </LinearLayout>
-
-
             </LinearLayout>
-
         </LinearLayout>
-
     </FrameLayout>
-
-
 </android.support.v7.widget.CardView>

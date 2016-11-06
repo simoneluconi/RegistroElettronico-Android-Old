@@ -14,11 +14,10 @@
 
     <fr.ganfra.materialspinner.MaterialSpinner
         android:id="@+id/spinner"
-        android:layout_width="100dp"
+        android:layout_width="100.0dip"
         android:layout_height="wrap_content"
         android:background="@color/textcolor"
         app:ms_arrowColor="@color/colorAccent"
-        app:ms_arrowSize="12dp"
+        app:ms_arrowSize="12.0dip"
         app:ms_baseColor="@color/colorAccent" />
-
 </LinearLayout>

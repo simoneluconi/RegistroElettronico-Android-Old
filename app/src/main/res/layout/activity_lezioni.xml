@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".Lezioni">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
         <include
-            android:id="@+id/app_bar"
+            android:id="@id/app_bar"
             layout="@layout/app_bar" />
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabsLezioni"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             app:tabMode="scrollable"
@@ -26,9 +24,8 @@
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pagerLezioni"
-        android:layout_width="match_parent"
-        android:layout_height="0px"
-        android:layout_weight="1"
+        android:layout_width="fill_parent"
+        android:layout_height="0.0px"
+        android:layout_weight="1.0"
         android:background="@color/background" />
-
 </LinearLayout>

@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/cvOrale"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        card_view:cardBackgroundColor="#fff">
+        android:layout_marginBottom="10.0dip"
+        android:layout_marginLeft="10.0dip"
+        android:layout_marginRight="10.0dip"
+        card_view:cardBackgroundColor="#ffffffff">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:baselineAligned="false"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -24,35 +24,33 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:padding="16.0dip">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginBottom="5.0dip"
                     android:text="@string/mediaorale"
                     android:textColor="@color/material_blue_grey"
-                    android:textSize="20sp" />
-
+                    android:textSize="20.0sp" />
             </RelativeLayout>
 
             <RelativeLayout
-                android:layout_width="0dp"
+                android:layout_width="0.0dip"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="1.0"
                 android:gravity="end">
 
                 <com.github.rahatarmanahmed.cpv.CircularProgressView xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/progressMediaOrale"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="50.0dip"
+                    android:layout_height="50.0dip"
                     android:layout_centerInParent="true"
-                    android:layout_marginEnd="18dp"
-                    android:layout_marginRight="18dp"
+                    android:layout_marginRight="18.0dip"
                     app:cpv_animAutostart="true"
                     app:cpv_indeterminate="false"
-                    app:cpv_progress="80" />
+                    app:cpv_progress="80.0" />
 
                 <TextView
                     android:id="@+id/mediaOrale"
@@ -61,8 +59,7 @@
                     android:layout_centerInParent="true"
                     android:text="@string/_8_22"
                     android:textColor="@color/textcolorgrey"
-                    android:textSize="15sp" />
-
+                    android:textSize="15.0sp" />
             </RelativeLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -70,16 +67,16 @@
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/cvScritto"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        card_view:cardBackgroundColor="#fff">
+        android:layout_marginBottom="10.0dip"
+        android:layout_marginLeft="10.0dip"
+        android:layout_marginRight="10.0dip"
+        card_view:cardBackgroundColor="#ffffffff">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:baselineAligned="false"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -87,36 +84,34 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:padding="16.0dip">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginBottom="5.0dip"
                     android:text="@string/mediascritto"
                     android:textColor="@color/material_blue_grey"
-                    android:textSize="20sp" />
-
+                    android:textSize="20.0sp" />
             </RelativeLayout>
 
             <RelativeLayout
-                android:layout_width="0dp"
+                android:layout_width="0.0dip"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="1.0"
                 android:gravity="end">
 
                 <com.github.rahatarmanahmed.cpv.CircularProgressView xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/progressvMediaScritto"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="50.0dip"
+                    android:layout_height="50.0dip"
                     android:layout_centerInParent="true"
                     android:layout_gravity="end"
-                    android:layout_marginEnd="18dp"
-                    android:layout_marginRight="18dp"
+                    android:layout_marginRight="18.0dip"
                     app:cpv_animAutostart="true"
                     app:cpv_indeterminate="false"
-                    app:cpv_progress="80" />
+                    app:cpv_progress="80.0" />
 
                 <TextView
                     android:id="@+id/mediaScritto"
@@ -125,8 +120,7 @@
                     android:layout_centerInParent="true"
                     android:text="@string/_8_22"
                     android:textColor="@color/textcolorgrey"
-                    android:textSize="15sp" />
-
+                    android:textSize="15.0sp" />
             </RelativeLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -134,16 +128,16 @@
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/cvPratico"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        card_view:cardBackgroundColor="#fff">
+        android:layout_marginBottom="10.0dip"
+        android:layout_marginLeft="10.0dip"
+        android:layout_marginRight="10.0dip"
+        card_view:cardBackgroundColor="#ffffffff">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:baselineAligned="false"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -151,36 +145,34 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:padding="16.0dip">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginBottom="5.0dip"
                     android:text="@string/mediapratico"
                     android:textColor="@color/material_blue_grey"
-                    android:textSize="20sp" />
-
+                    android:textSize="20.0sp" />
             </RelativeLayout>
 
             <RelativeLayout
-                android:layout_width="0dp"
+                android:layout_width="0.0dip"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="1.0"
                 android:gravity="end">
 
                 <com.github.rahatarmanahmed.cpv.CircularProgressView xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/progressMediaPratico"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="50.0dip"
+                    android:layout_height="50.0dip"
                     android:layout_centerInParent="true"
                     android:layout_gravity="end"
-                    android:layout_marginEnd="18dp"
-                    android:layout_marginRight="18dp"
+                    android:layout_marginRight="18.0dip"
                     app:cpv_animAutostart="true"
                     app:cpv_indeterminate="false"
-                    app:cpv_progress="80" />
+                    app:cpv_progress="80.0" />
 
                 <TextView
                     android:id="@+id/mediaPratico"
@@ -189,8 +181,7 @@
                     android:layout_centerInParent="true"
                     android:text="@string/_8_22"
                     android:textColor="@color/textcolorgrey"
-                    android:textSize="15sp" />
-
+                    android:textSize="15.0sp" />
             </RelativeLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>

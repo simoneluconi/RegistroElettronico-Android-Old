@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinatorLayoutOggiScuola"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:orientation="vertical">
 
         <include
@@ -17,79 +15,71 @@
             layout="@layout/app_bar" />
 
         <RelativeLayout
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@color/background"
             android:paddingBottom="@dimen/activity_vertical_margin"
-            android:paddingTop="@dimen/activity_vertical_margin"
-            tools:context="com.sharpdroid.registroelettronico.OggiAScuola">
+            android:paddingTop="@dimen/activity_vertical_margin">
 
             <android.support.v7.widget.CardView
                 android:id="@+id/CardviewPresente"
-                android:layout_width="match_parent"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
-                card_view:cardBackgroundColor="#fff">
+                card_view:cardBackgroundColor="#ffffffff">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="10dp">
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="10.0dip">
 
                     <TextView
                         android:id="@+id/Statoutente"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="fill_parent"
                         android:text="@string/caricamento_dati_in_corso"
                         android:textColor="@color/textcolorgrey" />
 
                     <TextView
                         android:id="@+id/StatoutenteEff"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginStart="5dp"
+                        android:layout_height="fill_parent"
+                        android:layout_marginLeft="5.0dip"
                         android:text=""
                         android:textColor="@color/greenmaterial"
                         android:textStyle="bold" />
-
                 </LinearLayout>
-
             </android.support.v7.widget.CardView>
 
             <android.support.v4.widget.SwipeRefreshLayout
                 android:id="@+id/swiperefreshOggiScuola"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
                 android:layout_below="@+id/CardviewPresente"
-                android:layout_marginBottom="60dp">
+                android:layout_marginBottom="60.0dip">
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/OggiScuolCardList"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:scrollbars="vertical">
-
-                </android.support.v7.widget.RecyclerView>
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:clipToPadding="false"
+                    android:paddingBottom="8.0dip"
+                    android:scrollbars="vertical" />
             </android.support.v4.widget.SwipeRefreshLayout>
-
         </RelativeLayout>
-
     </LinearLayout>
 
     <com.sharpdroid.registroelettronico.SharpLibrary.Ranger
         android:id="@+id/HorizzontalCalendar"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:scrollbarSize="4dp"
-        app:alwaysDisplayMonth="true"
-        app:dayTextColor="#dddddd"
-        app:daysContainerBackgroundColor="@color/colorPrimary"
-        app:displayDayOfWeek="true"
-        app:selectedDayBackgroundColor="@color/colorAccent"
-        app:selectedDayTextColor="#eeeeee" />
-
+        android:scrollbarSize="4.0dip"
+        card_view:alwaysDisplayMonth="true"
+        card_view:dayTextColor="#ffdddddd"
+        card_view:daysContainerBackgroundColor="@color/colorPrimary"
+        card_view:displayDayOfWeek="true"
+        card_view:selectedDayBackgroundColor="@color/colorAccent"
+        card_view:selectedDayTextColor="#ffeeeeee" />
 </android.support.design.widget.CoordinatorLayout>
