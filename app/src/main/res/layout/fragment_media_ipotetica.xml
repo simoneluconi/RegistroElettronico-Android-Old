@@ -13,38 +13,36 @@
         android:textColor="@color/textcolorgrey" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="10dp">
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="10.0dip">
 
         <fr.ganfra.materialspinner.MaterialSpinner
             android:id="@+id/spinner"
-            android:layout_width="100dp"
+            android:layout_width="100.0dip"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="20.0dip"
             android:background="@color/textcolor"
             app:ms_arrowColor="@color/colorAccent"
-            app:ms_arrowSize="12dp"
+            app:ms_arrowSize="12.0dip"
             app:ms_baseColor="@color/colorAccent" />
 
         <RelativeLayout
-            android:layout_width="0dp"
+            android:layout_width="0.0dip"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_weight="1"
+            android:layout_marginRight="15.0dip"
+            android:layout_weight="1.0"
             android:gravity="end">
 
             <com.github.rahatarmanahmed.cpv.CircularProgressView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/progressMediaIpotetica"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="70.0dip"
+                android:layout_height="70.0dip"
                 android:layout_centerInParent="true"
                 app:cpv_animAutostart="true"
                 app:cpv_indeterminate="false"
-                app:cpv_progress="80"
-                app:cpv_thickness="5dp" />
+                app:cpv_progress="80.0"
+                app:cpv_thickness="5.0dip" />
 
             <TextView
                 android:id="@+id/MediaIpTx"
@@ -53,8 +51,7 @@
                 android:layout_centerInParent="true"
                 android:text="@string/_8_22"
                 android:textColor="@color/textcolorgrey"
-                android:textSize="15sp" />
-
+                android:textSize="15.0sp" />
         </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

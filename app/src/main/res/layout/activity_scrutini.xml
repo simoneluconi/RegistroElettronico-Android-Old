@@ -1,45 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/CoordinatorScrutini"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.sharpdroid.registroelettronico.Scrutini">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:orientation="vertical">
 
         <include
             android:id="@+id/app_bar"
             layout="@layout/app_bar" />
 
-
         <RelativeLayout
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@color/background"
-            tools:context="com.sharpdroid.registroelettronico.Circolari">
+            android:background="@color/background">
 
             <android.support.v4.widget.SwipeRefreshLayout
                 android:id="@+id/swiperefreshScrutini"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/ScrutiniCardList"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:scrollbars="vertical">
-
-                </android.support.v7.widget.RecyclerView>
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:clipToPadding="false"
+                    android:paddingBottom="8.0dip"
+                    android:scrollbars="vertical" />
             </android.support.v4.widget.SwipeRefreshLayout>
-
         </RelativeLayout>
-
-
     </LinearLayout>
-
 </android.support.design.widget.CoordinatorLayout>

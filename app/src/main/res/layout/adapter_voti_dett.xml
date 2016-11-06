@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
@@ -8,25 +8,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="20dp"
-        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20.0dip"
         android:gravity="center_horizontal">
 
         <TextView
             android:id="@+id/textVoto"
-            android:layout_width="40dp"
+            android:layout_width="40.0dip"
             android:layout_height="wrap_content"
             android:text="@string/_5"
-            android:textSize="25sp" />
-
+            android:textSize="25.0sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginBottom="15.0dip"
+        android:layout_marginRight="15.0dip"
         android:orientation="vertical">
 
         <TextView
@@ -40,9 +37,8 @@
             android:id="@+id/commento"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="3.0dip"
             android:text="@string/lorem2"
             android:textColor="@color/textcolorgrey" />
-
     </LinearLayout>
 </LinearLayout>

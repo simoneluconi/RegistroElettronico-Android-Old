@@ -2,27 +2,25 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/LezioneCv"
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/activity_horizontal_margin"
     android:layout_marginRight="@dimen/activity_horizontal_margin"
-    android:layout_marginTop="10dp"
-    card_view:cardBackgroundColor="#fff">
+    android:layout_marginTop="10.0dip"
+    card_view:cardBackgroundColor="#ffffffff">
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginBottom="10dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp">
+        android:layout_marginBottom="10.0dip"
+        android:layout_marginLeft="10.0dip"
+        android:layout_marginRight="20.0dip"
+        android:layout_marginTop="10.0dip">
 
         <LinearLayout
             android:id="@+id/LezionePrimoLay"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content">
 
             <TextView
@@ -31,18 +29,16 @@
                 android:layout_height="wrap_content"
                 android:text="@string/prof_severus_piton"
                 android:textColor="@color/material_blue_grey"
-                android:textSize="18sp" />
+                android:textSize="18.0sp" />
 
             <TextView
                 android:id="@+id/LezioneData"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:layout_marginStart="3dp"
+                android:layout_marginLeft="3.0dip"
                 android:text="@string/_14_12_2015"
                 android:textColor="@color/material_blue_grey"
-                android:textSize="12sp" />
-
+                android:textSize="12.0sp" />
         </LinearLayout>
 
         <TextView
@@ -50,12 +46,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/LezionePrimoLay"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="3.0dip"
             android:text="@string/lorem1"
             android:textColor="@color/textcolorgrey"
-            android:textColorLink="#0099ff"
-            android:textSize="13sp"
+            android:textColorLink="#ff0099ff"
+            android:textSize="13.0sp"
             android:visibility="visible" />
-
     </RelativeLayout>
 </android.support.v7.widget.CardView>
