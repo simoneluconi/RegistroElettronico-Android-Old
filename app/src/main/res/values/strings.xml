@@ -35,10 +35,10 @@
     <string name="impostaobb">Imposta obiettivo</string>
     <string name="ultimaversione">Non hai l\'ultima versione dell\'app. Aggiornala dal play store!</string>
     <string name="impostaobbdes">Seleziona il voto a cui vuoi arrivare o che vuoi mantenere</string>
-    <string name="toast_crash">E\' stato rilevato un problema, verrà segnalato allo sviluppatore. Se puoi contattaci via mail: luconi.simone@gmail.com, risolveremo il problema più velocemente.</string>
+    <string name="toast_crash">E\' stato rilevato un problema, verrà segnalato allo sviluppatore. Se puoi contattaci via mail: bugreport@registro.ml, risolveremo il problema più velocemente.</string>
     <string name="modificaevento">Cosa vuoi fare?</string>
     <string name="permission_rationale">Il permesso per leggere i contatti è richiesto per l\'autocompletamento della mail.</string>
-    <string name="disclamer">Se avete problemi di accesso contattaci via mail (luconi.simone@gmail.com), una recensione negativa non risolverà il problema. \nQuest\'app funziona solamente con il registro elettronico Spaggiari.\nNon siamo in alcun modo legati al gruppo Spaggiari</string>
+    <string name="disclamer">Se avete problemi di accesso contattaci via mail (bugreport@registro.ml), una recensione negativa non risolverà il problema.\nSe vi compare il messaggio di credenziali sbagliate non contattateci, sicuramente i dati inseriti sono sbagliati e non possiamo farci niente.\nQuest\'app funziona solamente con il registro elettronico Spaggiari.\nNon siamo in alcun modo legati al gruppo Spaggiari</string>
     <string name="aggacc">Aggiungi Account</string>
     <string name="eliminaacc">Elimina Account</string>
     <string name="eliminaaccdes">Voi davvero eliminare l\'account %1$s?</string>
@@ -71,7 +71,7 @@
     <string name="ultima_cosa_titolo">Un ultima cosa</string>
     <string name="ultima_cosa_desc">Abbiamo bisogno dei permessi di archiviazione per scaricare le circolari e i file dalla didattica</string>
     <string name="sei_pronto_titolo">Sei pronto!</string>
-    <string name="sei_pronto_desc">Ora sei pronto per utilizzare al meglio quest app. Ricorda, per qualsiasi problema contattaci a luconi.simone@gmail.com</string>
+    <string name="sei_pronto_desc">Ora sei pronto per utilizzare al meglio quest app. Ricorda, per qualsiasi problema contattaci a bugreport@registro.ml</string>
 
     <string name="prosegui">Prosegui</string>
     <string name="seleziona_percorso">Seleziona un percorso</string>
