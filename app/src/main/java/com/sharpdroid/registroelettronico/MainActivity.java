@@ -1606,6 +1606,17 @@ public class MainActivity extends AppCompatActivity {
             compactCalendarView = (CompactCalendarView) layout.findViewById(R.id.compactcalendar);
             compactCalendarView.setLocale(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);
             compactCalendarView.setUseThreeLetterAbbreviation(true);
+            compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
+                @Override
+                public void onDayClick(Date dateClicked) {
+                    fab.show();
+                }
+
+                @Override
+                public void onMonthScroll(Date firstDayOfNewMonth) {
+                    fab.show();
+                }
+            });
 
             final TextView txMese = (TextView) layout.findViewById(R.id.mesetx);
             CardViewCal = (CardView) layout.findViewById(R.id.calendarLay);
@@ -1630,12 +1641,11 @@ public class MainActivity extends AppCompatActivity {
 
             if (position == 4) {
                 fab.setVisibility(View.VISIBLE);
-                if (CardViewCal != null) {
-                    CardViewCal.setVisibility(View.VISIBLE);
-                }
+                if (CardViewCal != null) CardViewCal.setVisibility(View.VISIBLE);
             } else {
-                if (CardViewCal != null) CardViewCal.setVisibility(View.GONE);
+                ((CoordinatorLayout.LayoutParams) fab.getLayoutParams()).setBehavior(null);
                 fab.setVisibility(View.GONE);
+                if (CardViewCal != null) CardViewCal.setVisibility(View.GONE);
             }
 
             switch (position) {
