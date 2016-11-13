@@ -82,6 +82,6 @@
         android:layout_margin="16.0dip"
         android:src="@drawable/plus"
         app:layout_anchor="@+id/cardList"
-        app:layout_anchorGravity="end|center|bottom"
+        app:layout_anchorGravity="end|bottom"
         app:layout_behavior="com.sharpdroid.registroelettronico.SharpLibrary.ScrollAwareFABBehavior" />
 </android.support.design.widget.CoordinatorLayout>
