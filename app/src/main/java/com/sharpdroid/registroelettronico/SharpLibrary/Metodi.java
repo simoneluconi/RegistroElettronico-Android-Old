@@ -432,9 +432,9 @@ public class Metodi {
     }
 
     public static double ConvertiInVoto(String voto) {
-        String tmp;
         double VotoEff = -1;
         try {
+            String tmp;
             if (voto.length() == 2) {
                 if (voto.contains("+")) {
                     tmp = voto.replace("+", ".25").trim();
@@ -469,17 +469,15 @@ public class Metodi {
                     }
                 }
             } else if (voto.length() == 4) {
-                if (VotoValido(voto))
+                if (VotoValido(voto)) {
                     VotoEff = Double.parseDouble(voto);
-            } else if (voto.length() == 5) {
-                if (voto.contains("1/2")) {
-                    tmp = voto.replace(" 1/2", ".5");
-                    if (VotoValido(tmp)) {
-                        VotoEff = Double.parseDouble(tmp);
-                    }
+                }
+            } else if (voto.length() == 5 && voto.contains("1/2")) {
+                tmp = voto.replace(" 1/2", ".5");
+                if (VotoValido(tmp)) {
+                    VotoEff = Double.parseDouble(tmp);
                 }
             }
-
             return VotoEff;
         } catch (Exception e) {
             e.printStackTrace();
@@ -487,7 +485,6 @@ public class Metodi {
             ACRA.getErrorReporter().handleException(e, false);
             return -1;
         }
-
     }
 
     public static SpannableString MessaggioVoto(double Obb, double media, double somma, int dim) {
