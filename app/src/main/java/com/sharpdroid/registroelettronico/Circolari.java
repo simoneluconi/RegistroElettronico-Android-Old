@@ -77,12 +77,7 @@ public class Circolari extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(view -> finish());
 
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayoutCirc);
         adapter = new RVAdapter();
@@ -99,14 +94,11 @@ public class Circolari extends AppCompatActivity {
                 R.color.orangematerial);
         swipeRefreshLayout.setEnabled(true);
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (isNetworkAvailable(Circolari.this))
-                    new GetStringFromUrl().execute(MainActivity.BASE_URL + "/sif/app/default/bacheca_utente.php");
-                else
-                    Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
-            }
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (isNetworkAvailable(Circolari.this))
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/sif/app/default/bacheca_utente.php");
+            else
+                Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
         });
 
         if (isNetworkAvailable(Circolari.this)) {
@@ -161,13 +153,10 @@ public class Circolari extends AppCompatActivity {
                 Tipo = (TextView) itemView.findViewById(R.id.OggiScuolaDes);
 
 
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String id = Circolaris.get(getAdapterPosition()).getId();
-                        if (!id.equals(""))
-                            new GetStringFromUrl().execute(MainActivity.BASE_URL + "/sif/app/default/bacheca_utente.php?action=file_download&com_id=" + id);
-                    }
+                itemView.setOnClickListener(v -> {
+                    String id = Circolaris.get(getAdapterPosition()).getId();
+                    if (!id.equals(""))
+                        new GetStringFromUrl().execute(MainActivity.BASE_URL + "/sif/app/default/bacheca_utente.php?action=file_download&com_id=" + id);
                 });
             }
 
@@ -185,12 +174,7 @@ public class Circolari extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             if (swipeRefreshLayout != null)
-                swipeRefreshLayout.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefreshLayout.setRefreshing(true);
-                    }
-                });
+                swipeRefreshLayout.post(() -> swipeRefreshLayout.setRefreshing(true));
         }
 
         @Override

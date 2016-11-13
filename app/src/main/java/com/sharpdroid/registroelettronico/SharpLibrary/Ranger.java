@@ -155,24 +155,21 @@ public class Ranger extends HorizontalScrollView implements View.OnClickListener
 
     private void setSelectedDay(final int day, final boolean notifyListeners, long delay) {
         //Post delayed 300 ms at most because of redraw
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //Deselect day selected
-                if (mSelectedDay > 0)
-                    unSelectDay(mSelectedDay);
+        new Handler().postDelayed(() -> {
+            //Deselect day selected
+            if (mSelectedDay > 0)
+                unSelectDay(mSelectedDay);
 
-                //Set selected day
-                mSelectedDay = day;
-                selectDay(mSelectedDay);
+            //Set selected day
+            mSelectedDay = day;
+            selectDay(mSelectedDay);
 
-                //Scroll to DayView
-                scrollToDayView(mSelectedDayView);
+            //Scroll to DayView
+            scrollToDayView(mSelectedDayView);
 
-                //Call listener
-                if (notifyListeners && mListener != null)
-                    mListener.onDaySelected(mSelectedDay);
-            }
+            //Call listener
+            if (notifyListeners && mListener != null)
+                mListener.onDaySelected(mSelectedDay);
         }, delay);
     }
 

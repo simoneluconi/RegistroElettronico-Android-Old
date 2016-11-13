@@ -73,12 +73,7 @@ public class OggiAScuola extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(view -> finish());
 
         context = this;
         adapter = new RVAdapter(oggiScuola);
@@ -96,25 +91,22 @@ public class OggiAScuola extends AppCompatActivity {
         swipeRefreshLayout.setEnabled(true);
         Ranger ranger = (Ranger) findViewById(R.id.HorizzontalCalendar);
 
-        ranger.setDayViewOnClickListener(new Ranger.DayViewOnClickListener() {
-            @Override
-            public void onDaySelected(int day) {
-                SelectedDay = day;
-                TextView statoUtente = (TextView) findViewById(R.id.Statoutente);
-                Calendar cl = Calendar.getInstance();
-                String data = cl.get(Calendar.YEAR) + "-" + (cl.get(Calendar.MONTH) + 1) + "-" + day;
-                if (isNetworkAvailable(OggiAScuola.this)) {
-                    new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/regclasse.php?cerca=:cerca:&data_start=" + data);
-                } else
-                    Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
+        ranger.setDayViewOnClickListener(day -> {
+            SelectedDay = day;
+            TextView statoUtente = (TextView) findViewById(R.id.Statoutente);
+            Calendar cl = Calendar.getInstance();
+            String data = cl.get(Calendar.YEAR) + "-" + (cl.get(Calendar.MONTH) + 1) + "-" + day;
+            if (isNetworkAvailable(OggiAScuola.this)) {
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/regclasse.php?cerca=:cerca:&data_start=" + data);
+            } else
+                Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
 
-                int gg = cl.get(Calendar.DAY_OF_MONTH);
-                if (gg > day)
-                    statoUtente.setText(getString(R.string.ero));
-                else if (gg == day)
-                    statoUtente.setText(getString(R.string.oggi));
-                else statoUtente.setText(getString(R.string.saro));
-            }
+            int gg = cl.get(Calendar.DAY_OF_MONTH);
+            if (gg > day)
+                statoUtente.setText(getString(R.string.ero));
+            else if (gg == day)
+                statoUtente.setText(getString(R.string.oggi));
+            else statoUtente.setText(getString(R.string.saro));
         });
         if (isNetworkAvailable(OggiAScuola.this)) {
             if (msCookieManager.getCookieStore().getCookies().isEmpty())
@@ -124,17 +116,14 @@ public class OggiAScuola extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
 
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (isNetworkAvailable(OggiAScuola.this)) {
-                    Calendar cl = Calendar.getInstance();
-                    String data = cl.get(Calendar.YEAR) + "-" + (cl.get(Calendar.MONTH) + 1) + "-" + SelectedDay;
-                    new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/regclasse.php?cerca=:cerca:&data_start=" + data);
-                } else {
-                    swipeRefreshLayout.setRefreshing(false);
-                    Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
-                }
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (isNetworkAvailable(OggiAScuola.this)) {
+                Calendar cl = Calendar.getInstance();
+                String data = cl.get(Calendar.YEAR) + "-" + (cl.get(Calendar.MONTH) + 1) + "-" + SelectedDay;
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/regclasse.php?cerca=:cerca:&data_start=" + data);
+            } else {
+                swipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -207,12 +196,7 @@ public class OggiAScuola extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            swipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    swipeRefreshLayout.setRefreshing(true);
-                }
-            });
+            swipeRefreshLayout.post(() -> swipeRefreshLayout.setRefreshing(true));
         }
 
         @Override
