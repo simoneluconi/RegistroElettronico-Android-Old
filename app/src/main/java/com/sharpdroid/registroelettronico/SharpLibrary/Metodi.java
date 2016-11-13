@@ -19,6 +19,7 @@ import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.sharpdroid.registroelettronico.MainActivity;
 import com.sharpdroid.registroelettronico.Notifiche;
 import com.sharpdroid.registroelettronico.R;
@@ -27,9 +28,7 @@ import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyAccount;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyDB;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Nota;
-import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Voto;
 
-import org.acra.ACRA;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONObject;
@@ -481,8 +480,8 @@ public class Metodi {
             return VotoEff;
         } catch (Exception e) {
             e.printStackTrace();
-            ACRA.getErrorReporter().putCustomData("Voto", voto);
-            ACRA.getErrorReporter().handleException(e, false);
+            Crashlytics.logException(e);
+            Crashlytics.log(Log.ERROR, "Voto", voto);
             return -1;
         }
     }

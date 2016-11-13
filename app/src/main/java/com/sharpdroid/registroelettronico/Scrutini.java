@@ -33,7 +33,6 @@ import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.ScrutiniFile;
 import com.squareup.picasso.Picasso;
 
-import org.acra.ACRA;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -388,7 +387,6 @@ public class Scrutini extends AppCompatActivity {
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                ACRA.getErrorReporter().handleException(e, false);
                             }
                         }
                     }

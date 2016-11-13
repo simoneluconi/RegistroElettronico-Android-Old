@@ -69,6 +69,9 @@
             android:exported="false"
             tools:ignore="InnerclassSeparator" />
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="8b29d0aee517466f97760350ec281c964e887cbd" />
     </application>
 
 </manifest>
