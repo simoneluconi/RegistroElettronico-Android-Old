@@ -1350,7 +1350,9 @@ public class MainActivity extends AppCompatActivity {
                         final String appPackageName = context.getPackageName();
                         PackageInfo pInfo = context.getPackageManager().getPackageInfo(appPackageName, 0);
                         int verCode = pInfo.versionCode;
-                        String verCodeTmp = Jsoup.parse(result).select(".details-section-contents").get(4).select("div").get(12).text().trim();
+
+                        Elements s = Jsoup.parse(result).select(".details-section-contents").get(4).select("div");
+                        String verCodeTmp = s.get(12).text().trim();
                         int lastverCode = Integer.parseInt(verCodeTmp);
 
                         if (verCode < lastverCode) {
