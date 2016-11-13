@@ -32,11 +32,16 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            debuggable false
+            zipAlignEnabled true
+            shrinkResources false
+            minifyEnabled true
+            useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
         debug {
+            debuggable true
             ext.enableCrashlytics = false
         }
     }
