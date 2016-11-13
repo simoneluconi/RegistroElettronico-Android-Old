@@ -93,26 +93,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         context = this;
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
+        mPasswordView.setOnEditorActionListener((textView, id, keyEvent) -> {
+            if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                attemptLogin();
+                return true;
             }
+            return false;
         });
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
 
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isNetworkAvailable(LoginActivity.this))
-                    attemptLogin();
-                else
-                    Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
-            }
+        mEmailSignInButton.setOnClickListener(view -> {
+            if (isNetworkAvailable(LoginActivity.this))
+                attemptLogin();
+            else
+                Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
         });
 
         mLoginFormView = findViewById(R.id.login_form);
@@ -154,13 +148,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
         if (shouldShowRequestPermissionRationale(GET_ACCOUNTS)) {
             Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{GET_ACCOUNTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
+                    .setAction(android.R.string.ok, v -> requestPermissions(new String[]{GET_ACCOUNTS}, REQUEST_READ_CONTACTS));
         } else {
             requestPermissions(new String[]{GET_ACCOUNTS}, REQUEST_READ_CONTACTS);
         }
@@ -389,11 +377,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     Nome = ProfDecente(info.getString("cognome") + " " + info.getString("nome"));
                     final String tipo = info.getString("type");
 
-                    LoginActivity.this.runOnUiThread(new Runnable() {
-                        public void run() {
-                            if (tipo.equals("G"))
-                                Toast.makeText(LoginActivity.this, "Salve genitore! Mi raccomando, non stressare troppo tuo/a figlio/a", Toast.LENGTH_LONG).show();
-                        }
+                    LoginActivity.this.runOnUiThread(() -> {
+                        if (tipo.equals("G"))
+                            Toast.makeText(LoginActivity.this, "Salve genitore! Mi raccomando, non stressare troppo tuo/a figlio/a", Toast.LENGTH_LONG).show();
                     });
 
                     CancellaPagineLocali(LoginActivity.this);

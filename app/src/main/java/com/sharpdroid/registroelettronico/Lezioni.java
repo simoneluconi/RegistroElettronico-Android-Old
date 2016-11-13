@@ -72,12 +72,7 @@ public class Lezioni extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(view -> finish());
 
         mPager = (ViewPager) findViewById(R.id.pagerLezioni);
 

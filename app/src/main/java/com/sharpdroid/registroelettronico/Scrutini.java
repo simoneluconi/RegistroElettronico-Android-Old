@@ -81,12 +81,7 @@ public class Scrutini extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(view -> finish());
 
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.CoordinatorScrutini);
         context = this;
@@ -105,14 +100,11 @@ public class Scrutini extends AppCompatActivity {
                 R.color.orangematerial);
         swipeRefreshLayout.setEnabled(true);
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (isNetworkAvailable(Scrutini.this)) {
-                    new GetStringFromUrl().execute(MainActivity.BASE_URL + "/sol/app/default/documenti_sol.php");
-                } else
-                    Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
-            }
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (isNetworkAvailable(Scrutini.this)) {
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/sol/app/default/documenti_sol.php");
+            } else
+                Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
         });
 
         if (isNetworkAvailable(Scrutini.this)) {
@@ -164,13 +156,10 @@ public class Scrutini extends AppCompatActivity {
                 imageView = (ImageView) itemView.findViewById(R.id.imageViewScrutini);
 
 
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String link = scrutiniFiles.get(getAdapterPosition()).getLink();
-                        if (link != null)
-                            new GetStringFromUrl().execute(link);
-                    }
+                itemView.setOnClickListener(v -> {
+                    String link = scrutiniFiles.get(getAdapterPosition()).getLink();
+                    if (link != null)
+                        new GetStringFromUrl().execute(link);
                 });
             }
 
@@ -188,12 +177,7 @@ public class Scrutini extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             if (swipeRefreshLayout != null)
-                swipeRefreshLayout.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefreshLayout.setRefreshing(true);
-                    }
-                });
+                swipeRefreshLayout.post(() -> swipeRefreshLayout.setRefreshing(true));
         }
 
         @Override
