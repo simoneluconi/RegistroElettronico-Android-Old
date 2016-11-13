@@ -22,7 +22,6 @@ import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Compito;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyDB;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
 
-import org.acra.ACRA;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -425,7 +424,6 @@ public class Notifiche extends BroadcastReceiver {
                                     nFile += jsonarray.length();
                                 } catch (Exception e) {
                                     e.printStackTrace();
-                                    ACRA.getErrorReporter().handleException(e, false);
                                 }
 
                                 SharedPreferences sharePref = ct.getSharedPreferences("Dati", Context.MODE_PRIVATE);

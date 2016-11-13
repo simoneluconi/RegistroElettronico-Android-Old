@@ -37,9 +37,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
 
-import org.acra.ACRA;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -415,11 +415,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             } catch (org.json.JSONException e) {
                 e.printStackTrace();
-                ACRA.getErrorReporter().handleException(e, false);
                 ErrMsg = getString(R.string.errore_più_account);
             } catch (Exception e) {
                 e.printStackTrace();
-                ACRA.getErrorReporter().handleException(e, false);
+                Crashlytics.logException(e);
                 ErrMsg = e.getLocalizedMessage();
             }
 

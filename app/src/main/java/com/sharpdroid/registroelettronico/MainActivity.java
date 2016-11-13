@@ -61,11 +61,10 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.crashlytics.android.Crashlytics;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -97,7 +96,6 @@ import com.sharpdroid.registroelettronico.SharpLibrary.ClockView;
 import com.sharpdroid.registroelettronico.SharpLibrary.VotiDettAdp;
 import com.squareup.picasso.Picasso;
 
-import org.acra.ACRA;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
@@ -173,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
     public static final int CONTROLLO_VOTI_ID = 111101;
     static final String FILE_PROVIDER_STRING = "com.sharpdroid.fileprovider";
     public static final String SEPARATORE_MATERIE = "grautext open_sans_condensed_bold font_size_14";
-    private static Tracker mTracker;
     private static String DataCal = null; //Data da aprire nel calendario dalla notifica
     static final CookieManager msCookieManager = new CookieManager(null, CookiePolicy.ACCEPT_ALL); //Gestore Cookie
     private static ViewPager mPager;
@@ -357,10 +354,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
-        context = getApplicationContext();
-        App application = (App) getApplication();
-        mTracker = application.getDefaultTracker();
 
+        context = getApplicationContext();
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setOffscreenPageLimit(6);
         mPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
@@ -785,8 +780,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        mTracker.setScreenName("MainActivity");
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.cancelAll(); //Cancello tutte le notifiche dell'app se ci sono
     }
@@ -1352,7 +1345,7 @@ public class MainActivity extends AppCompatActivity {
                         int verCode = pInfo.versionCode;
 
                         Elements s = Jsoup.parse(result).select(".details-section-contents").get(4).select("div");
-                        String verCodeTmp = s.get(12).text().trim();
+                        String verCodeTmp = s.get(9).text().trim();
                         int lastverCode = Integer.parseInt(verCodeTmp);
 
                         if (verCode < lastverCode) {
@@ -1495,7 +1488,7 @@ public class MainActivity extends AppCompatActivity {
                                     nFile += jsonarray.length();
                                 } catch (Exception e) {
                                     e.printStackTrace();
-                                    ACRA.getErrorReporter().handleException(e, false);
+                                    Crashlytics.logException(e);
                                 }
 
                                 AggiornaFileScrutini(nFile);
@@ -1637,7 +1630,6 @@ public class MainActivity extends AppCompatActivity {
 
             if (position == 4) {
                 fab.setVisibility(View.VISIBLE);
-
                 if (CardViewCal != null) {
                     CardViewCal.setVisibility(View.VISIBLE);
                 }
@@ -2367,7 +2359,7 @@ public class MainActivity extends AppCompatActivity {
                         ViewHolder.data.setText(s);
                         ViewHolder.Des.setText(CVDataList.get(i).des);
                     } catch (Exception e) {
-                        ACRA.getErrorReporter().handleException(e, false);
+                        Crashlytics.logException(e);
                     }
                 } else {
                     ViewHolder.LayoutData.setVisibility(View.GONE);
