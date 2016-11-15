@@ -64,6 +64,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginBottom="5.0dip"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:text="@string/matematica"
                 android:textColor="@color/material_blue_grey"
                 android:textSize="18.0sp" />
@@ -75,6 +77,8 @@
                 android:layout_below="@+id/Materia"
                 android:layout_marginBottom="3.0dip"
                 android:autoLink="email|web"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:text="@string/devi_prendere_almeno_5"
                 android:textColor="@color/textcolorgrey"
                 android:textColorLink="#ff0099ff"
