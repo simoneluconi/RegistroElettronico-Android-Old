@@ -91,42 +91,6 @@ public class Metodi {
     }
 
     public static String MateriaDecente(String materia) {
-
-        materia = materia.toLowerCase();
-
-        if (materia.contains("matematica"))
-            materia = "Matematica";
-        else if (materia.contains("tecnologie e progettazione di sistemi"))
-            materia = "T.P.S.I.T.";
-        else if (materia.contains("italiano") || materia.contains("italiana"))
-            materia = "Lingua italiana";
-        else if (materia.contains("scienze motorie e sportive"))
-            materia = "Ginnastica";
-        else if (materia.contains("latino") || materia.contains("latina"))
-            materia = "Lingua latina";
-        else if (materia.contains("inglese"))
-            materia = "Lingua inglese";
-        else if (materia.contains("francese"))
-            materia = "Lingua francese";
-        else if (materia.contains("rappresentazione grafica"))
-            materia = "Tecnica";
-        else if (materia.contains("scienze della terra e biologia"))
-            materia = "Scienze";
-        else if (materia.contains("chimica"))
-            materia = "Chimica";
-        else if (materia.contains("fisica"))
-            materia = "Fisica";
-        else if (materia.contains("geografia") && !materia.toLowerCase().contains("storia"))
-            materia = "Geografia";
-        else if (materia.contains("geografia") && materia.toLowerCase().contains("storia"))
-            materia = "Geografia e storia";
-        else if (materia.toLowerCase().contains("religione"))
-            materia = "Religione";
-        else if (materia.toLowerCase().contains("storia") && !materia.toLowerCase().contains("arte"))
-            materia = "Storia";
-        else if (materia.toLowerCase().contains("storia") && materia.toLowerCase().contains("arte"))
-            materia = "Storia dell'arte";
-
         return InizialeMaiuscola(materia.trim());
     }
 
