@@ -646,7 +646,7 @@ public class MainActivity extends AppCompatActivity {
                                     uris.add(Uri.fromFile(backupDB));
 
                                     Intent intent_mail = new Intent(Intent.ACTION_SEND_MULTIPLE);
-                                    intent_mail.putExtra(Intent.EXTRA_EMAIL, new String[]{"bugreport@registro.ml"});
+                                    intent_mail.putExtra(Intent.EXTRA_EMAIL, new String[]{"bugreport@registroelettronico.ml"});
                                     intent_mail.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico");
                                     intent_mail.putExtra(Intent.EXTRA_TEXT, "Inviando questa mail invierai anche il contenuto di voti, agenda e note.\n");
                                     intent_mail.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
