@@ -2039,7 +2039,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 List<Nota> notas = ReadNote(context);
                                 for (Nota nota : notas)
-                                    CVDataList.add(new CVData(nota.getProf() + "(" + nota.getTipo() + ") - " + nota.getData(), nota.getContenuto(), "", 0f));
+                                    CVDataList.add(new CVData(nota.getProf() + "(" + nota.getTipo() + ") <Data> " + nota.getData(), nota.getContenuto(), "", 0f));
 
                                 adapter.notifyDataSetChanged();
 
@@ -2268,6 +2268,7 @@ public class MainActivity extends AppCompatActivity {
                     ViewHolder.Title.setTextColor(ContextCompat.getColor(context, R.color.redmaterial));
                 } else
                     ViewHolder.Title.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey));
+
                 ViewHolder.Title.setText(CVDataList.get(i).title);
 
                 if (CVDataList.get(i).dess != null)
@@ -2276,7 +2277,7 @@ public class MainActivity extends AppCompatActivity {
                     ViewHolder.Des.setText(CVDataList.get(i).des);
                 ViewHolder.Media.setText(CVDataList.get(i).media);
 
-                if (CVDataList.get(i).des.contains("<Agenda>")) //Se contiene "<Data>" fa parte della sezione agenda, quindi la splitto e la imposto
+                if (CVDataList.get(i).des.contains("<Agenda>")) //Se contiene "<Agenda>" fa parte della sezione agenda, quindi la splitto e la imposto
                 {
                     CVDataList.get(i).des = CVDataList.get(i).des.replace("<Agenda>", "");
                     ViewHolder.Des.setTextIsSelectable(true);
@@ -2304,6 +2305,17 @@ public class MainActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         Crashlytics.logException(e);
                     }
+                } else if (CVDataList.get(i).title.contains("<Data>")) {
+
+                    //Che orrore!
+                    String[] tmp = CVDataList.get(i).title.split("<Data>");
+                    String titolo = tmp[0].trim();
+                    String data = tmp[1].trim();
+                    SpannableString s = new SpannableString(data);
+                    s.setSpan(new StyleSpan(Typeface.BOLD), 0, data.length(), 0);
+                    ViewHolder.Title.setText(titolo);
+                    ViewHolder.data.setText(s);
+
                 } else {
                     ViewHolder.LayoutData.setVisibility(View.GONE);
                     ViewHolder.Des.setTextIsSelectable(false);
