@@ -39,11 +39,11 @@ public class Voto {
         int cm = c.get(Calendar.MONTH) + 1;
         int cy = c.get(Calendar.YEAR);
 
-        if (cm >= 9 && cm <= 12) {
+        if (cm >= 9 && cm <= 12)
             data += "/" + String.valueOf(mm >= 1 && mm <= 8 ? cy - 1 : cy);
-        } else {
+        else
             data += "/" + String.valueOf(mm >= 1 && mm <= 8 ? cy : cy - 1);
-        }
+
         this.data = data;
     }
 
