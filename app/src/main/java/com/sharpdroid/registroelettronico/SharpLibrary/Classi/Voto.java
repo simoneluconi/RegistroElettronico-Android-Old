@@ -34,11 +34,15 @@ public class Voto {
 
     public void setData(String data) {
 
+        Calendar c = Calendar.getInstance();
         int mm = Integer.parseInt(data.split("/")[1]);
-        if (mm >= 1 && mm <= 8) {
-            data = data + "/" + String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+        int cm = c.get(Calendar.MONTH) + 1;
+        int cy = c.get(Calendar.YEAR);
+
+        if (cm >= 9 && cm <= 12) {
+            data += "/" + String.valueOf(mm >= 1 && mm <= 8 ? cy - 1 : cy);
         } else {
-            data = data + "/" + String.valueOf(Calendar.getInstance().get(Calendar.YEAR) - 1);
+            data += "/" + String.valueOf(mm >= 1 && mm <= 8 ? cy : cy - 1);
         }
         this.data = data;
     }
