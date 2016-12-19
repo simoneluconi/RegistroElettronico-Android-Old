@@ -87,8 +87,8 @@ public class Compito {
 
 
     public boolean isVerifica() {
-        return contenuto.toLowerCase().contains("verifica") || contenuto.toLowerCase().contains("compito in classe") || contenuto.toLowerCase().contains("test ") ||
-                contenuto.toLowerCase().toLowerCase().endsWith("test");
+        return contenuto.toLowerCase().contains("verifica") || contenuto.toLowerCase().contains("compito in classe") || contenuto.toLowerCase().contains("prova ")
+                || contenuto.toLowerCase().contains("test ") || contenuto.toLowerCase().toLowerCase().endsWith("test");
     }
 
     public boolean isTuttoIlGiorno() {
