@@ -429,15 +429,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         List<Utente> utenti = new Gson().fromJson(fullList.toString(), new TypeToken<List<Utente>>() {
                         }.getType());
 
-                        List<String> nomiutenti = new ArrayList<>();
-                        for (Utente u : utenti) {
-                            nomiutenti.add(u.getNome());
-                        }
+                        String[] ut = new String[utenti.size()];
+
+                       for (int i = 0; i < utenti.size(); i++)
+                           ut[i] = utenti.get(i).getNome();
 
                         LoginActivity.this.runOnUiThread(() -> {
                             new MaterialDialog.Builder(LoginActivity.this)
                                     .title(R.string.selezionaaccount)
-                                    .items(nomiutenti)
+                                    .items(ut)
                                     .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                                         @Override
                                         public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
