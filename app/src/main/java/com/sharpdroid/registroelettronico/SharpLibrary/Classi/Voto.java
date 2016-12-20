@@ -36,7 +36,7 @@ public class Voto {
 
         Calendar c = Calendar.getInstance();
         int mm = Integer.parseInt(data.split("/")[1]);
-        int cm = c.get(Calendar.MONTH) + 1;
+        int cm = c.get(Calendar.MONTH);
         int cy = c.get(Calendar.YEAR);
 
         if (cm >= Calendar.SEPTEMBER && cm <= Calendar.DECEMBER)

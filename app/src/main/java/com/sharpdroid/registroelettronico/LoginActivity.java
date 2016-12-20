@@ -20,8 +20,10 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -37,11 +39,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.crashlytics.android.Crashlytics;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
+import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Utente;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -70,6 +80,7 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAv
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
     private static final int REQUEST_READ_CONTACTS = 0;
+    CookieManager msCookieManager = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
     private Context context;
     private String Nome = "";
     private String ErrMsg = "Errore sconosciuto";
@@ -112,6 +123,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
         populateAutoComplete();
+
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            String username = extras.getString("username");
+            String password = extras.getString("password");
+
+            mEmailView.setText(username);
+            mPasswordView.setText(password);
+
+            attemptLogin();
+        }
 
     }
 
@@ -337,7 +360,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             try {
                 url = new URL(url_car);
 
-                CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
+                CookieHandler.setDefault(msCookieManager);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setReadTimeout(5000);
                 conn.setConnectTimeout(5000);
@@ -364,44 +387,90 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         sb.append(line);
                     }
 
-                    JSONObject jo = new JSONObject(sb.toString()).getJSONObject("data").getJSONObject("auth");
+                    JSONObject jo = new JSONObject(sb.toString()).getJSONObject("data");
 
-                    JSONArray errors = jo.getJSONArray("errors");
+                    JSONObject authdata = jo.getJSONObject("auth");
+
+                    JSONArray errors = authdata.getJSONArray("errors");
                     if (errors.length() > 0) {
                         ErrMsg = errors.getString(0);
                         return false;
                     }
 
-                    JSONObject info = jo.getJSONObject("accountInfo");
+                    if (authdata.getBoolean("verified") && authdata.getBoolean("loggedIn")) {
 
-                    Nome = ProfDecente(info.getString("cognome") + " " + info.getString("nome"));
-                    final String tipo = info.getString("type");
+                        JSONObject info = authdata.getJSONObject("accountInfo");
 
-                    LoginActivity.this.runOnUiThread(() -> {
-                        if (tipo.equals("G"))
-                            Toast.makeText(LoginActivity.this, "Salve genitore! Mi raccomando, non stressare troppo tuo/a figlio/a", Toast.LENGTH_LONG).show();
-                    });
+                        if (info.length() == 0 && errors.length() == 0)
+                            System.out.print("Più account associati");
 
-                    CancellaPagineLocali(LoginActivity.this);
-                    SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    SQLiteDatabase db = new MyUsers(context).getWritableDatabase();
-                    Cursor c = db.rawQuery("SELECT * FROM " + MyUsers.UserEntry.TABLE_NAME, null);
-                    int count = c.getCount();
-                    c.close();
-                    db.close();
-                    editor.putInt("CurrentProfile", count + 1);
-                    editor.apply();
+                        Nome = ProfDecente(info.getString("cognome") + " " + info.getString("nome"));
+                        final String tipo = info.getString("type");
+                        LoginActivity.this.runOnUiThread(() -> {
+                            if (tipo.equals("G"))
+                                Toast.makeText(LoginActivity.this, "Salve genitore! Mi raccomando, non stressare troppo tuo/a figlio/a", Toast.LENGTH_LONG).show();
+                        });
 
-                    return true;
+                        CancellaPagineLocali(LoginActivity.this);
+                        SharedPreferences sharedPref = getSharedPreferences("Dati", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        SQLiteDatabase db = new MyUsers(context).getWritableDatabase();
+                        Cursor c = db.rawQuery("SELECT * FROM " + MyUsers.UserEntry.TABLE_NAME, null);
+                        int count = c.getCount();
+                        c.close();
+                        db.close();
+                        editor.putInt("CurrentProfile", count + 1);
+                        editor.apply();
+
+                        return true;
+                    } else {
+                        JSONArray fullList = jo.getJSONObject("pfolio").getJSONArray("fullList");
+
+                        List<Utente> utenti = new Gson().fromJson(fullList.toString(), new TypeToken<List<Utente>>() {
+                        }.getType());
+
+                        List<String> nomiutenti = new ArrayList<>();
+                        for (Utente u : utenti) {
+                            nomiutenti.add(u.getNome());
+                        }
+
+                        LoginActivity.this.runOnUiThread(() -> {
+                            new MaterialDialog.Builder(LoginActivity.this)
+                                    .title(R.string.selezionaaccount)
+                                    .items(nomiutenti)
+                                    .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+                                        @Override
+                                        public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+
+                                            Utente u = utenti.get(which);
+
+                                            Intent i = new Intent(LoginActivity.this, LoginActivity.class);
+                                            i.putExtra("username", u.getAccount_string());
+                                            i.putExtra("password", mPassword);
+
+                                            startActivity(i);
+
+                                            finish();
+
+                                            return true;
+                                        }
+                                    })
+                                    .positiveText(R.string.scegli)
+                                    .theme(Theme.LIGHT)
+                                    .titleColor(ContextCompat.getColor(context, R.color.md_black_1000))
+                                    .contentColor(ContextCompat.getColor(context, R.color.md_black_1000))
+                                    .positiveColor(ContextCompat.getColor(context, R.color.accent))
+                                    .show();
+                        });
+
+                        ErrMsg = getString(R.string.selezionaaccount);
+                        return false;
+                    }
                 } else {
                     response = "";
                     return false;
 
                 }
-            } catch (org.json.JSONException e) {
-                e.printStackTrace();
-                ErrMsg = getString(R.string.errore_più_account);
             } catch (Exception e) {
                 e.printStackTrace();
                 Crashlytics.logException(e);
