@@ -20,7 +20,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -28,20 +27,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
@@ -49,9 +44,6 @@ import com.sharpdroid.registroelettronico.SharpLibrary.Classi.Utente;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -431,8 +423,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                         String[] ut = new String[utenti.size()];
 
-                       for (int i = 0; i < utenti.size(); i++)
-                           ut[i] = utenti.get(i).getNome();
+                        for (int i = 0; i < utenti.size(); i++)
+                            ut[i] = utenti.get(i).getNome();
 
                         LoginActivity.this.runOnUiThread(() -> {
                             new MaterialDialog.Builder(LoginActivity.this)
@@ -473,7 +465,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Crashlytics.logException(e);
                 ErrMsg = e.getLocalizedMessage();
             }
 
