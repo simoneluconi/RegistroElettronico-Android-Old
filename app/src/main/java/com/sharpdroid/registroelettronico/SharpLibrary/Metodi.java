@@ -19,7 +19,6 @@ import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
 import com.sharpdroid.registroelettronico.MainActivity;
 import com.sharpdroid.registroelettronico.Notifiche;
 import com.sharpdroid.registroelettronico.R;
@@ -444,8 +443,6 @@ public class Metodi {
             return VotoEff;
         } catch (Exception e) {
             e.printStackTrace();
-            Crashlytics.logException(e);
-            Crashlytics.log(Log.ERROR, "Voto", voto);
             return -1;
         }
     }

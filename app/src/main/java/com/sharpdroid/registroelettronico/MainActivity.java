@@ -60,7 +60,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.crashlytics.android.Crashlytics;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
@@ -1460,7 +1459,6 @@ public class MainActivity extends AppCompatActivity {
                                     nFile += jsonarray.length();
                                 } catch (Exception e) {
                                     e.printStackTrace();
-                                    Crashlytics.logException(e);
                                 }
 
                                 AggiornaFileScrutini(nFile);
@@ -2303,7 +2301,7 @@ public class MainActivity extends AppCompatActivity {
                         ViewHolder.data.setText(s);
                         ViewHolder.Des.setText(CVDataList.get(i).des);
                     } catch (Exception e) {
-                        Crashlytics.logException(e);
+                        e.printStackTrace();
                     }
                 } else if (CVDataList.get(i).title.contains("<Data>")) {
 

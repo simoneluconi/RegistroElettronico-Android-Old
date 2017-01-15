@@ -1,22 +1,16 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.21.6'
         classpath 'me.tatarka:gradle-retrolambda:3.3.1'
     }
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
 apply plugin: 'me.tatarka.retrolambda'
 
-repositories {
-    maven { url 'https://maven.fabric.io/public' }
-}
 
 android {
     compileSdkVersion 25
@@ -26,8 +20,8 @@ android {
         applicationId 'com.sharpdroid.registroelettronico'
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 302
-        versionName '302'
+        versionCode 303
+        versionName '303'
     }
 
     buildTypes {
@@ -75,7 +69,5 @@ dependencies {
     compile 'joda-time:joda-time:2.9.4'
     compile 'org.jsoup:jsoup:1.10.1'
     testCompile 'junit:junit:4.12'
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
-        transitive = true;
-    }
+
 }
