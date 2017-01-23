@@ -81,15 +81,15 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/TextViewCommento"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15.0dip"
-                    android:autoLink="email"
                     android:gravity="center"
                     android:text="@string/disclamer"
                     android:textAppearance="?android:textAppearanceSmall"
                     android:textColor="@color/textcolorgrey"
-                    android:textSize="12.0sp"
+                    android:textSize="14.0sp"
                     android:visibility="visible" />
             </LinearLayout>
         </ScrollView>

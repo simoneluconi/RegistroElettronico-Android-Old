@@ -37,7 +37,7 @@
     <string name="toast_crash">E\' stato rilevato un problema, verrà segnalato allo sviluppatore. Se puoi contattaci via mail: bugreport@registroelettronico.ml, risolveremo il problema più velocemente.</string>
     <string name="modificaevento">Cosa vuoi fare?</string>
     <string name="permission_rationale">Il permesso per leggere i contatti è richiesto per l\'autocompletamento della mail.</string>
-    <string name="disclamer">Se avete problemi di accesso contattaci via mail (bugreport@registroelettronico.ml), una recensione negativa non risolverà il problema.\nSe vi compare il messaggio di credenziali sbagliate non contattateci, sicuramente i dati inseriti sono sbagliati e non possiamo farci niente.\nQuest\'app funziona solamente con il registro elettronico Spaggiari.\nNon siamo in alcun modo legati al gruppo Spaggiari</string>
+    <string name="disclamer">Se avete problemi di accesso <a href="mailto:bugreport@registroelettronico.ml">contattaci via mail</a>, una recensione negativa non risolverà il problema.\n<a href="https://gist.github.com/simoneluconi/d33d727a974508c24390384fd468fdb0">Prima di contattarci, consulta le FAQ per vedere se la tua domanda è già stata risposta.</a>\nQuest\'app funziona solamente con il registro elettronico Spaggiari.\nNon siamo in alcun modo legati al gruppo Spaggiari</string>
     <string name="aggacc">Aggiungi Account</string>
     <string name="eliminaacc">Elimina Account</string>
     <string name="eliminaaccdes">Voi davvero eliminare l\'account %1$s?</string>
