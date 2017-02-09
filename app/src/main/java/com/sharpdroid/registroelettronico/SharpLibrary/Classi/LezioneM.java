@@ -7,6 +7,7 @@ public class LezioneM {
 
     private String id;
     private String materia;
+    private String autoriId;
     private final List<Lezione> lezioni = new ArrayList<>();
 
     public LezioneM()
@@ -37,5 +38,14 @@ public class LezioneM {
 
     public String getId() {
         return id;
+    }
+
+    public String getAutoriId(){
+        return autoriId;
+    }
+
+    public void setAutoriId(String id)
+    {
+        this.autoriId = id;
     }
 }
