@@ -30,7 +30,6 @@ import com.sharpdroid.registroelettronico.SharpLibrary.Classi.LezioneM;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
 
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -119,6 +118,7 @@ public class Lezioni extends AppCompatActivity {
                 rv.setAdapter(adapter);
 
                 lezioni.addAll(lezioniMateries.get(position).getLezioni());
+                Collections.reverse(lezioni);
                 adapter.notifyDataSetChanged();
             }
 
@@ -312,22 +312,14 @@ public class Lezioni extends AppCompatActivity {
                         mTabs.setupWithViewPager(mPager);
 
                         for (LezioneM l : lezioniMateries)
-                            new GetStringFromUrl().execute(MainActivity.BASE_URL + "/fml/app/default/regclasse_lezioni_xstudenti.php?action=loadLezioni&autori_id=" + l.getAutoriId() + "&materia=" + l.getId());
-
+                            new GetStringFromUrl().execute(MainActivity.BASE_URL + "/fml/app/default/regclasse_lezioni_xstudenti.php?materia=" + l.getId());
                     } else {
                         String materia = url.substring(url.lastIndexOf("=") + 1);
 
                         for (LezioneM l : lezioniMateries) {
                             if (l.getId().equals(materia)) {
 
-                                StringBuilder sb = new StringBuilder();
-                                sb.append("<html><table>");
-                                sb.append(result);
-                                sb.append("</table></html>");
-
-
-                                Document d = Jsoup.parse(sb.toString());
-                                Elements el = d.select("html").select("body").select("table").select("tbody").select("tr");
+                                Elements el = Jsoup.parse(result).select("table#sort_table").select("tbody").select("tr");
                                 for (Element e :
                                         el) {
                                     Elements dati = e.select("td");
@@ -347,7 +339,6 @@ public class Lezioni extends AppCompatActivity {
 
                     }
                 }
-
             }
 
         }
