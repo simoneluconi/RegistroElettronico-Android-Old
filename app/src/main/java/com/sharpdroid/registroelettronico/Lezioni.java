@@ -30,6 +30,7 @@ import com.sharpdroid.registroelettronico.SharpLibrary.Classi.LezioneM;
 import com.sharpdroid.registroelettronico.SharpLibrary.Classi.MyUsers;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -42,7 +43,6 @@ import java.net.CookieHandler;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -118,7 +118,6 @@ public class Lezioni extends AppCompatActivity {
                 rv.setAdapter(adapter);
 
                 lezioni.addAll(lezioniMateries.get(position).getLezioni());
-                Collections.reverse(lezioni);
                 adapter.notifyDataSetChanged();
             }
 
@@ -304,6 +303,7 @@ public class Lezioni extends AppCompatActivity {
                             LezioneM lm = new LezioneM();
                             lm.setId(materien.get(i).attr("materia_id"));
                             lm.setAutoriId(materien.get(i).attr("autori_id"));
+                            lm.setAutoriId(materien.get(i).attr("autori_id"));
                             lm.setMateria(MateriaDecente(materien.get(i).attr("title")));
                             lezioniMateries.add(lm);
                             i++;
@@ -312,14 +312,18 @@ public class Lezioni extends AppCompatActivity {
                         mTabs.setupWithViewPager(mPager);
 
                         for (LezioneM l : lezioniMateries)
-                            new GetStringFromUrl().execute(MainActivity.BASE_URL + "/fml/app/default/regclasse_lezioni_xstudenti.php?materia=" + l.getId());
+                            new GetStringFromUrl().execute(MainActivity.BASE_URL + "/fml/app/default/regclasse_lezioni_xstudenti.php?action=loadLezioni&autori_id=" + l.getAutoriId() + "&materia=" + l.getId());
                     } else {
                         String materia = url.substring(url.lastIndexOf("=") + 1);
 
                         for (LezioneM l : lezioniMateries) {
                             if (l.getId().equals(materia)) {
 
-                                Elements el = Jsoup.parse(result).select("table#sort_table").select("tbody").select("tr");
+                                result = "<html><table>" + result + "</table></html>";
+
+                                Document d = Jsoup.parse(result);
+                                Elements el = d.select("html").select("body").select("table").select("tbody").select("tr");
+
                                 for (Element e :
                                         el) {
                                     Elements dati = e.select("td");
