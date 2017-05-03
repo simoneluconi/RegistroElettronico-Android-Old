@@ -103,7 +103,7 @@ public class Circolari extends AppCompatActivity {
 
         if (isNetworkAvailable(Circolari.this)) {
             if (msCookieManager.getCookieStore().getCookies().isEmpty())
-                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/auth/app/default/AuthApi2.php?a=aLoginPwd");
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/auth/app/default/AuthApi3.php?a=aLoginPwd");
             new GetStringFromUrl().execute(MainActivity.BASE_URL + "/sif/app/default/bacheca_utente.php");
         } else
             Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();
