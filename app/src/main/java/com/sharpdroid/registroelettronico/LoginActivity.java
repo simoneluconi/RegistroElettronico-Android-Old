@@ -465,6 +465,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     }
                 } else {
                     response = "";
+                    ErrMsg = "Registro momentaneamente offline, riprova più tardi ("+ responseCode +")";
                     return false;
 
                 }
