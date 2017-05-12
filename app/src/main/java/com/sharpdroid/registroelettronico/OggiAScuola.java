@@ -110,7 +110,7 @@ public class OggiAScuola extends AppCompatActivity {
         });
         if (isNetworkAvailable(OggiAScuola.this)) {
             if (msCookieManager.getCookieStore().getCookies().isEmpty())
-                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/auth/app/default/AuthApi3.php?a=aLoginPwd");
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + MainActivity.LOGIN_URL);
             new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/regclasse.php");
         } else
             Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();

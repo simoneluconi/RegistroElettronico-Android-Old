@@ -83,7 +83,7 @@ public class Notifiche extends BroadcastReceiver {
         db.close();
 
         if (isNetworkAvailable(context) && count > 0) {
-            new GetStringFromUrl().execute(MainActivity.BASE_URL + "/auth/app/default/AuthApi3.php?a=aLoginPwd");
+            new GetStringFromUrl().execute(MainActivity.BASE_URL + MainActivity.LOGIN_URL);
 
             if (sharePref.getBoolean("notifichevoti", true))
                 new GetStringFromUrl().execute(MainActivity.BASE_URL + "/cvv/app/default/genitori_note.php");
