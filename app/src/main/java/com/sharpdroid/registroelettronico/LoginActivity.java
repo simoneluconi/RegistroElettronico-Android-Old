@@ -465,10 +465,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     }
                 } else {
                     response = "";
-                    ErrMsg = "Registro momentaneamente offline, riprova più tardi ("+ responseCode +")";
+                    ErrMsg = "Registro momentaneamente offline, riprova più tardi (" + responseCode + ")";
                     return false;
 
                 }
+            } catch (java.net.SocketTimeoutException e) {
+                e.printStackTrace();
+                ErrMsg = "Impossibile connettersi al Registro, riprova più tardi (" + e.getLocalizedMessage() + ")";
             } catch (Exception e) {
                 e.printStackTrace();
                 ErrMsg = e.getLocalizedMessage();
