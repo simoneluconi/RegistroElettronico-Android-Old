@@ -83,7 +83,7 @@ public class Lezioni extends AppCompatActivity {
         context = Lezioni.this;
         if (isNetworkAvailable(context)) {
             if (msCookieManager.getCookieStore().getCookies().isEmpty())
-                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/auth/app/default/AuthApi3.php?a=aLoginPwd");
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + MainActivity.LOGIN_URL);
             new GetStringFromUrl().execute(MainActivity.BASE_URL + "/fml/app/default/regclasse_lezioni_xstudenti.php");
         }
     }

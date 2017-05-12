@@ -109,7 +109,7 @@ public class Scrutini extends AppCompatActivity {
 
         if (isNetworkAvailable(Scrutini.this)) {
             if (msCookieManager.getCookieStore().getCookies().isEmpty())
-                new GetStringFromUrl().execute(MainActivity.BASE_URL + "/auth/app/default/AuthApi3.php?a=aLoginPwd");
+                new GetStringFromUrl().execute(MainActivity.BASE_URL + MainActivity.LOGIN_URL);
             new GetStringFromUrl().execute(MainActivity.BASE_URL + "/sol/app/default/documenti_sol.php");
         } else
             Toast.makeText(getApplicationContext(), R.string.nointernet, Toast.LENGTH_LONG).show();

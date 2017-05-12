@@ -349,7 +349,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             URL url;
             String response = "";
             HashMap<String, String> postDataParams = new HashMap<>();
-            String url_car = MainActivity.BASE_URL + "/auth/app/default/AuthApi3.php?a=aLoginPwd";
+            String url_car = MainActivity.BASE_URL + MainActivity.LOGIN_URL;
 
             postDataParams.put("uid", mEmail.trim());
             postDataParams.put("pwd", mPassword.trim());

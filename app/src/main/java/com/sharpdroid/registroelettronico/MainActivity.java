@@ -162,6 +162,8 @@ import static com.sharpdroid.registroelettronico.SharpLibrary.Metodi.isNetworkAv
 public class MainActivity extends AppCompatActivity {
 
     public static final String BASE_URL = "https://web.spaggiari.eu";
+    public static final String LOGIN_URL = "/auth/app/default/AuthApi4.php?a=aLoginPwd";
+
     private static final int FILE_SELECT_CODE = 0;
     public static final int CONTROLLO_VOTI_ID = 111101;
     static final String FILE_PROVIDER_STRING = "com.sharpdroid.fileprovider";
@@ -276,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static void AggiornaDati() {
-        new GetStringFromUrl().execute(BASE_URL + "/auth/app/default/AuthApi3.php?a=aLoginPwd");
+        new GetStringFromUrl().execute(BASE_URL + LOGIN_URL);
         new GetStringFromUrl().execute(BASE_URL + "/cvv/app/default/genitori_note.php");
         new GetStringFromUrl().execute(BASE_URL + "/fml/app/default/gioprof_note_studente.php");
         new GetStringFromUrl().execute(BASE_URL + "/fml/app/default/agenda_studenti.php?ope=get_events&start=" + primadata.getMillis() / 1000 + "&end=" + secondadata.getMillis() / 1000);
