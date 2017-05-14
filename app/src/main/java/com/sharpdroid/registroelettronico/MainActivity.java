@@ -1325,6 +1325,10 @@ public class MainActivity extends AppCompatActivity {
                         int lastverCode = Integer.parseInt(verCodeTmp);
 
                         if (verCode < lastverCode) {
+                            Toast.makeText(context, "Per favore aggiorna l'app dal play store per assicurarti il suo corretto funzionamento", Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "Per favore aggiorna l'app dal play store per assicurarti il suo corretto funzionamento", Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "Per favore aggiorna l'app dal play store per assicurarti il suo corretto funzionamento", Toast.LENGTH_LONG).show();
+
                             Snackbar.make(coordinatorLayout, R.string.ultimaversione, Snackbar.LENGTH_LONG)
                                     .setAction(android.R.string.ok, view -> {
                                         Intent openPlayStore;
