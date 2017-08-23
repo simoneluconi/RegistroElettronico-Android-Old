@@ -347,7 +347,8 @@ public class Circolari extends AppCompatActivity {
                                         Circolare circolare = new Circolare();
                                         circolare.setNCircolare(td.get(0).text());
                                         circolare.setTitolo(td.get(2).select("div").get(0).text());
-                                        circolare.setTipo(td.get(2).select("div").get(1).text());
+                                        //circolare.setTipo(td.get(2).select("div").get(1).text());
+                                        circolare.setTipo("");
                                         circolare.setData(td.get(3).text());
                                         circolare.setId(td.get(4).select("a").attr("comunicazione_id"));
                                         Circolaris.add(circolare);
