@@ -445,10 +445,9 @@ public class MainActivity extends AppCompatActivity {
                                         MyAccount a = Accounts.get((int) profile.getIdentifier());
 
                                         SQLiteDatabase db12 = new MyUsers(context).getWritableDatabase();
-                                        String[] datas = {a.getName(), a.getUsername(), a.getCodicescuola()};
+                                        String[] datas = {a.getName(), a.getUsername()};
                                         String command = MyUsers.UserEntry.COLUMN_NAME_NAME + "= ? AND "
-                                                + MyUsers.UserEntry.COLUMN_NAME_USERNAME + "= ? AND "
-                                                + MyUsers.UserEntry.COLUMN_NAME_CODICESCUOLA + "= ?";
+                                                + MyUsers.UserEntry.COLUMN_NAME_USERNAME + "= ?";
                                         db12.delete(MyUsers.UserEntry.TABLE_NAME, command, datas);
                                         db12.close();
                                         CancellaPagineLocali(MainActivity.this);
