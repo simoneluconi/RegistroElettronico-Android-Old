@@ -534,10 +534,6 @@ public class MainActivity extends AppCompatActivity {
                                     .withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE)
                                             .withColorRes(R.color.redmaterial)),
                             new PrimaryDrawerItem()
-                                    .withName(R.string.versioneweb)
-                                    .withIcon(ContextCompat.getDrawable(this, R.drawable.ic_web))
-                                    .withSelectable(false),
-                            new PrimaryDrawerItem()
                                     .withName(R.string.fileoff)
                                     .withIcon(ContextCompat.getDrawable(this, R.drawable.download))
                                     .withSelectable(false)
@@ -578,38 +574,12 @@ public class MainActivity extends AppCompatActivity {
                                     intent = new Intent(MainActivity.this, Scrutini.class);
                                     break;
                                 case 6:
-                                    try {
-                                        int ActiveUsers = sharedPref.getInt("CurrentProfile", 0);
-                                        SQLiteDatabase db1 = new MyUsers(context).getWritableDatabase();
-                                        Cursor c1 = db1.rawQuery("SELECT * FROM " + MyUsers.UserEntry.TABLE_NAME, null);
-                                        c1.move(ActiveUsers);
-                                        String username = c1.getString(c1.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_USERNAME));
-                                        String password = c1.getString(c1.getColumnIndex(MyUsers.UserEntry.COLUMN_NAME_PASSWORD));
-                                        c1.close();
-                                        db1.close();
-
-                                        Uri uri = Uri.parse("https://web.spaggiari.eu/auth/app/default/AuthApi2.php?a=aLoginPwd&uid=" + username + "&pwd=" + password);
-                                        Intent intent_web = new Intent("android.intent.action.VIEW", uri);
-                                        startActivity(intent_web);
-
-                                        Thread.sleep(2 * 1000);
-
-                                        uri = Uri.parse("https://web.spaggiari.eu/home/app/default/menu_webinfoschool_studenti.php");
-                                        intent_web = new Intent("android.intent.action.VIEW", uri);
-                                        startActivity(intent_web);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    break;
-                                case 7:
                                     intent = new Intent(MainActivity.this, FileOffline.class);
                                     break;
-                                case 8:
+                                case 7:
                                     AvviaNotifiche(MainActivity.this);
                                     break;
-
-                                case 10:
-
+                                case 9:
                                     String[] azioni = new String[]{getString(R.string.esporta), getString(R.string.importa)};
 
                                     new MaterialDialog.Builder(MainActivity.this)
@@ -634,12 +604,9 @@ public class MainActivity extends AppCompatActivity {
                                             })
                                             .positiveText(R.string.prosegui)
                                             .show();
-
-
                                     break;
 
-                                case 11:
-
+                                case 10:
                                     File backupDB = ExportDatabase(context);
 
                                     ArrayList<Uri> uris = new ArrayList<>();
