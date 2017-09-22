@@ -13,15 +13,15 @@ apply plugin: 'me.tatarka.retrolambda'
 
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion "25.0.3"
 
     defaultConfig {
         applicationId 'com.sharpdroid.registroelettronico'
         minSdkVersion 15
-        targetSdkVersion 25
-        versionCode 316
-        versionName '316'
+        targetSdkVersion 26
+        versionCode 317
+        versionName '317'
     }
 
     buildTypes {
@@ -51,23 +51,23 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.afollestad.material-dialogs:core:0.8.5.9'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:cardview-v7:25.3.1'
-    compile 'com.android.support:customtabs:25.3.1'
-    compile 'com.android.support:design:25.3.1'
-    compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.afollestad.material-dialogs:core:0.8.5.9' //Da aggiornare
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:cardview-v7:26.1.0'
+    compile 'com.android.support:customtabs:26.1.0'
+    compile 'com.android.support:design:26.1.0'
+    compile 'com.android.support:support-v13:26.1.0'
     compile 'com.github.ganfra:material-spinner:1.1.1'
     compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
-    compile 'com.github.sundeepk:compact-calendar-view:1.9.1'
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'com.heinrichreimersoftware:material-intro:1.6'
-    compile('com.mikepenz:materialdrawer:5.6.0@aar') {
+    compile 'com.github.sundeepk:compact-calendar-view:2.0.2.2'
+    compile 'com.google.code.gson:gson:2.8.2'
+    compile 'com.heinrichreimersoftware:material-intro:1.6' //Da aggiornare
+    compile('com.mikepenz:materialdrawer:5.9.5@aar') {
         transitive = true
     }
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'joda-time:joda-time:2.9.4'
-    compile 'org.jsoup:jsoup:1.10.2'
+    compile 'joda-time:joda-time:2.9.9'
+    compile 'org.jsoup:jsoup:1.10.3'
     testCompile 'junit:junit:4.12'
 
 }

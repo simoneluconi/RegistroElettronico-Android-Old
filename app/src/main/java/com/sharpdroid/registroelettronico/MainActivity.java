@@ -526,19 +526,22 @@ public class MainActivity extends AppCompatActivity {
                                     .withIcon(ContextCompat.getDrawable(this, R.drawable.document))
                                     .withSelectable(false)
                                     .withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE)
-                                            .withColorRes(R.color.redmaterial)),
+                                            .withColorRes(R.color.redmaterial))
+                                    .withIdentifier(3),
                             new PrimaryDrawerItem()
                                     .withName(R.string.scrutini)
                                     .withIcon(ContextCompat.getDrawable(this, R.drawable.book))
                                     .withSelectable(false)
                                     .withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE)
-                                            .withColorRes(R.color.redmaterial)),
+                                            .withColorRes(R.color.redmaterial))
+                                    .withIdentifier(4),
                             new PrimaryDrawerItem()
                                     .withName(R.string.fileoff)
                                     .withIcon(ContextCompat.getDrawable(this, R.drawable.download))
                                     .withSelectable(false)
                                     .withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE)
-                                            .withColorRes(R.color.bluematerial)),
+                                            .withColorRes(R.color.bluematerial))
+                                    .withIdentifier(5),
                             new PrimaryDrawerItem()
                                     .withName(R.string.forzacontrollo)
                                     .withIcon(ContextCompat.getDrawable(this, R.drawable.refresh))
